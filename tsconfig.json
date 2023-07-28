@@ -1,0 +1,48 @@
+{
+  "compilerOptions": {
+    // "target" 옵션은 TypeScript로 작성된 코드를 컴파일할 때의 JavaScript 언어 버전을 지정합니다.
+    // 여기서는 "es2016"으로 설정되어 있으므로, 생성된 JavaScript 코드는 ECMAScript 2016 버전에 맞게 생성됩니다.
+    "target": "es2016",
+
+    // "module" 옵션은 컴파일된 모듈 코드가 어떤 형식으로 생성되는지 지정합니다.
+    // 여기서는 "commonjs"로 설정되어 있으므로, CommonJS 스타일의 모듈 코드가 생성됩니다.
+    "module": "commonjs",
+
+    // "esModuleInterop" 옵션은 CommonJS 모듈을 가져오기 위해 추가적인 JavaScript를 생성하는지 여부를 설정합니다.
+    // 여기서는 "true"로 설정되어 있으므로, CommonJS 모듈을 더 쉽게 가져오기 위해 추가적인 JavaScript가 생성됩니다.
+    "esModuleInterop": true,
+
+    // "forceConsistentCasingInFileNames" 옵션은 모듈의 이름을 확인할 때 대소문자를 일관되게 처리할지 여부를 설정합니다.
+    // 여기서는 "true"로 설정되어 있으므로, 모듈의 이름을 대소문자를 정확히 맞춰서 사용해야 합니다.
+    "forceConsistentCasingInFileNames": true,
+
+    // "strict" 옵션은 모든 엄격한 타입 체크 옵션을 활성화할지 여부를 설정합니다.
+    // 여기서는 "true"로 설정되어 있으므로, 모든 엄격한 타입 체크 옵션이 활성화됩니다.
+    // "strict": true /* Enable all strict type-checking options. */,
+
+    // "skipLibCheck" 옵션은 모든 .d.ts 파일의 타입 체크를 건너뛸지 여부를 설정합니다.
+    // 여기서는 "true"로 설정되어 있으므로, 모든 .d.ts 파일의 타입 체크를 건너뜁니다.
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+
+    "jsx": "react",
+
+    // "baseUrl": "./src", // Base URL for resolving non-relative module names
+    "baseUrl": ".",
+    // "paths": {
+    //   "@/*": ["*"]
+    // }
+
+    "paths": {
+      "@src/*": ["src/*"]
+    }
+    // "paths": {
+    //   "@api/*": ["api/*"],
+    //   "@components/*": ["components/*"],
+    //   "hooks/*": ["hooks/*"],
+    //   "@pages/*": ["pages/*"],
+    //   "@styles/*": ["styles/*"],
+    //   "@types/*": ["types/*"]
+    // }
+  },
+  "include": ["src"]
+}
