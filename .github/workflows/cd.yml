@@ -1,0 +1,47 @@
+name: Auto Merge Main to Develop
+
+# 워크플로우를 'main' 브랜치에 대한 push 이벤트에 대해 실행합니다.
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  merge_main_to_develop:
+    runs-on: ubuntu-latest
+    steps:
+      # 저장소를 체크아웃합니다.
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          ref: main
+          fetch-depth: 0
+
+      # 마지막 커밋 메시지를 확인하여 'release' 브랜치에서의 병합 여부 결정
+      - name: Check for release branch merge
+        id: check
+        run: |
+          is_merged=$(git log -1 --pretty=format:"%s" | grep -E 'Merge branch .release.')
+          if [[ -z $is_merged ]]; then
+            echo "This push is not from release branch merge, skipping."
+            echo "::set-output name=should_skip::true"
+          else
+            echo "This push is from release branch merge, merging to develop."
+            echo "::set-output name=should_skip::false"
+          fi
+
+      # git을 설정하여 병합 작업에 필요한 이름과 이메일을 지정합니다.
+      - name: Setup Git
+        if: steps.check.outputs.should_skip == 'false'
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
+      # 'main' 브랜치를 'develop' 브랜치로 병합하는 작업을 실행합니다.
+      - name: Merge main branch to develop
+        if: steps.check.outputs.should_skip == 'false'
+        run: |
+          git fetch origin develop:develop
+          git checkout develop
+          git merge --no-ff main
+          git push origin develop
