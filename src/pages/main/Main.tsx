@@ -15,7 +15,7 @@ const Main = () => {
 
     useEffect(() => {
         axios
-            .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/allfriend`, {
+            .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/friend/allfriend`, {
                 headers: {
                     Authorization: `Bearer ${getJwtCookie('jwt')}`,
                 },
