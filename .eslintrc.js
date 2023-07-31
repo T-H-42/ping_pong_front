@@ -80,6 +80,7 @@ module.exports = {
         'arrow-body-style': 'off',
         'no-undef': 'off',
         'no-unused-vars': 'warn',
+        camelcase: 'off',
     },
     settings: {
         'import/resolver': {

@@ -4,14 +4,14 @@ import axios from 'axios';
 import ChatList from './ChatList';
 import FriendList from './FriendList';
 import LogOutButton from '../../components/LogOutButton';
-import { useRecoilValue } from 'recoil';
-import { IFriendsState, usernameState } from '../../api/atoms';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import { IFriendsState, usernameState, friendsState } from '../../api/atoms';
 import { SocketContext } from '../../api/SocketContext';
 
 const Main = () => {
     const { pingpongSocket, chatSocket } = useContext(SocketContext);
     const username: any = useRecoilValue(usernameState);
-    const [friends, setFriends] = useState<IFriendsState[]>(username.friends);
+    const [friends, setFriends] = useRecoilState<IFriendsState[]>(friendsState);
 
     useEffect(() => {
         axios

@@ -29,6 +29,7 @@ const OAuth = () => {
             )
             .then((response) => {
                 console.log('/user/signin 요청 성공');
+                document.cookie = `jwt=${response.data.accessToken};  path=/`;
                 console.log(`또끈: ${getJwtCookie('jwt')}`);
                 console.log('response.data: ', response.data);
                 localStorage.setItem('username', response.data.username);

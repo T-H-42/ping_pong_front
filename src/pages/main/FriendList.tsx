@@ -1,10 +1,10 @@
 import React, { useEffect, useContext } from 'react';
 import { useRecoilValue } from 'recoil';
-import { friendsState } from '../../api/atoms';
+import { IFriendsState, friendsState } from '../../api/atoms';
 
 const FriendList = () => {
     console.log('프렌드리스트 컴포넌트');
-    const friends = useRecoilValue<any>(friendsState);
+    const friends = useRecoilValue<IFriendsState[]>(friendsState);
 
     return (
         <div style={{ border: '1px solid #000', padding: '10px' }}>

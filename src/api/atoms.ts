@@ -5,11 +5,15 @@ interface IUserName {
 }
 
 export interface IFriend {
-    username: string;
+    username: object;
 }
 
 export interface IFriendsState {
-    friends: IFriend[];
+    f_id: number;
+    id: number;
+    username: string;
+    socketid: string;
+    email: string;
 }
 
 interface IRoomNameState {
@@ -21,9 +25,9 @@ export const usernameState = atom<IUserName>({
     default: { default: '' },
 });
 
-export const friendsState = atom<IFriendsState>({
+export const friendsState = atom<IFriendsState[]>({
     key: 'FriendsState',
-    default: { friends: [] },
+    default: [],
 });
 
 export const roomNameState = atom<string>({
