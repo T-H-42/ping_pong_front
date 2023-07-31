@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.4.0",
     "dotenv": "^16.3.1",
+    "eslint-config-prettier": "^8.9.0",
     "js-cookie": "^3.0.5",
     "js-cookies": "^1.0.4",
     "pg": "^8.11.0",
@@ -51,6 +52,10 @@
   "lint": "eslint './src/**/*.{ts,tsx,js,jsx}'",
   "lint:fix": "eslint --fix './src/**/*.{ts,tsx,js,jsx}'",
   "devDependencies": {
+    "eslint": "^8.46.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.0",
     "typescript": "^5.1.6"
   }
 }

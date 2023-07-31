@@ -1,33 +1,32 @@
-import { atom } from 'recoil'
-import io from 'socket.io-client'
+import { atom } from 'recoil';
 
 interface IUserName {
-  default: string
+    default: string;
 }
 
 export interface IFriend {
-  username: string
+    username: string;
 }
 
 export interface IFriendsState {
-  friends: IFriend[]
+    friends: IFriend[];
 }
 
 interface IRoomNameState {
-  default: string
+    default: string;
 }
 
 export const usernameState = atom<IUserName>({
-  key: 'usernameState',
-  default: { default: '' },
-})
+    key: 'usernameState',
+    default: { default: '' },
+});
 
 export const friendsState = atom<IFriendsState>({
-  key: 'FriendsState',
-  default: { friends: [] },
-})
+    key: 'FriendsState',
+    default: { friends: [] },
+});
 
 export const roomNameState = atom<string>({
-  key: 'roomNameState',
-  default: '',
-})
+    key: 'roomNameState',
+    default: '',
+});

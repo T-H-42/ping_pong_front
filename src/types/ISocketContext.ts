@@ -1,4 +1,4 @@
 export interface ISocketContext {
-  pingPongSocket: any
-  chatSocket: any
+    pingpongSocket: any
+    chatSocket: any
 }
