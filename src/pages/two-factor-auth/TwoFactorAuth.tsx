@@ -8,14 +8,14 @@ const TwoFactorAuth = () => {
     const navigate = useNavigate();
     const [info, setInfo] = useState({
         username: localStorage.getItem('username'),
-        two_factor_authentication_code: '',
+        two_factor_authentication_code: null,
     });
     const { pingpongSocket, chatSocket } = useContext(SocketContext);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setInfo({
             ...info,
-            two_factor_authentication_code: event.target.value,
+            two_factor_authentication_code: parseInt(event.target.value, 10),
         });
     };
 
