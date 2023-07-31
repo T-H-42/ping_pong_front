@@ -1,7 +1,7 @@
 import React from 'react';
 
-const waitingRoomLayout = () => {
+const WaitingRoomLayout = () => {
     return <div></div>;
 };
 
-export default waitingRoomLayout;
+export default WaitingRoomLayout;
