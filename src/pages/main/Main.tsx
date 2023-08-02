@@ -15,6 +15,8 @@ const Main = () => {
     const username: any = useRecoilValue(usernameState);
     const [friends, setFriends] = useRecoilState<IFriendsState[]>(friendsState);
 
+    const [dmName, setDMName] = useState<any>();
+
     useEffect(() => {
         axios
             .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/friend/allfriend`, {
@@ -75,9 +77,10 @@ const Main = () => {
             <h1> {localStorage.getItem('username')}의 메인 페이지</h1>
             {chatSocket ? <ChatList /> : null}
             <div style={{ margin: '30px 0' }} />
-            {friends ? <FriendList /> : null}
+            {/* FriendList에 dmInvitationResponse 상태를 전달 */}
+            {friends ? <FriendList dmName={dmName} setDMName={setDMName} /> : null}
             <div style={{ margin: '30px 0' }} />
-            <DMList />
+            <DMList dmName={dmName}/>
         </div>
     );
 };

@@ -3,49 +3,67 @@ import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { getJwtCookie } from '../../api/cookies';
 import { useSetRecoilState } from 'recoil';
-import { roomNameState } from '../../api/atoms';
+import { dmNameState } from '../../api/atoms';
 
 import { SocketContext } from '../../api/SocketContext';
 
-const DMList = () => {
+const DMList = ({ dmName }) => {
     console.log('디엠리스트 컴포넌트');
 
     const { chatSocket } = useContext(SocketContext);
     const navigate = useNavigate();
     const [DMList, setDMList] = useState<any>([]);
-    const RsetRoomName = useSetRecoilState<string>(roomNameState);
+    const RsetRoomName = useSetRecoilState<string>(dmNameState);
 
-    const onJoinRoom = useCallback(
-        (roomName: string) => () => {
-            RsetRoomName(roomName);
-            chatSocket.emit('join-room', roomName, (response: any) => {
-                navigate(`/room/${roomName}`);
-            });
-        },
-        [navigate],
-    );
+    const onJoinDM = useCallback((roomName: any) => () => {
+        RsetRoomName(roomName.username);
+        chatSocket.emit('join-dm', roomName, (response: any) => {
+            if (response.success) {
+                navigate(`/dm/${roomName}`);
+            }
+        });
+    }, [navigate]);
+
+    useEffect(() => {
+        if (dmName) {
+            if (dmName.success) {
+                console.log('FUCK');
+                setDMList((prevRooms: any) => [...prevRooms, dmName]);
+            }
+        }
+    }, [dmName]);
 
     useEffect(() => {
         const dmListHandler = (response: any) => {
+            console.log('dmListHandler: ', response);
             setDMList(response);
         };
-        const createDMHandler = (res: any) => {
-            console.log('createDMHandler: ', res);
-            setDMList((prevRooms: any) => [...prevRooms, res]);
-        };
+
         const deleteRoomHandler = (roomName: string) => {
             setDMList((prevRooms: any) => prevRooms.filter((room: string) => room !== roomName));
         };
 
+        chatSocket.on('ft_dm_invitation', (res: any) => {
+            console.log('ft_dm_invitation on: ', res);
+            setDMList((prevRooms: any) => [...prevRooms, res]);
+        });
+
         chatSocket.emit('dm-list', dmListHandler);
-        chatSocket.on('create-dm-room', createDMHandler);
+        // chatSocket.on('create-dm', createDMHandler);
         chatSocket.on('delete-room', deleteRoomHandler);
 
         return () => {
-            chatSocket.off('room-list', dmListHandler);
-            chatSocket.off('create-dm-room', createDMHandler);
+            chatSocket.off('dm-list', dmListHandler);
+            // chatSocket.off('create-dm', createDMHandler);
             chatSocket.off('delete-room', deleteRoomHandler);
+
+            console.log('ft_dm_invitation off');
+            chatSocket.off('ft_dm_invitation');
         };
+    }, []);
+
+    const onLeaveRoom = useCallback(() => {
+        chatSocket.emit('leave-dm', () => { });
     }, []);
 
     return (
@@ -55,15 +73,19 @@ const DMList = () => {
                 <thead>
                     <tr>
                         <th>닉네임</th>
-                        <th>입장</th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    {DMList.map((room: any, index: any) => (
+                    {DMList.map((i: any, index: any) => (
                         <tr key={index}>
-                            <td>{room}</td>
+                            <td>{i.username}</td>
                             <td>
-                                <button onClick={onJoinRoom(room)}>입장하기</button>
+                                <button onClick={onJoinDM(i)}>입장</button>
+                            </td>
+                            <td>
+                                <button onClick={onLeaveRoom}>X</button>
                             </td>
                         </tr>
                     ))}
