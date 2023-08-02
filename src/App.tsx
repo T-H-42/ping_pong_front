@@ -11,10 +11,10 @@ import OAuth from './components/OAuth';
 import TwoFactorAuth from './pages/two-factor-auth/TwoFactorAuth';
 // import PrivateRoute from './components/PrivateRoute';
 import NotFound from './components/NotFound';
-
 import { SocketContext } from './api/SocketContext';
 
-import { createPingpongSocket, createChatSocket } from './api/socket';
+import { createPingpongSocket, createChatSocket, createGameSocket } from './api/socket';
+import SettingRoomLayout from './pages/setting-room/SettingRoomLayout';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -26,16 +26,17 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-    console.log('앱 컴포넌트');
-
     const pingpongSocket = createPingpongSocket();
     const chatSocket = createChatSocket();
+    const gameSocket = createGameSocket();
 
     if (getJwtCookie('jwt')) {
         pingpongSocket.auth = { token: `${getJwtCookie('jwt')}` };
         pingpongSocket.connect();
         chatSocket.auth = { token: `${getJwtCookie('jwt')}` };
         chatSocket.connect();
+        gameSocket.auth = { token: `${getJwtCookie('jwt')}` };
+        gameSocket.connect();
     }
 
     return (
@@ -49,7 +50,7 @@ function App() {
                     height: '100vh',
                 }}
             >
-                <SocketContext.Provider value={{ pingpongSocket, chatSocket }}>
+                <SocketContext.Provider value={{ pingpongSocket, chatSocket, gameSocket }}>
                     <BrowserRouter>
                         <QueryClientProvider client={queryClient}>
                             <Suspense fallback={<h1>Fucking Loading</h1>}>
@@ -60,6 +61,8 @@ function App() {
                                     {/* <Route element={<PrivateRoute />}> */}
                                     <Route path="/main" element={<Main />} />
                                     <Route path="/room/:roomName" element={<ChatRoom />} />
+                                    <Route path="/setting-room/:roomName" element={<SettingRoomLayout />} />
+
                                     {/* </Route> */}
                                     <Route path="*" element={<NotFound />} />
                                 </Routes>

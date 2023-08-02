@@ -18,3 +18,12 @@ export const createChatSocket = (): Socket => {
     });
     return chatSocket;
 };
+
+export const createGameSocket = (): Socket => {
+    const gameSocket = io(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/game`, {
+        transports: ['websocket'],
+        auth: { token: getJwtCookie('jwt') },
+        autoConnect: false,
+    });
+    return gameSocket;
+};

@@ -7,6 +7,7 @@ import LogOutButton from '../../components/LogOutButton';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { IFriendsState, usernameState, friendsState } from '../../api/atoms';
 import { SocketContext } from '../../api/SocketContext';
+import GameStartButton from './GameStartButton';
 
 const Main = () => {
     const { pingpongSocket, chatSocket } = useContext(SocketContext);
@@ -69,6 +70,7 @@ const Main = () => {
 
     return (
         <div style={{ textAlign: 'center' }}>
+            <GameStartButton />
             <LogOutButton />
             <h1> {localStorage.getItem('username')}의 메인 페이지</h1>
             {chatSocket ? <ChatList /> : null}
