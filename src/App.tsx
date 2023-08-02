@@ -7,6 +7,7 @@ import { getJwtCookie } from './api/cookies';
 import Login from './pages/root/Login';
 import Main from './pages/main/Main';
 import ChatRoom from './pages/room/ChatRoom';
+import DMRoom from './pages/dm-room/DMRoom';
 import OAuth from './components/OAuth';
 import TwoFactorAuth from './pages/two-factor-auth/TwoFactorAuth';
 // import PrivateRoute from './components/PrivateRoute';
@@ -60,6 +61,7 @@ function App() {
                                     {/* <Route element={<PrivateRoute />}> */}
                                     <Route path="/main" element={<Main />} />
                                     <Route path="/room/:roomName" element={<ChatRoom />} />
+                                    <Route path="/dm/:dmName" element={<DMRoom />} />
                                     {/* </Route> */}
                                     <Route path="*" element={<NotFound />} />
                                 </Routes>

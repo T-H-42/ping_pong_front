@@ -3,12 +3,14 @@ import { getJwtCookie } from '../../api/cookies';
 import axios from 'axios';
 import ChatList from './ChatList';
 import FriendList from './FriendList';
+import DMList from './DMList';
 import LogOutButton from '../../components/LogOutButton';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { IFriendsState, usernameState, friendsState } from '../../api/atoms';
 import { SocketContext } from '../../api/SocketContext';
 
 const Main = () => {
+    console.log('메인 컴포넌트');
     const { pingpongSocket, chatSocket } = useContext(SocketContext);
     const username: any = useRecoilValue(usernameState);
     const [friends, setFriends] = useRecoilState<IFriendsState[]>(friendsState);
@@ -74,6 +76,8 @@ const Main = () => {
             {chatSocket ? <ChatList /> : null}
             <div style={{ margin: '30px 0' }} />
             {friends ? <FriendList /> : null}
+            <div style={{ margin: '30px 0' }} />
+            <DMList />
         </div>
     );
 };

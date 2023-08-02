@@ -41,6 +41,7 @@ const ChatList = () => {
         },
         [navigate],
     );
+
     useEffect(() => {
         const roomListHandler = (rooms: any) => {
             setRooms(rooms);
