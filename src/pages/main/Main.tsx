@@ -77,7 +77,6 @@ const Main = () => {
             <h1> {localStorage.getItem('username')}의 메인 페이지</h1>
             {chatSocket ? <ChatList /> : null}
             <div style={{ margin: '30px 0' }} />
-            {/* FriendList에 dmInvitationResponse 상태를 전달 */}
             {friends ? <FriendList dmName={dmName} setDMName={setDMName} /> : null}
             <div style={{ margin: '30px 0' }} />
             <DMList dmName={dmName}/>

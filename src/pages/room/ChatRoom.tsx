@@ -6,8 +6,11 @@ import { roomNameState } from '../../api/atoms';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { SocketContext } from '../../api/SocketContext';
 
-const ChatRoom = () => {
+import ModalExample from '../../components/ModalExample';
+
+const ChatRoom: React.FC = () => {
     const { chatSocket } = useContext(SocketContext);
+    const [open, setOpen] = useState(false);
     const [chats, setChats] = useState([]);
     const [message, setMessage] = useState('');
     const chatContainerEl = useRef(null);
@@ -59,17 +62,21 @@ const ChatRoom = () => {
         });
     }, [navigate, RroomName]);
 
-    // 뒤로가기
-    // useEffect(() => {
-    //     return () => {
-    //         onLeaveRoom()
-    //     }
-    // }, [onLeaveRoom])
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     return (
         <>
             <div>
                 <h2>채팅방 이름 : {RroomName}</h2>
+                <button onClick={handleOpen}>채팅방 정보</button>
+                <ModalExample isOpen={open} onClose={handleClose} title={'채팅방 정보'} message={'.'} />
+                <h2 />
                 <div ref={chatContainerEl}>
                     {chats.map((chat, index) => (
                         <div key={index}>
