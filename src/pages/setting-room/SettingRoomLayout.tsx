@@ -5,6 +5,7 @@ import { SocketContext } from '../../api/SocketContext';
 import { useRecoilValue } from 'recoil';
 import { settingRoomNameState } from '../../api/atoms';
 import { useNavigate } from 'react-router-dom';
+import PlayerReadyStatus from './PlayerReadyStatus';
 
 const SettingRoomLayout = () => {
     const [open, setOpen] = useState(false);
@@ -32,21 +33,11 @@ const SettingRoomLayout = () => {
         });
     };
     return (
-        <div
-            style={{
-                display: 'flex',
-                width: '100%',
-                height: '100%',
-                justifyContent: 'space-around',
-                alignItems: 'center',
-            }}
-        >
-            <div>나</div>
-            <div>상대</div>
-
+        <>
+            <PlayerReadyStatus />
+            {/* <PlayerReadyStatus /> */}
             <button onClick={handleClose}>게임 설정</button>
             <button onClick={handleExit}>게임 나가기</button>
-
             {open && (
                 <ModalContainer open={open} handleClose={handleClose}>
                     <>
@@ -54,7 +45,7 @@ const SettingRoomLayout = () => {
                     </>
                 </ModalContainer>
             )}
-        </div>
+        </>
     );
 };
 

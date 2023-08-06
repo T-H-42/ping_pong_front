@@ -1,15 +1,11 @@
-import React, { useState, useCallback, useContext, useEffect } from 'react';
+import React, { useState, useCallback, useContext, useEffect, ChangeEvent } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { SocketContext } from '../../api/SocketContext';
 import { useRecoilValue } from 'recoil';
 import { settingRoomNameState } from '../../api/atoms';
-
-interface ISelectedButtons {
-    score: number;
-    speed: number;
-}
+import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Slider } from '@mui/material';
 
 interface ISettingInformation {
     score: number;
@@ -18,14 +14,8 @@ interface ISettingInformation {
 }
 
 const GameSettingContainer = () => {
-    const { gameSocket } = useContext(SocketContext);
-    const RsettingRoomName = useRecoilValue(settingRoomNameState);
-    const [settingInformation, setSettingInformaiton] = useState<ISettingInformation>({
-        score: 0,
-        speed: 100,
-        roomName: RsettingRoomName,
-    });
     const [modalStatus, setModalStatus] = useState(false);
+
     const style = {
         position: 'absolute',
         top: '50%',
@@ -41,7 +31,7 @@ const GameSettingContainer = () => {
     const settingBox = {
         display: 'flex',
         alignItems: 'center',
-        flexDirection: 'column',
+        flexDirection: 'row',
     };
 
     const buttonContainer = {
@@ -51,18 +41,55 @@ const GameSettingContainer = () => {
         justifyContent: 'space-evenly',
     };
 
-    const handleButtonClick = useCallback((buttonName: number, type: 'score' | 'speed') => {
-        console.log('클릭값', buttonName);
-        console.log('타입', type);
+    const { gameSocket } = useContext(SocketContext);
+    const RsettingRoomName = useRecoilValue(settingRoomNameState);
 
-        if (type === 'score') {
-            setSettingInformaiton((prevSelected) => ({ ...prevSelected, score: buttonName }));
-        }
-        if (type === 'speed') {
-            setSettingInformaiton((prevSelected) => ({ ...prevSelected, speed: buttonName }));
-        }
-    }, []);
+    const [settingInformation, setSettingInformaiton] = useState<ISettingInformation>({
+        score: 5,
+        speed: 100,
+        roomName: RsettingRoomName,
+    });
+    const marks = [
+        {
+            value: 0,
+            label: '0.5',
+        },
+        {
+            value: 33.33,
+            label: '1.0',
+        },
+        {
+            value: 66.66,
+            label: '1.5',
+        },
+        {
+            value: 100,
+            label: '2.0',
+        },
+    ];
+    const handleScoreChange = (event: ChangeEvent<HTMLInputElement>, newScore: string) => {
+        setSettingInformaiton((prev) => ({ ...prev, score: parseInt(newScore, 10) }));
+    };
 
+    const valuetext = (value: number) => {
+        const calculatedValue = (value / 100) * 1.5 + 0.5;
+
+        return `${calculatedValue}°C`;
+    };
+
+    const handleSpeedChange = (event: Event, newValue: number | number[]) => {
+        let newSpeed = ((newValue as number) / 100) * 1.5 + 0.5;
+        if (newSpeed === 1.4999) {
+            newSpeed = 1.5;
+        }
+        if (newSpeed === 0.99995) {
+            newSpeed = 1.0;
+        }
+        setSettingInformaiton((prevSetting) => ({
+            ...prevSetting,
+            speed: newSpeed,
+        }));
+    };
     const submitSelectedOptions = useCallback(() => {
         setSettingInformaiton({
             score: settingInformation.score,
@@ -85,59 +112,52 @@ const GameSettingContainer = () => {
         !modalStatus && (
             <Box sx={style}>
                 <Box sx={settingBox}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                    <Typography id="modal-modal-title" variant="h6">
                         점수 설정
                     </Typography>
                     <Box sx={buttonContainer}>
-                        <Button
-                            variant={settingInformation.score === 3 ? 'contained' : 'outlined'}
-                            onClick={() => handleButtonClick(3, 'score')}
-                        >
-                            3
-                        </Button>
-                        <Button
-                            variant={settingInformation.score === 7 ? 'contained' : 'outlined'}
-                            onClick={() => handleButtonClick(7, 'score')}
-                        >
-                            7
-                        </Button>
-                        <Button
-                            variant={settingInformation.score === 11 ? 'contained' : 'outlined'}
-                            onClick={() => handleButtonClick(11, 'score')}
-                        >
-                            11
-                        </Button>
+                        <FormControl>
+                            <RadioGroup
+                                row
+                                aria-labelledby="demo-row-radio-buttons-group-label"
+                                name="row-radio-buttons-group"
+                                value={settingInformation.score}
+                                onChange={(event, value) => handleScoreChange(event, value)}
+                            >
+                                <FormControlLabel value="3" control={<Radio />} label="3 라운드" />
+                                <FormControlLabel value="7" control={<Radio />} label="7 라운드" />
+                                <FormControlLabel value="11" control={<Radio />} label="11 라운드" />
+                            </RadioGroup>
+                        </FormControl>
                     </Box>
                 </Box>
                 <Box sx={settingBox}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                    <Typography id="modal-modal-title" variant="h6">
                         게임속도 설정
                     </Typography>
                     <Box sx={buttonContainer}>
-                        <Button
-                            variant={settingInformation.speed === 50 ? 'contained' : 'outlined'}
-                            onClick={() => handleButtonClick(50, 'speed')}
-                        >
-                            보통
-                        </Button>
-                        <Button
-                            variant={settingInformation.speed === 100 ? 'contained' : 'outlined'}
-                            onClick={() => handleButtonClick(100, 'speed')}
-                        >
-                            빠르게
-                        </Button>
-                        <Button
-                            variant={settingInformation.speed === 150 ? 'contained' : 'outlined'}
-                            onClick={() => handleButtonClick(150, 'speed')}
-                        >
-                            매우 빠르게
-                        </Button>
+                        <Box sx={{ width: 300 }}>
+                            <Slider
+                                aria-label="Custom marks"
+                                defaultValue={33.33}
+                                value={(settingInformation.speed - 0.5) * (100 / 1.5)}
+                                onChange={handleSpeedChange}
+                                getAriaValueText={valuetext}
+                                step={null}
+                                marks={marks}
+                            />
+                        </Box>
                     </Box>
                 </Box>
-                <Box sx={settingBox}>
-                    <Button variant="contained" onClick={submitSelectedOptions}>
-                        설정하기
-                    </Button>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Box>
+                        <Button sx={{ marginRight: '12px' }} onClick={submitSelectedOptions}>
+                            취소
+                        </Button>
+                        <Button variant="contained" onClick={submitSelectedOptions}>
+                            확인
+                        </Button>
+                    </Box>
                 </Box>
             </Box>
         )
