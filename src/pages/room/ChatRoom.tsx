@@ -1,20 +1,22 @@
 import React, { useEffect, useState, useRef, useCallback, useContext } from 'react';
-import {} from 'react-router-dom';
-import {} from '../../api/atoms';
+import { } from 'react-router-dom';
+import { } from '../../api/atoms';
 import { useSearchParams, useNavigate, Navigate } from 'react-router-dom';
 import { roomNameState } from '../../api/atoms';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
-// import { createChatSocket } from '../api/socket';
 import { SocketContext } from '../../api/SocketContext';
 
-const ChatRoom = () => {
+import ModalExample from '../../components/ModalExample';
+
+const ChatRoom: React.FC = () => {
+    const { chatSocket } = useContext(SocketContext);
+    const [open, setOpen] = useState(false);
     const [chats, setChats] = useState([]);
     const [message, setMessage] = useState('');
     const chatContainerEl = useRef(null);
     const RroomName = useRecoilValue(roomNameState);
-    const { chatSocket } = useContext(SocketContext);
     const navigate = useNavigate();
-    console.log('chats', chats);
+
     useEffect(() => {
         if (!chatContainerEl.current) return;
 
@@ -28,34 +30,31 @@ const ChatRoom = () => {
 
     useEffect(() => {
         const messageHandler = (chat) => {
+            console.log('ft_message: ', chat);
             setChats((prevChats) => [...prevChats, chat]);
         };
+
         chatSocket.on('ft_message', messageHandler);
+
         return () => {
             console.log('message off');
             chatSocket.off('ft_message', messageHandler);
         };
     }, []);
 
-    const onChange = useCallback(
-        (e) => {
-            setMessage(e.target.value);
-        },
-        [message],
-    );
+    const onChange = useCallback((e) => {
+        setMessage(e.target.value);
+    }, [message]);
 
-    const onSendMessage = useCallback(
-        async (e) => {
-            e.preventDefault();
-            if (message === '') return alert('메시지를 입력해 주세요.');
-            console.log('send message');
-            await chatSocket.emit('ft_message', { message, roomName: RroomName }, (chat) => {
-                setChats((prevChats) => [...prevChats, chat]);
-                setMessage('');
-            });
-        },
-        [message, RroomName],
-    );
+    const onSendMessage = useCallback(async (e) => {
+        e.preventDefault();
+        if (message === '') return alert('메시지를 입력해 주세요.');
+
+        await chatSocket.emit('ft_message', { message, roomName: RroomName }, (chat) => {
+            setChats((prevChats) => [...prevChats, chat]);
+            setMessage('');
+        });
+    }, [message, RroomName]);
 
     const onLeaveRoom = useCallback(() => {
         chatSocket.emit('leave-room', RroomName, () => {
@@ -63,17 +62,21 @@ const ChatRoom = () => {
         });
     }, [navigate, RroomName]);
 
-    // 뒤로가기
-    // useEffect(() => {
-    //     return () => {
-    //         onLeaveRoom()
-    //     }
-    // }, [onLeaveRoom])
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     return (
         <>
             <div>
                 <h2>채팅방 이름 : {RroomName}</h2>
+                <button onClick={handleOpen}>채팅방 정보</button>
+                <ModalExample isOpen={open} onClose={handleClose} title={'채팅방 정보'} message={'.'} />
+                <h2 />
                 <div ref={chatContainerEl}>
                     {chats.map((chat, index) => (
                         <div key={index}>

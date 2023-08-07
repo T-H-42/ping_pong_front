@@ -79,7 +79,9 @@ module.exports = {
         'no-shadow': 'off', // Disable no-shadow rule
         'arrow-body-style': 'off',
         'no-undef': 'off',
+        'max-len': 'off',
         'no-unused-vars': 'warn',
+        'no-multiple-empty-lines': 'off',
         camelcase: 'off',
         block: 'off',
         'no-param-reassign': 'off',

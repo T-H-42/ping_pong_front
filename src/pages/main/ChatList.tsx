@@ -36,11 +36,14 @@ const ChatList = () => {
         (roomName: string) => () => {
             RsetRoomName(roomName);
             chatSocket.emit('join-room', roomName, (response: any) => {
-                navigate(`/room/${roomName}`);
+                if (response.success) {
+                    navigate(`/room/${roomName}`);
+                }
             });
         },
         [navigate],
     );
+
     useEffect(() => {
         const roomListHandler = (rooms: any) => {
             setRooms(rooms);

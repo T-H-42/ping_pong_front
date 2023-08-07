@@ -35,6 +35,10 @@ export const roomNameState = atom<string>({
     default: '',
 });
 
+export const dmNameState = atom<string>({
+    key: 'dmNameState'
+});
+
 export const settingRoomNameState = atom<string>({
     key: 'settingRoomNameState',
     default: '',

@@ -3,6 +3,7 @@ import { getJwtCookie } from '../../api/cookies';
 import axios from 'axios';
 import ChatList from './ChatList';
 import FriendList from './FriendList';
+import DMList from './DMList';
 import LogOutButton from '../../components/LogOutButton';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { IFriendsState, usernameState, friendsState } from '../../api/atoms';
@@ -10,9 +11,12 @@ import { SocketContext } from '../../api/SocketContext';
 import GameStartButton from './GameStartButton';
 
 const Main = () => {
+    console.log('메인 컴포넌트');
     const { pingpongSocket, chatSocket } = useContext(SocketContext);
     const username: any = useRecoilValue(usernameState);
     const [friends, setFriends] = useRecoilState<IFriendsState[]>(friendsState);
+
+    const [dmName, setDMName] = useState<any>();
 
     useEffect(() => {
         axios
@@ -75,7 +79,9 @@ const Main = () => {
             <h1> {localStorage.getItem('username')}의 메인 페이지</h1>
             {chatSocket ? <ChatList /> : null}
             <div style={{ margin: '30px 0' }} />
-            {friends ? <FriendList /> : null}
+            {friends ? <FriendList dmName={dmName} setDMName={setDMName} /> : null}
+            <div style={{ margin: '30px 0' }} />
+            <DMList dmName={dmName}/>
         </div>
     );
 };
