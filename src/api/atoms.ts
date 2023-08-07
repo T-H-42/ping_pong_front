@@ -36,7 +36,7 @@ export const roomNameState = atom<string>({
 });
 
 export const dmNameState = atom<string>({
-    key: 'dmNameState'
+    key: 'dmNameState',
 });
 
 export const settingRoomNameState = atom<string>({
