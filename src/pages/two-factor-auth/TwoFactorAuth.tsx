@@ -30,12 +30,12 @@ const TwoFactorAuth = () => {
             .then((res) => {
                 console.log('/user/certificate 요청 성공');
                 console.log(`또끈2: ${getJwtCookie('jwt')}`);
-                console.log(res);
-
+                console.log('서버의 값', res.data);
                 pingpongSocket.auth = { token: `${getJwtCookie('jwt')}` };
                 pingpongSocket.connect();
                 chatSocket.auth = { token: `${getJwtCookie('jwt')}` };
                 chatSocket.connect();
+                // if() {}
 
                 navigate('/main');
             })
