@@ -1,8 +1,11 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getJwtCookie } from '../../api/cookies';
 
 const Login = () => {
+    type childrenModal = {
+        children: React.ReactNode;
+    };
     console.log('로그인 컴포넌트');
     const navigate = useNavigate();
 

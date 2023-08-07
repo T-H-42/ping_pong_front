@@ -83,6 +83,7 @@ module.exports = {
         'no-unused-vars': 'warn',
         'no-multiple-empty-lines': 'off',
         camelcase: 'off',
+        block: 'off',
     },
     settings: {
         'import/resolver': {
