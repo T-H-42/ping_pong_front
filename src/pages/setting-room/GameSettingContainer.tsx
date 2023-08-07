@@ -13,7 +13,7 @@ interface ISettingInformation {
     roomName: string;
 }
 
-const GameSettingContainer = () => {
+const GameSettingContainer = ({ open, handleClose }) => {
     const [modalStatus, setModalStatus] = useState(false);
 
     const style = {
@@ -104,7 +104,9 @@ const GameSettingContainer = () => {
             console.log('게임 성공!', response.success);
         });
         setModalStatus(true);
+        open = false;
     }, [settingInformation.roomName, settingInformation.score, settingInformation.speed]);
+
     useEffect(() => {
         console.log('object being modified', settingInformation);
     }, [settingInformation]);

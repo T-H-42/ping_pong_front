@@ -41,7 +41,7 @@ const SettingRoomLayout = () => {
             {open && (
                 <ModalContainer open={open} handleClose={handleClose}>
                     <>
-                        <GameSettingContainer />
+                        <GameSettingContainer open={open} handleClose={handleClose} />
                     </>
                 </ModalContainer>
             )}
