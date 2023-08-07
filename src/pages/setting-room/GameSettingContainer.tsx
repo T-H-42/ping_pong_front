@@ -98,18 +98,14 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
         });
         gameSocket.emit('ft_game_setting', settingInformation, (response: any) => {
             if (!response.success) return alert(response.payload);
+            console.log('게임 설정 요청', response);
         });
-        gameSocket.on('ft_game_setting_success', (response: any) => {
-            if (!response.success) return alert(response.payload);
-            console.log('게임 성공!', response.success);
-        });
+        console.log('게임 설정 로그');
+
         setModalStatus(true);
         handleClose();
     }, [settingInformation.roomName, settingInformation.score, settingInformation.speed]);
 
-    useEffect(() => {
-        console.log('object being modified', settingInformation);
-    }, [settingInformation]);
     return (
         !modalStatus && (
             <Box sx={style}>

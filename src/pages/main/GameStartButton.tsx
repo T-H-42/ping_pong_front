@@ -15,24 +15,15 @@ const GameStartButton = () => {
         console.log('게임 소켓', gameSocket);
 
         setInitGameState((prev) => !prev);
-        // if (initialGameState) {
         gameSocket.emit('ft_enter_match_queue', (response: any) => {
             if (!response.success) return alert(`ft_enter_match_queue : ${response.payload}`);
-            // console.log('받은 res ', response);
-            // navigate(`/setting-room/${response.payload}`);
         });
         gameSocket.on('ft_match_success', (response: any) => {
             if (!response.success) return alert(`ft__match_success : ${response.payload}`);
-            console.log('받은 res ', response);
+            console.log('매치 성공 후 받은 res ', response);
             RsetSettingRoomName(response.roomName);
             navigate(`/setting-room/${response.roomName}`);
         });
-        // } else {
-        //     gameSocket.emit('ft_exit_match_queue', (response: any) => {
-        //         if (!response.success) return alert(response.payload);
-        //         console.log('받은 res ', response);
-        //     });
-        // }
     }, [navigate]);
 
     return <button onClick={onGameStart}>{initialGameState ? '매칭 중...' : '게임 시작'}</button>;

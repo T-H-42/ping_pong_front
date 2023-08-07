@@ -26,7 +26,6 @@ const FriendList = ({ dmName, setDMName }) => {
         chatSocket.on('ft_dm', messageHandler);
 
         return () => {
-            console.log('ft_dm off');
             chatSocket.off('ft_dm', messageHandler);
         };
     }, []);

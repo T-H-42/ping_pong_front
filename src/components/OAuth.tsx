@@ -29,7 +29,7 @@ const OAuth = () => {
             )
             .then((response) => {
                 // console.log('/user/signin 요청 성공');
-                // document.cookie = `jwt=${response.data.accessToken};  path=/`;
+                document.cookie = `jwt=${response.data.accessToken};  path=/`;
                 // console.log(`또끈: ${getJwtCookie('jwt')}`);
                 console.log('response.data: ', response.data);
                 localStorage.setItem('username', response.data.username);
@@ -42,6 +42,8 @@ const OAuth = () => {
                     pingpongSocket.connect();
                     chatSocket.auth = { token: `${getJwtCookie('jwt')}` };
                     chatSocket.connect();
+                    gameSocket.auth = { token: `${getJwtCookie('jwt')}` };
+                    gameSocket.connect();
                 }
                 setTwoFactorAuthentication(response.data.two_factor_authentication_status);
                 setError(false);

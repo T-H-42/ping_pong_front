@@ -28,7 +28,7 @@ const queryClient = new QueryClient({
 
 function App() {
     console.log('앱콜');
-    
+
     const pingpongSocket = createPingpongSocket();
     const chatSocket = createChatSocket();
     const gameSocket = createGameSocket();
@@ -38,8 +38,8 @@ function App() {
         pingpongSocket.connect();
         chatSocket.auth = { token: `${getJwtCookie('jwt')}` };
         chatSocket.connect();
-        // gameSocket.auth = { token: `${getJwtCookie('jwt')}` };
-        // gameSocket.connect();
+        gameSocket.auth = { token: `${getJwtCookie('jwt')}` };
+        gameSocket.connect();
     }
 
     return (

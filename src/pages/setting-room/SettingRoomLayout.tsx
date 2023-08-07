@@ -32,22 +32,51 @@ const SettingRoomLayout = () => {
     const handleClose = () => {
         setOpen((prevOpen) => !prevOpen);
     };
+
     const handleExit = () => {
-        console.log('나갑니다 ~');
-        console.log('아니야', RsettingRoomName);
-
         gameSocket.emit('ft_leave_setting_room', RsettingRoomName, (response: any) => {
-            if (!response.success) return alert(response.payload);
-            console.log('리브 세팅룸', response);
+            if (!response.success) return alert(`여긴 리브 요청 ${response.payload}`);
         });
-
-        gameSocket.on('ft_enemy_leave_setting_room', (response: any) => {
-            if (!response.success) return alert(response.payload);
-            console.log('적이 나갔습니다', response);
-
-            navigate('/');
-        });
+        navigate('/');
     };
+    useEffect(() => {
+        const handleEnemyLeaveSettingRoom = (response) => {
+            if (!response) return alert(`${response}`);
+            navigate('/');
+            alert(`${response.username}님이 나갔습니다.`);
+        };
+
+        gameSocket.on('ft_enemy_leave_setting_room', handleEnemyLeaveSettingRoom);
+
+        return () => {
+            gameSocket.off('ft_enemy_leave_setting_room', handleEnemyLeaveSettingRoom);
+        };
+    }, [gameSocket, navigate]);
+    useEffect(() => {
+        const handleGameSettingSuccess = (response: any) => {
+            if (!response.success) return alert(response.payload);
+        };
+
+        gameSocket.on('ft_game_setting_success', handleGameSettingSuccess);
+        console.log('게임 설정끝 로그');
+
+        return () => {
+            gameSocket.off('ft_game_setting_success', handleGameSettingSuccess);
+        };
+    }, [gameSocket]);
+
+    useEffect(() => {
+        const handleInitSuccess = (response: any) => {
+            if (!response.success) return alert(response.payload);
+            navigate(`/game-room/${RsettingRoomName}`);
+        };
+
+        gameSocket.on('ft_game_start', handleInitSuccess);
+        console.log('@@@@@@@@게임 시작@@@@@@@@');
+        return () => {
+            gameSocket.off('ft_game_start', handleInitSuccess);
+        };
+    }, [gameSocket]);
     return (
         <>
             {onReady ? (
@@ -75,9 +104,9 @@ const SettingRoomLayout = () => {
                         settingInformation={settingInformation}
                     />
                     {/* <PlayerReadyStatus
-                        handleBackdropOpen={handleBackdropOpen}
-                        backdrop={backdrop}
-                        setBackdrop={setBackdrop}
+                        // handleBackdropOpen={handleBackdropOpen}
+                        // backdrop={backdrop}
+                        // setBackdrop={setBackdrop}
                         onReady={onReady}
                         setOnReady={setOnReady}
                         settingInformation={settingInformation}
@@ -119,9 +148,9 @@ const SettingRoomLayout = () => {
                         settingInformation={settingInformation}
                     />
                     {/* <PlayerReadyStatus
-                        handleBackdropOpen={handleBackdropOpen}
-                        backdrop={backdrop}
-                        setBackdrop={setBackdrop}
+                        // handleBackdropOpen={handleBackdropOpen}
+                        // backdrop={backdrop}
+                        // setBackdrop={setBackdrop}
                         onReady={onReady}
                         setOnReady={setOnReady}
                         settingInformation={settingInformation}
