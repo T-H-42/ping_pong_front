@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback, useContext } from 'react';
-import { } from 'react-router-dom';
-import { } from '../../api/atoms';
+import {} from 'react-router-dom';
+import {} from '../../api/atoms';
 import { useSearchParams, useNavigate, Navigate } from 'react-router-dom';
 import { dmNameState } from '../../api/atoms';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
@@ -40,21 +40,26 @@ const DMRoom = () => {
         };
     }, []);
 
-    const onChange = useCallback((e) => {
-        setMessage(e.target.value);
-    }, [message]);
+    const onChange = useCallback(
+        (e) => {
+            setMessage(e.target.value);
+        },
+        [message],
+    );
 
-    const onSendMessage = useCallback(async (e) => {
-        e.preventDefault();
+    const onSendMessage = useCallback(
+        async (e) => {
+            e.preventDefault();
 
-        if (message === '') return alert('메시지를 입력해 주세요.');
+            if (message === '') return alert('메시지를 입력해 주세요.');
 
-        await chatSocket.emit('ft_dm', { roomName: index, message, receiver }, (chat) => {
-            setChats((prevChats) => [...prevChats, chat]);
-            setMessage('');
-        });
-    }, [index, message]);
-
+            await chatSocket.emit('ft_dm', { roomName: index, message, receiver }, (chat) => {
+                setChats((prevChats) => [...prevChats, chat]);
+                setMessage('');
+            });
+        },
+        [index, message],
+    );
 
     const onLeaveRoom = useCallback(() => {
         console.log('@@@@@@@@@@@');
@@ -81,13 +86,15 @@ const DMRoom = () => {
     }, []);
 
     return (
-        <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '100vh',
-        }}>
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100vh',
+            }}
+        >
             <h2>{receiver}님과의 DM</h2>
             <div ref={chatContainerEl}>
                 {chats.map((chat, index) => (
@@ -110,7 +117,6 @@ const DMRoom = () => {
                 </div>
             </div>
         </div>
-
     );
 };
 

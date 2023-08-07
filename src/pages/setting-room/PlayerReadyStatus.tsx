@@ -1,9 +1,43 @@
-import { Box, Button, Container, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import { Backdrop, Box, Button, Container, Typography } from '@mui/material';
+import { SocketContext } from '../../api/SocketContext';
+import React, { useContext, useState } from 'react';
+import { useRecoilValue } from 'recoil';
+import { settingRoomNameState } from '../../api/atoms';
 
-const PlayerReadyStatus = ({ onReady, setOnReady }) => {
+const PlayerReadyStatus = ({ onReady, setOnReady, settingInformation }) => {
+    const { gameSocket } = useContext(SocketContext);
+    const RsettingRoomName = useRecoilValue(settingRoomNameState);
+
+    const [backdrop, setBackdrop] = useState(false);
+    const handleBackdropClose = () => {
+        console.log('clied');
+
+        setBackdrop(false);
+    };
+    const handleBackdropOpen = () => {
+        setBackdrop(true);
+    };
     const onReadyToggle = () => {
         setOnReady((prev) => !prev);
+        if (onReady === true) {
+            // setBackdrop(true);
+            handleBackdropOpen();
+            console.log('준비 버튼 안 취소', backdrop);
+            gameSocket.emit('ft_leave_setting_room', RsettingRoomName, (response: any) => {
+                if (!response.success) return alert(response.payload);
+                console.log('게임 준비 취소 완료', response);
+            });
+            console.log('게임 취소');
+        } else {
+            setBackdrop(false);
+            console.log('준비 버튼 준비', backdrop);
+
+            gameSocket.emit('ft_game_setting', settingInformation, (response: any) => {
+                if (!response.success) return alert(response.payload);
+                console.log('게임 준비 완료', response);
+            });
+            console.log('게임 준비 완료');
+        }
     };
     return (
         <Container
@@ -16,6 +50,19 @@ const PlayerReadyStatus = ({ onReady, setOnReady }) => {
                 alignItems: 'center',
             }}
         >
+            {onReady && (
+                <div>
+                    <Button onClick={handleBackdropOpen}>Show backdrop</Button>
+
+                    <Backdrop
+                        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                        open={backdrop}
+                        onClick={handleBackdropClose}
+                    >
+                        <div>Ready</div>
+                    </Backdrop>
+                </div>
+            )}
             <Box
                 sx={{
                     width: '100%',

@@ -31,21 +31,24 @@ const FriendList = ({ dmName, setDMName }) => {
         };
     }, []);
 
-    const onJoinDM = useCallback((username: any, status: number) => () => {
-        if (status === 0) {
-            alert(`${username}님이 오프라인 상태입니다.`);
-        } else if (status === 1) {
-            chatSocket.emit('join-dm', username, (response: any) => {
-                if (response.success) {
-                    localStorage.setItem('dm-username', username);
-                    localStorage.setItem('dm-index', response.index);
-                    navigate(`/dm/${response.index}`);
-                }
-            });
-        } else if (status === 2) {
-            alert(`${username}님이 게임 중입니다.`);
-        }
-    }, [navigate]);
+    const onJoinDM = useCallback(
+        (username: any, status: number) => () => {
+            if (status === 0) {
+                alert(`${username}님이 오프라인 상태입니다.`);
+            } else if (status === 1) {
+                chatSocket.emit('join-dm', username, (response: any) => {
+                    if (response.success) {
+                        localStorage.setItem('dm-username', username);
+                        localStorage.setItem('dm-index', response.index);
+                        navigate(`/dm/${response.index}`);
+                    }
+                });
+            } else if (status === 2) {
+                alert(`${username}님이 게임 중입니다.`);
+            }
+        },
+        [navigate],
+    );
 
     return (
         <div style={{ border: '1px solid #000', padding: '10px' }}>
@@ -53,7 +56,14 @@ const FriendList = ({ dmName, setDMName }) => {
             <ul style={{ textAlign: 'left' }}>
                 {friends.map((friend: any) => (
                     <div key={friend.f_id}>
-                        <li style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '5px' }}>
+                        <li
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                padding: '5px',
+                            }}
+                        >
                             {friend.status ? (
                                 <div style={{ alignItems: 'center' }}>
                                     <button
@@ -78,16 +88,16 @@ const FriendList = ({ dmName, setDMName }) => {
                             )}{' '}
                             {friend.username}
                             <div>
-                                {
-                                    newDM && friend.username === sender ? <button
+                                {newDM && friend.username === sender ? (
+                                    <button
                                         style={{
                                             width: '15px',
                                             height: '15px',
                                             borderRadius: '50%',
                                             backgroundColor: 'yellow',
                                         }}
-                                    ></button> : null
-                                }
+                                    ></button>
+                                ) : null}
                                 <button onClick={onJoinDM(friend.username, friend.status)}>DM</button>
                             </div>
                         </li>

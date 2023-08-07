@@ -7,13 +7,13 @@ import { useRecoilValue } from 'recoil';
 import { settingRoomNameState } from '../../api/atoms';
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Slider } from '@mui/material';
 
-interface ISettingInformation {
-    score: number;
-    speed: number;
-    roomName: string;
-}
+// interface ISettingInformation {
+//     score: number;
+//     speed: number;
+//     roomName: string;
+// }
 
-const GameSettingContainer = ({ open, handleClose }) => {
+const GameSettingContainer = ({ open, handleClose, settingInformation, setSettingInformaiton }) => {
     const [modalStatus, setModalStatus] = useState(false);
 
     const style = {
@@ -44,11 +44,11 @@ const GameSettingContainer = ({ open, handleClose }) => {
     const { gameSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
 
-    const [settingInformation, setSettingInformaiton] = useState<ISettingInformation>({
-        score: 5,
-        speed: 100,
-        roomName: RsettingRoomName,
-    });
+    // const [settingInformation, setSettingInformaiton] = useState<ISettingInformation>({
+    //     score: 5,
+    //     speed: 100,
+    //     roomName: RsettingRoomName,
+    // });
     const marks = [
         {
             value: 0,

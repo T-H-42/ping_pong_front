@@ -14,7 +14,7 @@ const OAuth = () => {
     const [twoFactor, setTwoFactorAuthentication] = useState(false);
     const [error, setError] = useState(false);
 
-    const { pingpongSocket, chatSocket } = useContext(SocketContext);
+    const { pingpongSocket, chatSocket, gameSocket } = useContext(SocketContext);
 
     useEffect(() => {
         setLoading(true);
@@ -38,6 +38,8 @@ const OAuth = () => {
                 pingpongSocket.connect();
                 chatSocket.auth = { token: `${getJwtCookie('jwt')}` };
                 chatSocket.connect();
+                gameSocket.auth = { token: `${getJwtCookie('jwt')}` };
+                gameSocket.connect();
 
                 setTwoFactorAuthentication(response.data.two_factor_authentication_status);
 

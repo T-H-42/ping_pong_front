@@ -85,12 +85,8 @@ const DMList = ({ dmName }) => {
                     {DMList.map((i: any, index: any) => (
                         <tr key={index}>
                             <td>{i.username}</td>
-                            <td>
-                                {/* <button onClick={onJoinDM(i)}>입장</button> */}
-                            </td>
-                            <td>
-                                {/* <button onClick={onLeaveRoom(index)}>X</button> */}
-                            </td>
+                            <td>{/* <button onClick={onJoinDM(i)}>입장</button> */}</td>
+                            <td>{/* <button onClick={onLeaveRoom(index)}>X</button> */}</td>
                         </tr>
                     ))}
                 </tbody>
