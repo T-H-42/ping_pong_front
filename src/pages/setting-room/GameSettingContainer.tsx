@@ -104,7 +104,7 @@ const GameSettingContainer = ({ open, handleClose }) => {
             console.log('게임 성공!', response.success);
         });
         setModalStatus(true);
-        open = false;
+        handleClose();
     }, [settingInformation.roomName, settingInformation.score, settingInformation.speed]);
 
     useEffect(() => {
