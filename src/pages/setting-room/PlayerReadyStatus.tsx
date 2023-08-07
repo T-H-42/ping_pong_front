@@ -1,7 +1,10 @@
 import { Box, Button, Container, Typography } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 
-const PlayerReadyStatus = () => {
+const PlayerReadyStatus = ({ onReady, setOnReady }) => {
+    const onReadyToggle = () => {
+        setOnReady((prev) => !prev);
+    };
     return (
         <Container
             sx={{
@@ -31,7 +34,15 @@ const PlayerReadyStatus = () => {
                         />
                         <Typography variant="h6">김핑퐁</Typography>
                     </Box>
-                    <Button variant="contained">준비</Button>
+                    <Button
+                        variant="contained"
+                        onClick={onReadyToggle}
+                        style={{
+                            backgroundColor: onReady ? '' : 'lightgray', // 대기중일 때 색상 제거
+                        }}
+                    >
+                        {onReady ? '대기중' : '준비'}
+                    </Button>
                 </Box>
                 <Box
                     sx={{
@@ -61,6 +72,7 @@ const PlayerReadyStatus = () => {
                         width: '100%',
                         height: '15%',
                         display: 'flex',
+                        alignItems: 'center',
                         justifyContent: 'space-between',
                         backgroundColor: 'lightgray',
                     }}
@@ -68,17 +80,37 @@ const PlayerReadyStatus = () => {
                     <Box
                         sx={{
                             width: '80%',
-                            height: '90%',
+                            height: '100%',
                             margin: '0 auto',
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'center',
                         }}
                     >
-                        <Typography variant="h6">업적</Typography>
-                        <Box sx={{ display: 'flex' }}>
-                            <p>수다의 신</p>
-                            <p>장사의 신</p>
+                        <Typography variant="h6" sx={{ width: '20%' }}>
+                            업적
+                        </Typography>
+                        <Box sx={{ display: 'flex', width: '30%', height: '100%' }}>
+                            <Box
+                                sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}
+                            >
+                                <img
+                                    src="https://www.gravatar.com/avatar/HASH"
+                                    alt="user_image"
+                                    style={{ width: '30%', borderRadius: '50%', marginTop: '5px' }}
+                                />
+                                <p>수다의 신</p>
+                            </Box>
+                            <Box
+                                sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}
+                            >
+                                <img
+                                    src="https://www.gravatar.com/avatar/HASH"
+                                    alt="user_image"
+                                    style={{ width: '30%', borderRadius: '50%', marginTop: '5px' }}
+                                />
+                                <p>장사의 신</p>
+                            </Box>
                         </Box>
                     </Box>
                 </Box>

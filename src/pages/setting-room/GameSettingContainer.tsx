@@ -114,9 +114,7 @@ const GameSettingContainer = ({ open, handleClose }) => {
         !modalStatus && (
             <Box sx={style}>
                 <Box sx={settingBox}>
-                    <Typography id="modal-modal-title" variant="h6">
-                        점수 설정
-                    </Typography>
+                    <p id="modal-modal-title">점수 설정</p>
                     <Box sx={buttonContainer}>
                         <FormControl>
                             <RadioGroup
@@ -134,9 +132,7 @@ const GameSettingContainer = ({ open, handleClose }) => {
                     </Box>
                 </Box>
                 <Box sx={settingBox}>
-                    <Typography id="modal-modal-title" variant="h6">
-                        게임속도 설정
-                    </Typography>
+                    <Typography id="modal-modal-title">게임속도 설정</Typography>
                     <Box sx={buttonContainer}>
                         <Box sx={{ width: 300 }}>
                             <Slider

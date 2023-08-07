@@ -9,10 +9,14 @@ import PlayerReadyStatus from './PlayerReadyStatus';
 
 const SettingRoomLayout = () => {
     const [open, setOpen] = useState(false);
+    const [onReady, setOnReady] = useState(false);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     const { gameSocket } = useContext(SocketContext);
     const navigate = useNavigate();
 
+    const onReadyToggle = () => {
+        setOnReady((prev) => !prev);
+    };
     const handleClose = () => {
         setOpen((prevOpen) => !prevOpen);
     };
@@ -34,16 +38,43 @@ const SettingRoomLayout = () => {
     };
     return (
         <>
-            <PlayerReadyStatus />
-            {/* <PlayerReadyStatus /> */}
-            <button onClick={handleClose}>게임 설정</button>
-            <button onClick={handleExit}>게임 나가기</button>
-            {open && (
-                <ModalContainer open={open} handleClose={handleClose}>
-                    <>
-                        <GameSettingContainer open={open} handleClose={handleClose} />
-                    </>
-                </ModalContainer>
+            {onReady ? (
+                <>
+                    <div>백그라운드</div>
+                    <ModalContainer open={open} handleClose={handleClose}>
+                        <>{/* <GameSettingContainer open={open} handleClose={handleClose} /> */}</>
+                    </ModalContainer>
+                    <PlayerReadyStatus onReady={onReady} setOnReady={setOnReady} />
+                    {/* <PlayerReadyStatus /> */}
+                    <button onClick={handleClose}>게임 설정</button>
+                    <button onClick={handleExit}>게임 나가기</button>
+                    {open && (
+                        <ModalContainer open={open} handleClose={handleClose}>
+                            <>
+                                <GameSettingContainer open={open} handleClose={handleClose} />
+                            </>
+                        </ModalContainer>
+                    )}
+                </>
+            ) : (
+                <>
+                    <ModalContainer open={open} handleClose={handleClose}>
+                        <>
+                            <GameSettingContainer open={open} handleClose={handleClose} />
+                        </>
+                    </ModalContainer>
+                    <PlayerReadyStatus onReady={onReady} setOnReady={setOnReady} />
+                    {/* <PlayerReadyStatus /> */}
+                    <button onClick={handleClose}>게임 설정</button>
+                    <button onClick={handleExit}>게임 나가기</button>
+                    {open && (
+                        <ModalContainer open={open} handleClose={handleClose}>
+                            <>
+                                <GameSettingContainer open={open} handleClose={handleClose} />
+                            </>
+                        </ModalContainer>
+                    )}
+                </>
             )}
         </>
     );
