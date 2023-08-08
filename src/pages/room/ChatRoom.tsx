@@ -14,7 +14,7 @@ const ChatRoom: React.FC = () => {
     const [chats, setChats] = useState([]);
     const [message, setMessage] = useState('');
     const chatContainerEl = useRef(null);
-    const RroomName = useRecoilValue(roomNameState);
+    const roomName = localStorage.getItem('room-name');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -50,17 +50,17 @@ const ChatRoom: React.FC = () => {
         e.preventDefault();
         if (message === '') return alert('메시지를 입력해 주세요.');
 
-        await chatSocket.emit('ft_message', { message, roomName: RroomName }, (chat) => {
+        await chatSocket.emit('ft_message', { message, roomName }, (chat) => {
             setChats((prevChats) => [...prevChats, chat]);
             setMessage('');
         });
-    }, [message, RroomName]);
+    }, [message, roomName]);
 
     const onLeaveRoom = useCallback(() => {
-        chatSocket.emit('leave-room', RroomName, () => {
+        chatSocket.emit('leave-room', roomName, () => {
             navigate('/main');
         });
-    }, [navigate, RroomName]);
+    }, [navigate, roomName]);
 
     const handleOpen = () => {
         setOpen(true);
@@ -73,7 +73,7 @@ const ChatRoom: React.FC = () => {
     return (
         <>
             <div>
-                <h2>채팅방 이름 : {RroomName}</h2>
+                <h2>채팅방 이름 : {roomName}</h2>
                 <button onClick={handleOpen}>채팅방 정보</button>
                 <ModalExample isOpen={open} onClose={handleClose} title={'채팅방 정보'} message={'.'} />
                 <h2 />
