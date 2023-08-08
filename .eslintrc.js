@@ -41,7 +41,7 @@
 // }
 module.exports = {
     // parser: '@typescript-eslint/parser',
-    plugins: ['prettier'],
+    plugins: ['prettier', 'react', 'react-hooks'],
     extends: ['airbnb-base'],
 
     rules: {
@@ -85,6 +85,8 @@ module.exports = {
         camelcase: 'off',
         block: 'off',
         'no-param-reassign': 'off',
+        'react-hooks/rules-of-hooks': 'error', // 회피할 수 없는 훅 규칙을 감지합니다.
+        'react-hooks/exhaustive-deps': 'warn', // 누락된 의존성에 대하 경고합니다.
     },
     settings: {
         'import/resolver': {

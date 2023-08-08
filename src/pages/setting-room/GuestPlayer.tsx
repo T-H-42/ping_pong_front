@@ -1,10 +1,11 @@
 import { Backdrop, Box, Button, Container, Typography } from '@mui/material';
 import React from 'react';
 
-const GuestPlayer = ({ onReady, handleBackdropOpen, handleBackdropClose, onReadyToggle, backdrop }) => {
+const GuestPlayer = ({ onReady, handleBackdropClose, onReadyToggle, backdrop }) => {
     return (
         <Container
             sx={{
+                position: 'relative', // 추가된 스타일
                 width: '60vw',
                 height: '50vh',
                 backgroundColor: 'darkgray',
@@ -13,19 +14,6 @@ const GuestPlayer = ({ onReady, handleBackdropOpen, handleBackdropClose, onReady
                 alignItems: 'center',
             }}
         >
-            {onReady && (
-                <div>
-                    <Button onClick={handleBackdropOpen}>Show backdrop</Button>
-
-                    <Backdrop
-                        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                        open={backdrop}
-                        onClick={handleBackdropClose}
-                    >
-                        <div>Ready</div>
-                    </Backdrop>
-                </div>
-            )}
             <Box
                 sx={{
                     width: '100%',
@@ -35,6 +23,23 @@ const GuestPlayer = ({ onReady, handleBackdropOpen, handleBackdropClose, onReady
                     justifyContent: 'space-between',
                 }}
             >
+                {backdrop && (
+                    <Backdrop
+                        sx={{
+                            position: 'absolute', // 추가된 스타일
+                            top: 0, // 추가된 스타일
+                            left: 0, // 추가된 스타일
+                            width: '100%', // 수정된 스타일
+                            height: '100%', // 수정된 스타일
+                            color: '#fff',
+                            zIndex: (theme) => theme.zIndex.drawer + 1,
+                        }}
+                        open={backdrop}
+                        onClick={handleBackdropClose}
+                    >
+                        <div>Ready</div>
+                    </Backdrop>
+                )}
                 <Box sx={{ width: '100%', height: '15%', justifyContent: 'space-between', display: 'flex' }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '15%', alignItems: 'center' }}>
                         <img

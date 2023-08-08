@@ -1,6 +1,6 @@
 import ModalContainer from '../../components/ModalContainer';
 import React, { useContext, useEffect, useState } from 'react';
-import GameSettingContainer from '../../pages/setting-room/GameSettingContainer';
+import GameSettingContainer from './GameSettingContainer';
 import { SocketContext } from '../../api/SocketContext';
 import { useRecoilValue } from 'recoil';
 import { settingRoomNameState } from '../../api/atoms';
@@ -58,7 +58,6 @@ const SettingRoomLayout = () => {
         };
 
         gameSocket.on('ft_game_setting_success', handleGameSettingSuccess);
-        console.log('게임 설정끝 로그');
 
         return () => {
             gameSocket.off('ft_game_setting_success', handleGameSettingSuccess);
@@ -72,7 +71,6 @@ const SettingRoomLayout = () => {
         };
 
         gameSocket.on('ft_game_start', handleInitSuccess);
-        console.log('@@@@@@@@게임 시작@@@@@@@@');
         return () => {
             gameSocket.off('ft_game_start', handleInitSuccess);
         };
@@ -81,37 +79,14 @@ const SettingRoomLayout = () => {
         <>
             {onReady ? (
                 <>
-                    {/* <div>
-                        <Button onClick={handleBackdropOpen}>Show backdrop</Button>
-
-                        <Backdrop
-                            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                            open={backdrop}
-                            onClick={handleBackdropClose}
-                        >
-                            <div>Ready</div>
-                        </Backdrop>
-                    </div> */}
                     <ModalContainer open={open} handleClose={handleClose}>
                         <>{/* <GameSettingContainer open={open} handleClose={handleClose} /> */}</>
                     </ModalContainer>
                     <PlayerReadyStatus
-                        // handleBackdropOpen={handleBackdropOpen}
-                        // backdrop={backdrop}
-                        // setBackdrop={setBackdrop}
                         onReady={onReady}
                         setOnReady={setOnReady}
                         settingInformation={settingInformation}
                     />
-                    {/* <PlayerReadyStatus
-                        // handleBackdropOpen={handleBackdropOpen}
-                        // backdrop={backdrop}
-                        // setBackdrop={setBackdrop}
-                        onReady={onReady}
-                        setOnReady={setOnReady}
-                        settingInformation={settingInformation}
-                    /> */}
-                    {/* <PlayerReadyStatus /> */}
                     <button onClick={handleClose}>게임 설정</button>
                     <button onClick={handleExit}>게임 나가기</button>
                     {open && (
@@ -140,23 +115,10 @@ const SettingRoomLayout = () => {
                         </>
                     </ModalContainer>
                     <PlayerReadyStatus
-                        // handleBackdropOpen={handleBackdropOpen}
-                        // backdrop={backdrop}
-                        // setBackdrop={setBackdrop}
                         onReady={onReady}
                         setOnReady={setOnReady}
                         settingInformation={settingInformation}
                     />
-                    {/* <PlayerReadyStatus
-                        // handleBackdropOpen={handleBackdropOpen}
-                        // backdrop={backdrop}
-                        // setBackdrop={setBackdrop}
-                        onReady={onReady}
-                        setOnReady={setOnReady}
-                        settingInformation={settingInformation}
-                    /> */}
-
-                    {/* <PlayerReadyStatus /> */}
                     <button onClick={handleClose}>게임 설정</button>
                     <button onClick={handleExit}>게임 나가기</button>
                     {open && (

@@ -15,7 +15,7 @@ import NotFound from './components/NotFound';
 import { SocketContext } from './api/SocketContext';
 
 import { createPingpongSocket, createChatSocket, createGameSocket } from './api/socket';
-import SettingRoomLayout from './pages/setting-room/SettingRoomLayout';
+import SettingRoomLayout from './pages/setting-room/layout';
 
 const queryClient = new QueryClient({
     defaultOptions: {

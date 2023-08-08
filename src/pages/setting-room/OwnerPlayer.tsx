@@ -2,30 +2,30 @@ import { Backdrop, Box, Button, Container, Typography } from '@mui/material';
 import { SocketContext } from '../../api/SocketContext';
 import { settingRoomNameState } from '../../api/atoms';
 import { createGameSocket } from '../../api/socket';
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import { useNavigate } from 'react-router';
 
-const OwnerPlayer = ({
-    onReady,
-    handleBackdropOpen,
-    handleBackdropClose,
-    onReadyToggle,
-    backdrop,
-    initGame,
-    setInitGame,
-}) => {
+const OwnerPlayer = ({ onReady }) => {
     const { gameSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     const navigate = useNavigate();
-
+    const isOwner = true;
     const initGameHandler = useCallback(() => {
-        gameSocket.emit('ft_game_play', RsettingRoomName, (response: any) => {
-            if (!response.success) return alert(response.payload);
-        });
-        console.log('게임 생성 완료');
-        navigate(`/game-room/${RsettingRoomName}`);
-    }, [gameSocket]);
+        if (onReady) {
+            if (!RsettingRoomName) {
+                navigate('/');
+                alert('잘못된 접근입니다.');
+            }
+            gameSocket.emit('ft_game_play', RsettingRoomName, (response: any) => {
+                if (!response.success) return alert(response.payload);
+            });
+            navigate(`/game-room/${RsettingRoomName}`);
+        }
+        if (!onReady) {
+            alert('상대방이 준비되지 않았습니다.');
+        }
+    }, [onReady]);
     return (
         <Container
             sx={{
@@ -37,19 +37,6 @@ const OwnerPlayer = ({
                 alignItems: 'center',
             }}
         >
-            {onReady && (
-                <div>
-                    <Button onClick={handleBackdropOpen}>Show backdrop</Button>
-
-                    <Backdrop
-                        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                        open={backdrop}
-                        onClick={handleBackdropClose}
-                    >
-                        <div>Ready</div>
-                    </Backdrop>
-                </div>
-            )}
             <Box
                 sx={{
                     width: '100%',
@@ -68,15 +55,17 @@ const OwnerPlayer = ({
                         />
                         <Typography variant="h6">김핑퐁</Typography>
                     </Box>
-                    <Button
-                        variant="contained"
-                        onClick={initGameHandler}
-                        style={{
-                            backgroundColor: onReady ? '' : 'lightgray', // 대기중일 때 색상 제거
-                        }}
-                    >
-                        {initGame ? '게임시작' : '안댕'}
-                    </Button>
+                    {isOwner && (
+                        <Button
+                            variant="contained"
+                            onClick={initGameHandler}
+                            style={{
+                                backgroundColor: onReady ? '' : 'lightgray', // 대기중일 때 색상 제거
+                            }}
+                        >
+                            게임시작
+                        </Button>
+                    )}
                 </Box>
                 <Box
                     sx={{
