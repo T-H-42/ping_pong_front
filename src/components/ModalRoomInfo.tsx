@@ -2,6 +2,8 @@ import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Modal, Box, Typography, TextField, Switch, FormControlLabel, Alert } from '@mui/material';
 import { SocketContext } from '../api/SocketContext';
+import Profile from './Profile';
+import { usernameState } from '@src/api/atoms';
 
 interface ModalExampleProps {
     isOpen: boolean;
@@ -14,6 +16,30 @@ interface Response {
     success: boolean;
     payload: string;
 }
+
+const ModalUser = ({ userName, right }) => {
+    const [open, setOpen] = useState(false);
+
+    const handleProfileOpen = () => {
+        setOpen(true);
+    };
+
+    const handleProfileClose = () => {
+        setOpen(false);
+    };
+    return (
+        <>
+            <Button variant="contained" onClick={() => handleProfileOpen()}>
+                {userName} - {right}
+            </Button>
+            <Modal open={open} onClose={handleProfileClose}>
+                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+                    <Profile username={userName} right={right}></Profile>
+                </Box>
+            </Modal>
+        </>
+    );
+};
 
 const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, message }) => {
     console.log('모달룸인포');
@@ -29,10 +55,6 @@ const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, me
         });
     }, []);
 
-    const handleFriendClick = (e) => {
-        console.log(e);
-    };
-
     return (
         <Modal
             open={isOpen}
@@ -47,10 +69,8 @@ const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, me
                 </Typography>
                 <ul style={{ listStyle: 'none' }}>
                     {friends.map((element, index) => (
-                          <li key={index} style={{ marginBottom: '10px' }}>
-                            <Button variant="contained" onClick={() => handleFriendClick(element)}>
-                                {element.username} - {element.right}
-                            </Button>
+                        <li key={index} style={{ marginBottom: '10px' }}>
+                            <ModalUser userName={element.username} right={element.right} />
                         </li>
                     ))}
                 </ul>
