@@ -30,6 +30,11 @@ export const friendsState = atom<IFriendsState[]>({
     default: [],
 });
 
+export const roomFriendsState = atom<[]>({
+    key: 'RoomFriendsState',
+    default: [],
+});
+
 export const roomNameState = atom<string>({
     key: 'roomNameState',
     default: '',

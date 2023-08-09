@@ -14,6 +14,7 @@ const ChatRoom: React.FC = () => {
     const [open, setOpen] = useState(false);
     const [chats, setChats] = useState([]);
     const [message, setMessage] = useState('');
+    const [friends, setFriends] = useState([]);
     const chatContainerEl = useRef(null);
     const roomName = localStorage.getItem('room-name');
     const navigate = useNavigate();
@@ -79,11 +80,15 @@ const ChatRoom: React.FC = () => {
 
     const onLeaveRoom = useCallback(() => {
         // chatSocket.emit('leave-room', roomName, () => {
-            navigate('/main');
+        navigate('/main');
         // });
     }, [navigate, roomName]);
 
     const handleOpen = () => {
+        chatSocket.emit('ft_getUserListInRoom', roomName, (res: any) => {
+            console.log('ft_getUserListInRoom: ', res);
+            setFriends(res);
+        });
         setOpen(true);
     };
 
@@ -96,8 +101,8 @@ const ChatRoom: React.FC = () => {
             <div>
                 <h2>채팅방 이름 : {roomName}</h2>
                 <button onClick={handleOpen}>채팅방 정보</button>
-                <ModalRoomInfo isOpen={open} onClose={handleClose} title={'채팅방 정보'} message={''} />
-                <h2/>
+                <ModalRoomInfo isOpen={open} onClose={handleClose} title={'채팅방 정보'} friends={friends} chats={chats} setChats={setChats} />
+                <h2 />
                 <div ref={chatContainerEl}>
                     {chats.map((chat, index) => (
                         <div key={index}>

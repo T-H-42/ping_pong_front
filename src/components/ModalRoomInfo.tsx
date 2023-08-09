@@ -3,11 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Modal, Box, Typography, TextField, Switch, FormControlLabel, Alert } from '@mui/material';
 import { SocketContext } from '../api/SocketContext';
 
+import { useSetRecoilState, useRecoilValue } from 'recoil';
+import { roomFriendsState } from '../api/atoms';
+
 interface ModalExampleProps {
     isOpen: boolean;
     onClose: () => void;
     title: string;
-    message: string;
+    friends: any[];
+    chats: any[];
+    setChats: (data: any[]) => void;
 }
 
 interface Response {
@@ -15,22 +20,18 @@ interface Response {
     payload: string;
 }
 
-const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, message }) => {
+const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, friends, chats, setChats }) => {
     console.log('모달룸인포');
     const { chatSocket } = useContext(SocketContext);
     const navigate = useNavigate();
     const roomName = localStorage.getItem('room-name');
-    const [friends, setFriends] = useState([]);
-
-    useEffect(() => {
-        chatSocket.emit('ft_getUserListInRoom', roomName, (response: any) => {
-            console.log('ft_getUserListInRoom: ', response);
-            setFriends(response);
-        });
-    }, []);
 
     const handleFriendClick = (e) => {
-        console.log(e);
+        const targetUser = e.username;
+        chatSocket.emit('ft_addAdmin', { roomName, targetUser }, (response: any) => {
+            console.log('ft_addAdmin: ', response);
+            setChats([...chats, response]);
+        });
     };
 
     return (
@@ -47,14 +48,31 @@ const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, me
                 </Typography>
                 <ul style={{ listStyle: 'none' }}>
                     {friends.map((element, index) => (
-                          <li key={index} style={{ marginBottom: '10px' }}>
-                            <Button variant="contained" onClick={() => handleFriendClick(element)}>
+                        <li key={index} style={{ marginBottom: '10px' }}>
+                            {element.right === 0 ? <Button variant="contained" onClick={() => handleFriendClick(element)}>
                                 {element.username} - {element.right}
-                            </Button>
+                            </Button> : null}
+                            {element.right === 1 ? <Button variant="contained" onClick={() => handleFriendClick(element)} sx={{
+                                backgroundColor: 'green',
+                                color: 'white',
+                                '&:hover': {
+                                    backgroundColor: 'green',
+                                },
+                            }}>
+                                {element.username} - {element.right}
+                            </Button> : null}
+                            {element.right === 2 ? <Button variant="contained" onClick={() => handleFriendClick(element)} sx={{
+                                backgroundColor: 'red',
+                                color: 'white',
+                                '&:hover': {
+                                    backgroundColor: 'red',
+                                },
+                            }}>
+                                {element.username} - {element.right}
+                            </Button> : null}
                         </li>
                     ))}
                 </ul>
-
                 <Box sx={{ position: 'absolute', bottom: 20, right: 10 }}>
                     <Button variant="contained" onClick={onClose} sx={{
                         mt: 2,
