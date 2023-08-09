@@ -7,12 +7,6 @@ import { useRecoilValue } from 'recoil';
 import { settingRoomNameState } from '../../api/atoms';
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Slider } from '@mui/material';
 
-// interface ISettingInformation {
-//     score: number;
-//     speed: number;
-//     roomName: string;
-// }
-
 const GameSettingContainer = ({ open, handleClose, settingInformation, setSettingInformaiton }) => {
     const [modalStatus, setModalStatus] = useState(false);
 

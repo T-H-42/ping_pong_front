@@ -11,6 +11,7 @@ const PlayerReadyStatus = ({ onReady, setOnReady, settingInformation }) => {
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     const [initGame, setInitGame] = useState(false);
     const [backdrop, setBackdrop] = useState(false);
+
     const handleBackdropClose = () => {
         setBackdrop(false);
     };
@@ -20,7 +21,7 @@ const PlayerReadyStatus = ({ onReady, setOnReady, settingInformation }) => {
     const onReadyToggle = () => {
         setOnReady((prev) => !prev);
         setBackdrop((prev) => !prev);
-        console.log(`backdrop : ${backdrop}`);
+        console.log('온레디 토글 :', onReady);
 
         if (!onReady) {
             gameSocket.emit('ft_game_ready', RsettingRoomName, (response: any) => {

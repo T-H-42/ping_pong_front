@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { RecoilRoot } from 'recoil';
 import { getJwtCookie } from './api/cookies';
@@ -16,6 +16,7 @@ import { SocketContext } from './api/SocketContext';
 
 import { createPingpongSocket, createChatSocket, createGameSocket } from './api/socket';
 import SettingRoomLayout from './pages/setting-room/layout';
+import GameRoomLayout from './pages/game-room/layout';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -42,6 +43,11 @@ function App() {
         gameSocket.connect();
     }
 
+    useEffect(() => {
+        console.log('게임 소켓 감지기', gameSocket);
+        console.log('채팅 소켓 감지기', chatSocket);
+        console.log('핑퐁 소켓 감지기', pingpongSocket);
+    }, [gameSocket, pingpongSocket, chatSocket]);
     return (
         <RecoilRoot>
             <div
@@ -66,6 +72,8 @@ function App() {
                                     <Route path="/room/:roomName" element={<ChatRoom />} />
                                     <Route path="/dm/:dmName" element={<DMRoom />} />
                                     <Route path="/setting-room/:roomName" element={<SettingRoomLayout />} />
+                                    <Route path="/game-room/:roomName" element={<GameRoomLayout />} />
+
                                     {/* </Route> */}
                                     <Route path="*" element={<NotFound />} />
                                 </Routes>

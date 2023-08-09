@@ -4,12 +4,13 @@ import { SocketContext } from '../api/SocketContext';
 import { removeJwtCookie } from '../api/cookies';
 
 const LogOutButton = () => {
-    const { pingpongSocket, chatSocket } = useContext(SocketContext);
+    const { pingpongSocket, chatSocket, gameSocket } = useContext(SocketContext);
     const navigate = useNavigate();
 
     const logoutHandler = () => {
         pingpongSocket.disconnect();
         chatSocket.disconnect();
+        gameSocket.disconnect();
         removeJwtCookie('jwt');
         navigate('/');
     };

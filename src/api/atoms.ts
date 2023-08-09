@@ -43,3 +43,8 @@ export const settingRoomNameState = atom<string>({
     key: 'settingRoomNameState',
     default: '',
 });
+
+export const isOwnerState = atom<boolean>({
+    key: 'isOwnerState',
+    default: false,
+});

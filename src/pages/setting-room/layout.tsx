@@ -6,7 +6,6 @@ import { useRecoilValue } from 'recoil';
 import { settingRoomNameState } from '../../api/atoms';
 import { useNavigate } from 'react-router-dom';
 import PlayerReadyStatus from './PlayerReadyStatus';
-import { Backdrop, Button, CircularProgress } from '@mui/material';
 
 interface ISettingInformation {
     score: number;
@@ -16,6 +15,7 @@ interface ISettingInformation {
 
 const SettingRoomLayout = () => {
     const [open, setOpen] = useState(false);
+    const [guestOnReady, setGuestOnReady] = useState(false);
     const [onReady, setOnReady] = useState(false);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     const { gameSocket } = useContext(SocketContext);
@@ -35,7 +35,7 @@ const SettingRoomLayout = () => {
 
     const handleExit = () => {
         gameSocket.emit('ft_leave_setting_room', RsettingRoomName, (response: any) => {
-            if (!response.success) return alert(`여긴 리브 요청 ${response.payload}`);
+            if (!response.success) return alert(`설정 방 나가기 실패 :  ${response.payload}`);
         });
         navigate('/');
     };
@@ -52,6 +52,7 @@ const SettingRoomLayout = () => {
             gameSocket.off('ft_enemy_leave_setting_room', handleEnemyLeaveSettingRoom);
         };
     }, [gameSocket, navigate]);
+
     useEffect(() => {
         const handleGameSettingSuccess = (response: any) => {
             if (!response.success) return alert(response.payload);
@@ -70,9 +71,9 @@ const SettingRoomLayout = () => {
             navigate(`/game-room/${RsettingRoomName}`);
         };
 
-        gameSocket.on('ft_game_start', handleInitSuccess);
+        gameSocket.on('ft_game_play_success', handleInitSuccess);
         return () => {
-            gameSocket.off('ft_game_start', handleInitSuccess);
+            gameSocket.off('ft_game_play_success', handleInitSuccess);
         };
     }, [gameSocket]);
     return (

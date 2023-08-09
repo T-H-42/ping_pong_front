@@ -1,6 +1,6 @@
 import { Backdrop, Box, Button, Container, Typography } from '@mui/material';
 import { SocketContext } from '../../api/SocketContext';
-import { settingRoomNameState } from '../../api/atoms';
+import { isOwnerState, settingRoomNameState } from '../../api/atoms';
 import { createGameSocket } from '../../api/socket';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -9,10 +9,11 @@ import { useNavigate } from 'react-router';
 const OwnerPlayer = ({ onReady }) => {
     const { gameSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
+    const RisOwner = useRecoilValue(isOwnerState);
+
     const navigate = useNavigate();
-    const isOwner = true;
     const initGameHandler = useCallback(() => {
-        if (onReady) {
+        if (!onReady) {
             if (!RsettingRoomName) {
                 navigate('/');
                 alert('잘못된 접근입니다.');
@@ -22,7 +23,7 @@ const OwnerPlayer = ({ onReady }) => {
             });
             navigate(`/game-room/${RsettingRoomName}`);
         }
-        if (!onReady) {
+        if (onReady) {
             alert('상대방이 준비되지 않았습니다.');
         }
     }, [onReady]);
@@ -55,7 +56,7 @@ const OwnerPlayer = ({ onReady }) => {
                         />
                         <Typography variant="h6">김핑퐁</Typography>
                     </Box>
-                    {isOwner && (
+                    {RisOwner && (
                         <Button
                             variant="contained"
                             onClick={initGameHandler}
