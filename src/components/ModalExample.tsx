@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Modal, Box, Typography, TextField, Switch, FormControlLabel } from '@mui/material';
+import { Button, Modal, Box, Typography, TextField, Switch, FormControlLabel, Alert } from '@mui/material';
 import { SocketContext } from '../api/SocketContext';
 
 interface ModalExampleProps {
@@ -8,6 +8,11 @@ interface ModalExampleProps {
     onClose: () => void;
     title: string;
     message: string;
+}
+
+interface Response {
+    success: boolean;
+    payload: string;
 }
 
 const ModalExample: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, message }) => {
@@ -18,8 +23,9 @@ const ModalExample: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, mes
     const [protectedRoom, setProtectedRoom] = useState(false);
     const [passwordRoom, setPasswordRoom] = useState(false);
     const [inputNumber, setInputNumber] = useState(0);
+    const [showAlert, setShowAlert] = useState(false);
 
-    const handleInputRoomNameChange = (event) => {
+    const handleInputRoomNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRoomName(event.target.value);
     };
 
@@ -45,10 +51,6 @@ const ModalExample: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, mes
 
     const onCreateRoom = () => {
         // 공개방은 0, 비밀번호방1, 비공개방 2
-        // @MessageBody() roomName: string, //////////////////////// msgBody 부분대로 줘야함.
-        // @MessageBody() status: number, ///// 방
-        // @MessageBody() password: string, ///// 비밀번호
-        // @MessageBody() limitUser: number, ///// 제한인원
         let status = 0;
         if (passwordRoom) {
             status = 1;
@@ -63,9 +65,15 @@ const ModalExample: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, mes
             limitUser: inputNumber,
         };
 
-        chatSocket.emit('create-room', data, (response: any) => {
-            localStorage.setItem('room-name', response.payload);
-            navigate(`/room/${response.payload}`);
+        chatSocket.emit('create-room', data, (response: Response) => {
+            console.log('create-room: ', response);
+            if (response.success) {
+                setShowAlert(false);
+                localStorage.setItem('room-name', response.payload);
+                navigate(`/room/${response.payload}`);
+            } else {
+                setShowAlert(true);
+            }
         });
         setPassword('');
     };
@@ -78,6 +86,7 @@ const ModalExample: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, mes
             aria-describedby="modal-description"
         >
             <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, height: 500, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+                {showAlert && <Alert severity="error">방제목과 인원 수를 입력해주세요.</Alert>}
                 <Typography id="modal-title" variant="h6" component="h2">
                     {title}
                 </Typography>

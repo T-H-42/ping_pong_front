@@ -35,7 +35,6 @@ const TwoFactorAuth = () => {
                 pingpongSocket.connect();
                 chatSocket.auth = { token: `${getJwtCookie('jwt')}` };
                 chatSocket.connect();
-                // if() {}
 
                 navigate('/main');
             })

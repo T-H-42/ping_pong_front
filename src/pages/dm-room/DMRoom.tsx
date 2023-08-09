@@ -27,10 +27,11 @@ const DMRoom = () => {
     }, [chats.length]);
 
     useEffect(() => {
+        setMessage('');
+
         chatSocket.emit('ft_get_dm_log', { roomName: index }, (chat) => {
             console.log('ft_get_dm_log: ', chat);
             setChats(chat);
-            setMessage('');
         });
 
         const messageHandler = (chat: any) => {

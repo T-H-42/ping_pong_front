@@ -14,7 +14,6 @@ const FriendList = ({ dmName, setDMName }) => {
     const [sender, setSender] = useState('');
 
     const friends = useRecoilValue<IFriendsState[]>(friendsState);
-    const DMList = useSetRecoilState<string>(dmNameState);
 
     useEffect(() => {
         const messageHandler = (res: any) => {
@@ -22,7 +21,6 @@ const FriendList = ({ dmName, setDMName }) => {
             setNewDM(true);
             setSender(res.username);
         };
-
         chatSocket.on('ft_dm', messageHandler);
 
         // return () => {
@@ -31,24 +29,21 @@ const FriendList = ({ dmName, setDMName }) => {
         // };
     }, []);
 
-    const onJoinDM = useCallback(
-        (username: any, status: number) => () => {
-            if (status === 0) {
-                alert(`${username}님이 오프라인 상태입니다.`);
-            } else if (status === 1) {
-                chatSocket.emit('join-dm', username, (response: any) => {
-                    if (response.success) {
-                        localStorage.setItem('dm-username', username);
-                        localStorage.setItem('dm-index', response.index);
-                        navigate(`/dm/${response.index}`);
-                    }
-                });
-            } else if (status === 2) {
-                alert(`${username}님이 게임 중입니다.`);
-            }
-        },
-        [navigate],
-    );
+    const onJoinDM = useCallback((username: any, status: number) => () => {
+        if (status === 0) {
+            alert(`${username}님이 오프라인 상태입니다.`);
+        } else if (status === 1) {
+            chatSocket.emit('join-dm', username, (response: any) => {
+                if (response.success) {
+                    localStorage.setItem('dm-username', username);
+                    localStorage.setItem('dm-index', response.index);
+                    navigate(`/dm/${response.index}`);
+                }
+            });
+        } else if (status === 2) {
+            alert(`${username}님이 게임 중입니다.`);
+        }
+    }, [navigate]);
 
     return (
         <div style={{ border: '1px solid #000', padding: '10px' }}>

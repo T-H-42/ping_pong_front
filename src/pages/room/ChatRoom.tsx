@@ -6,9 +6,10 @@ import { roomNameState } from '../../api/atoms';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { SocketContext } from '../../api/SocketContext';
 
-import ModalExample from '../../components/ModalExample';
+import ModalRoomInfo from '../../components/ModalRoomInfo';
 
 const ChatRoom: React.FC = () => {
+    console.log('챗룸 컴포넌트');
     const { chatSocket } = useContext(SocketContext);
     const [open, setOpen] = useState(false);
     const [chats, setChats] = useState([]);
@@ -16,6 +17,21 @@ const ChatRoom: React.FC = () => {
     const chatContainerEl = useRef(null);
     const roomName = localStorage.getItem('room-name');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        chatSocket.emit('ft_isEmptyRoom', roomName, (res: any) => {
+            console.log('ft_isEmptyRoom: ', res);
+            if (res) {
+                navigate('/main');
+            }
+        });
+
+        return () => {
+            chatSocket.emit('leave-room', roomName, () => {
+                console.log('leave-room: ', roomName);
+            });
+        };
+    }, []);
 
     useEffect(() => {
         if (!chatContainerEl.current) return;
@@ -29,6 +45,12 @@ const ChatRoom: React.FC = () => {
     }, [chats.length]);
 
     useEffect(() => {
+        chatSocket.emit('ft_get_chat_log', { roomName }, (chat) => {
+            console.log('ft_get_chat_log: ', chat);
+            setChats(chat);
+            setMessage('');
+        });
+
         const messageHandler = (chat) => {
             console.log('ft_message: ', chat);
             setChats((prevChats) => [...prevChats, chat]);
@@ -37,8 +59,7 @@ const ChatRoom: React.FC = () => {
         chatSocket.on('ft_message', messageHandler);
 
         return () => {
-            console.log('message off');
-            chatSocket.off('ft_message', messageHandler);
+            // chatSocket.off('ft_message', messageHandler);
         };
     }, []);
 
@@ -57,9 +78,9 @@ const ChatRoom: React.FC = () => {
     }, [message, roomName]);
 
     const onLeaveRoom = useCallback(() => {
-        chatSocket.emit('leave-room', roomName, () => {
+        // chatSocket.emit('leave-room', roomName, () => {
             navigate('/main');
-        });
+        // });
     }, [navigate, roomName]);
 
     const handleOpen = () => {
@@ -75,8 +96,8 @@ const ChatRoom: React.FC = () => {
             <div>
                 <h2>채팅방 이름 : {roomName}</h2>
                 <button onClick={handleOpen}>채팅방 정보</button>
-                <ModalExample isOpen={open} onClose={handleClose} title={'채팅방 정보'} message={'.'} />
-                <h2 />
+                <ModalRoomInfo isOpen={open} onClose={handleClose} title={'채팅방 정보'} message={''} />
+                <h2/>
                 <div ref={chatContainerEl}>
                     {chats.map((chat, index) => (
                         <div key={index}>

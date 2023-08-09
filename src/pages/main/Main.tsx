@@ -13,9 +13,7 @@ import GameStartButton from './GameStartButton';
 const Main = () => {
     console.log('메인 컴포넌트');
     const { pingpongSocket, chatSocket } = useContext(SocketContext);
-    const username: any = useRecoilValue(usernameState);
     const [friends, setFriends] = useRecoilState<IFriendsState[]>(friendsState);
-
     const [dmName, setDMName] = useState<any>();
 
     useEffect(() => {
@@ -41,34 +39,32 @@ const Main = () => {
             };
         }
 
-        if (friends) {
-            pingpongSocket.on('ft_connect', (respnose: any) => {
-                console.log('ft_connect 입니다.', respnose);
-                const updatedFriends: any = friends.map((friend: any) => {
-                    if (friend.username === respnose.status) {
-                        return { ...friend, status: 1 };
-                    }
-                    return friend;
-                });
-                setFriends([...updatedFriends]);
+        pingpongSocket.on('ft_connect', (respnose: any) => {
+            console.log('ft_connect 입니다.', respnose);
+            const updatedFriends: any = friends.map((friend: any) => {
+                if (friend.username === respnose.status) {
+                    return { ...friend, status: 1 };
+                }
+                return friend;
             });
+            setFriends([...updatedFriends]);
+        });
 
-            pingpongSocket.on('ft_disconnect', (respnose: any) => {
-                console.log('ft_disconnect 입니다.', respnose);
-                const updatedFriends: any = friends.map((friend: any) => {
-                    if (friend.username === respnose.status) {
-                        return { ...friend, status: 0 };
-                    }
-                    return friend;
-                });
-                setFriends([...updatedFriends]);
+        pingpongSocket.on('ft_disconnect', (respnose: any) => {
+            console.log('ft_disconnect 입니다.', respnose);
+            const updatedFriends: any = friends.map((friend: any) => {
+                if (friend.username === respnose.status) {
+                    return { ...friend, status: 0 };
+                }
+                return friend;
             });
-        }
+            setFriends([...updatedFriends]);
+        });
+
 
         return () => {
             pingpongSocket.off('ft_connect');
             pingpongSocket.off('ft_disconnect');
-            console.log('언마운트');
         };
     }, [friends]);
 
@@ -81,7 +77,6 @@ const Main = () => {
             <div style={{ margin: '30px 0' }} />
             {friends ? <FriendList dmName={dmName} setDMName={setDMName} /> : null}
             <div style={{ margin: '30px 0' }} />
-            <DMList dmName={dmName}/>
         </div>
     );
 };
