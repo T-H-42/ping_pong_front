@@ -43,7 +43,9 @@ module.exports = {
     // parser: '@typescript-eslint/parser',
     plugins: ['prettier'],
     extends: ['airbnb-base'],
-
+    // devServer: {
+    //     disableHostCheck: true,
+    // },
     rules: {
         indent: 'off', // Turn off the indentation rule to avoid conflicts with Prettier
         'object-curly-newline': 'off',
