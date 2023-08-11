@@ -29,17 +29,20 @@ interface Score {
     right: number;
 }
 
-type testSize = {
+type canvasSize = {
     width: number;
     height: number;
 };
 const layout = () => {
+    console.log('레이아웃 업데이트');
+
+    const [test, setTest] = useState(0);
     const { gameSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     const RisOwner = useRecoilValue(isOwnerState);
     const [keyPressed, setKeyPressed] = useState<number>(0);
-    const [testSize, setTestSize] = useState<testSize>({ width: 600, height: 400 });
-    const [canvasSize, setCanvasSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+    const [canvasSize, setCanvasSize] = useState<canvasSize>({ width: 600, height: 400 });
+    const [innerSize, setInnerSize] = useState({ width: window.innerWidth * 0.8, height: window.innerHeight * 0.8 });
     const [gameElement, setGameElement] = useState<IGameElement | null>({
         leftPaddle: { x: 0, y: 0, width: 0, height: 0 },
         rightPaddle: { x: 0, y: 0, width: 0, height: 0 },
@@ -50,6 +53,18 @@ const layout = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const cvs = canvasRef.current;
     PingPong(canvasRef, gameElement);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setInnerSize({ width: window.innerWidth * 0.8, height: window.innerHeight * 0.8 });
+        };
+
+        window.addEventListener('resize', handleResize);
+        amazing(innerSize.width, innerSize.height);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [innerSize.width, innerSize.height]);
 
     useEffect(() => {
         const positionUpdateHandler = (response) => {
@@ -90,95 +105,57 @@ const layout = () => {
 
     const amazing = (width, height) => {
         const what = width * 2 > height * 3 ? true : false;
-        if (what) setTestSize({ width: (height * 3) / 2, height: height });
-        else setTestSize({ width: width, height: (width * 2) / 3 });
+        if (what) setCanvasSize({ width: (height * 3) / 2, height: height });
+        else setCanvasSize({ width: width, height: (width * 2) / 3 });
         // console.log('amazing', width, height);
     };
 
     // gameSocket.emit('ft_paddle_move');
 
-    useEffect(() => {
-        const handleResize = () => {
-            setCanvasSize({ width: window.innerWidth, height: window.innerHeight });
-        };
-
-        window.addEventListener('resize', handleResize);
-        amazing(canvasSize.width, canvasSize.height);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, [canvasSize]);
-
-    // const handleKeyDown = (event) => {
-    //     if (event.key === 'ArrowUp') {
-    //       setIsArrowUpPressed(true);
-    //     }
-    //   };
-
-    //   const handleKeyUp = (event) => {
-    //     if (event.key === 'ArrowUp') {
-    //       setIsArrowUpPressed(false);
-    //     }
-    //   };
+    const movePaddle = (newKeyPressed) => {
+        gameSocket.emit('ft_paddle_move', {
+            roomName: RsettingRoomName,
+            isOwner: RisOwner,
+            paddleStatus: newKeyPressed,
+        });
+    };
 
     useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
+        setTest(test + 1);
+        const handleKeyDown = async (event: KeyboardEvent) => {
             if (event.key === 'ArrowUp') {
-                setKeyPressed(1);
-                movePaddle();
+                if (keyPressed !== 1) {
+                    setKeyPressed(1);
+                    movePaddle(1);
+                }
             } else if (event.key === 'ArrowDown') {
-                setKeyPressed(2);
-                movePaddle();
+                if (keyPressed !== 2) {
+                    setKeyPressed(2);
+                    movePaddle(2);
+                }
+                // console.log('ArrowDown key pressed');
             }
         };
         const handleKeyUp = (event: KeyboardEvent) => {
             if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
                 setKeyPressed(0);
-                movePaddle();
+                movePaddle(0);
             }
         };
 
         window.addEventListener('keydown', handleKeyDown);
         window.addEventListener('keyup', handleKeyUp);
 
-        const movePaddle = () => {
-            gameSocket.emit('ft_paddle_move', {
-                roomName: RsettingRoomName,
-                isOwner: RisOwner,
-                paddleStatus: keyPressed,
-            });
-        };
-        // window.addEventListener('keypress', handleKeyDown);
-
-        // RisOwner ? setUserSelector(true) : setUserSelector(false);
-
+        // console.log('키 이벤트 발생 !', test);
         // return () => {
         //     window.removeEventListener('keyup', handleKeyUp);
         //     window.removeEventListener('keydown', handleKeyDown);
         // };
     }, [keyPressed]);
 
-    // useEffect(() => {
-    //     if (RisOwner) {
-    //         if (keyPressed === 'ArrowUp') {
-    //             gameSocket.emit('ft_paddle_move', RisOwner);
-    //         }
-    //         if (keyPressed === 'ArrowDown') {
-    //             gameSocket.emit('ft_paddle_move');
-    //         }
-    //     } else {
-    //         if (keyPressed === 'ArrowUp') {
-    //             gameSocket.emit('ft_paddle_move');
-    //         }
-    //         if (keyPressed === 'ArrowDown') {
-    //             gameSocket.emit('ft_paddle_move');
-    //         }
-    //     }
-    // }, []);
     return (
         <>
-            <h1>React Game</h1>
-            <canvas ref={canvasRef} width={testSize.width} height={testSize.height} />
+            <canvas ref={canvasRef} width={canvasSize.width} height={canvasSize.height} />
         </>
     );
 };

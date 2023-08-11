@@ -81,7 +81,7 @@ const Main = () => {
             <div style={{ margin: '30px 0' }} />
             {friends ? <FriendList dmName={dmName} setDMName={setDMName} /> : null}
             <div style={{ margin: '30px 0' }} />
-            <DMList dmName={dmName}/>
+            <DMList dmName={dmName} />
         </div>
     );
 };
