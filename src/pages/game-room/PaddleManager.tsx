@@ -1,0 +1,70 @@
+import { useRecoilValue } from 'recoil';
+import { SocketContext } from '../../api/SocketContext';
+import React, { useContext, useEffect, useState } from 'react';
+import { isOwnerState, settingRoomNameState } from '../../api/atoms';
+
+const PaddleManager = () => {
+    const [keyPressed, setKeyPressed] = useState<number>(0);
+    const { gameSocket } = useContext(SocketContext);
+    const RsettingRoomName = useRecoilValue(settingRoomNameState);
+    const RisOwner = useRecoilValue(isOwnerState);
+    console.log(keyPressed);
+    const movePaddle = (newKeyPressed) => {
+        gameSocket.emit('ft_paddle_move', {
+            roomName: RsettingRoomName,
+            isOwner: RisOwner,
+            paddleStatus: newKeyPressed,
+        });
+        // const handleKeyDown = async (event: KeyboardEvent) => {
+        //     if (event.key === 'ArrowUp') {
+        //         if (keyPressed !== 1) {
+        //             setKeyPressed(1);
+        //             movePaddle(1);
+        //             console.log('키 이벤');
+        //         }
+        //     } else if (event.key === 'ArrowDown') {
+        //         if (keyPressed !== 2) {
+        //             setKeyPressed(2);
+        //             movePaddle(2);
+        //             console.log('키 이벤');
+        //         }
+        //         // console.log('ArrowDown key pressed');
+        //     }
+        // };
+        // window.addEventListener('keydown', handleKeyDown);
+    };
+
+    useEffect(() => {
+        const handleKeyDown = async (event: KeyboardEvent) => {
+            if (event.key === 'ArrowUp') {
+                if (keyPressed !== 1) {
+                    setKeyPressed(1);
+                    movePaddle(1);
+                }
+            } else if (event.key === 'ArrowDown') {
+                if (keyPressed !== 2) {
+                    setKeyPressed(2);
+                    movePaddle(2);
+                }
+                // console.log('ArrowDown key pressed');
+            }
+        };
+        const handleKeyUp = (event: KeyboardEvent) => {
+            if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+                setKeyPressed(0);
+                movePaddle(0);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('keyup', handleKeyUp);
+
+        return () => {
+            window.removeEventListener('keyup', handleKeyUp);
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [keyPressed]);
+    return <button onClick={() => console.log('test')}>@TLQkf</button>;
+};
+
+export default PaddleManager;
