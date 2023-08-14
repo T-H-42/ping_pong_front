@@ -87,7 +87,8 @@ const ChatRoom: React.FC = () => {
     const handleOpen = () => {
         chatSocket.emit('ft_getUserListInRoom', roomName, (res: any) => {
             console.log('ft_getUserListInRoom: ', res);
-            setFriends(res);
+            setFriends(res.userList);
+            // nhwang ASIS:setFriends(res) -> setFriends(res.userList) -> res.userRight는 요청자의 권한이니, 1이상인 경우 어드민에게 보여지는 버튼 보여주면 됩니다.
         });
         setOpen(true);
     };
