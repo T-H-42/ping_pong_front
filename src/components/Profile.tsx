@@ -1,22 +1,23 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
-import { Button, Stack, Box, Typography } from '@mui/material';
+import { Button, Stack, Box, Typography, Modal } from '@mui/material';
 import { useQuery } from 'react-query';
 import { getJwtCookie } from '../api/cookies';
+import { SocketContext } from '../api/SocketContext';
 
 const fetchProfileData = async (userName) => {
   const res = (
     await axios.get(
-    `http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`,
-    {
-      params: {
-        username: `${userName}`,
+      `http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`,
+      {
+        params: {
+          username: `${userName}`,
+        },
+        headers: {
+          Authorization: `Bearer ${getJwtCookie('jwt')}`,
+        },
       },
-      headers: {
-      Authorization: `Bearer ${getJwtCookie('jwt')}`,
-      },
-    },
-  )
+    )
   );
   return res.data;
 };
@@ -30,7 +31,7 @@ const Achievements = ({ achievements }) => {
 const GameHistory = ({ userName, history }) => {
   return history.map((data) => {
     const date = new Date(data.time);
-    const gameDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+    const gameDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     return (
       <>
         <Typography key={gameDate} variant="body1">
@@ -47,15 +48,60 @@ const GameHistory = ({ userName, history }) => {
   });
 };
 
-const Profile = (props) => {
+const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }) => {
+  const { chatSocket } = useContext(SocketContext);
   const { data: userInfo } = useQuery(
-    ['userInfo', props.userName],
-    () => fetchProfileData(props.username),
+    ['userInfo', username],
+    () => fetchProfileData(username),
     { suspense: true, useErrorBoundary: true },
   );
 
+  const handleMuteClick = (e) => {
+    chatSocket.emit('ft_mute', { roomName, targetUser: e }, (response: any) => {
+      console.log('ft_mute: ', response);
+
+      setInterval(() => {
+        console.log('특정 이벤트 발생');
+        chatSocket.emit('ft_mute_check', { roomName, targetUser: e }, (response: any) => {
+          console.log('ft_mute_check: ', response);
+        });
+      }, 2000);
+    });
+  };
+
+  const handleKickClick = (e) => {
+
+  };
+
+  const handleBanClick = (e) => {
+    chatSocket.emit('ft_ban', { roomName, targetUser: e }, (response: any) => {
+      console.log('ft_ban: ', response);
+    });
+  };
+
+  const handleBlockClick = (e) => {
+    chatSocket.emit('ft_block', { roomName, targetUser: e }, (response: any) => {
+      console.log('ft_block: ', response);
+    });
+  };
+
+  const handleHostClick = (e) => {
+    chatSocket.emit('ft_addAdmin', { roomName, targetUser: e }, (response: any) => {
+      console.log('ft_addAdmin: ', response);
+      if (!response.success) {
+        return;
+      }
+      setChats([...chats, response]);
+    });
+  };
+
   return (
-    <>
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      BackdropProps={{
+        sx: { backgroundColor: 'rgba(255, 255, 255, 1)' },
+      }}>
       <Stack spacing={5} direction="column" alignItems="center">
         <Box
           component="img"
@@ -97,25 +143,24 @@ const Profile = (props) => {
           </Stack>
 
           <Stack direction="column" spacing={1} alignItems="flex-start">
-            {(props.right === 1 || props.right === 2) && (
+            {(right === 1 || right === 2) && (
               <>
-                <Button variant="text">음소거</Button>
-                <Button variant="text">강제 퇴장</Button>
-                <Button variant="text">채팅 접근 금지</Button>
+                <Button variant="text" onClick={() => handleMuteClick(username)}>음소거</Button>
+                <Button variant="text" onClick={() => handleKickClick(username)}>강제 퇴장</Button>
+                <Button variant="text" onClick={() => handleBanClick(username)}>채팅 접근 금지</Button>
               </>
             )}
-            {props.right === 2 && <Button variant="text">호스트로 지정</Button>}
+            {right === 2 && <Button variant="text" onClick={() => handleHostClick(username)}>호스트로 지정</Button>}
 
-            <Button variant="text" color="error">
+            <Button variant="text" color="error" onClick={() => handleBlockClick(username)}>
               사용자 차단
             </Button>
           </Stack>
-
         </Stack>
-
       </Stack>
-    </>
+    </Modal>
   );
 };
 
 export default Profile;
+

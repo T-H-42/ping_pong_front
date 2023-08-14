@@ -15,6 +15,7 @@ const ChatRoom: React.FC = () => {
     const [chats, setChats] = useState([]);
     const [message, setMessage] = useState('');
     const [friends, setFriends] = useState([]);
+    const [right, setRight] = useState<number>(-1);
     const chatContainerEl = useRef(null);
     const roomName = localStorage.getItem('room-name');
     const navigate = useNavigate();
@@ -88,6 +89,7 @@ const ChatRoom: React.FC = () => {
         chatSocket.emit('ft_getUserListInRoom', roomName, (res: any) => {
             console.log('ft_getUserListInRoom: ', res);
             setFriends(res.userList);
+            setRight(res.userRight);
             // nhwang ASIS:setFriends(res) -> setFriends(res.userList) -> res.userRight는 요청자의 권한이니, 1이상인 경우 어드민에게 보여지는 버튼 보여주면 됩니다.
         });
         setOpen(true);
@@ -102,7 +104,7 @@ const ChatRoom: React.FC = () => {
             <div>
                 <h2>채팅방 이름 : {roomName}</h2>
                 <button onClick={handleOpen}>채팅방 정보</button>
-                <ModalRoomInfo isOpen={open} onClose={handleClose} title={'채팅방 정보'} friends={friends} chats={chats} setChats={setChats} />
+                <ModalRoomInfo isOpen={open} onClose={handleClose} title={'채팅방 정보'} friends={friends} right={right} chats={chats} setChats={setChats} />
                 <h2 />
                 <div ref={chatContainerEl}>
                     {chats.map((chat, index) => (
