@@ -28,23 +28,6 @@ const GuestPlayer = ({ onReady, handleBackdropClose, onReadyToggle, backdrop }) 
                     justifyContent: 'space-between',
                 }}
             >
-                {backdrop && (
-                    <Backdrop
-                        sx={{
-                            position: 'absolute', // 추가된 스타일
-                            top: 0, // 추가된 스타일
-                            left: 0, // 추가된 스타일
-                            width: '100%', // 수정된 스타일
-                            height: '100%', // 수정된 스타일
-                            color: '#fff',
-                            zIndex: (theme) => theme.zIndex.drawer + 1,
-                        }}
-                        open={backdrop}
-                        onClick={handleBackdropClose}
-                    >
-                        <div>Ready</div>
-                    </Backdrop>
-                )}
                 <Box sx={{ width: '100%', height: '15%', justifyContent: 'space-between', display: 'flex' }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '15%', alignItems: 'center' }}>
                         <img
@@ -54,15 +37,17 @@ const GuestPlayer = ({ onReady, handleBackdropClose, onReadyToggle, backdrop }) 
                         />
                         <Typography variant="h6">김핑퐁</Typography>
                     </Box>
-                    <Button
-                        variant="contained"
-                        onClick={onReadyToggle}
-                        style={{
-                            backgroundColor: onReady ? '' : 'lightgray', // 대기중일 때 색상 제거
-                        }}
-                    >
-                        {!RisOwner && onReady ? '준비 취소' : '준비'}
-                    </Button>
+                    {!RisOwner && (
+                        <Button
+                            variant="contained"
+                            onClick={onReadyToggle}
+                            style={{
+                                backgroundColor: onReady ? '' : 'lightgray', // 대기중일 때 색상 제거
+                            }}
+                        >
+                            {onReady ? '준비 취소' : '준비'}
+                        </Button>
+                    )}
                 </Box>
                 <Box sx={{ width: '100%', height: '100%', flexDirection: 'column', justifyContent: 'space-around' }}>
                     <Box
@@ -74,6 +59,23 @@ const GuestPlayer = ({ onReady, handleBackdropClose, onReadyToggle, backdrop }) 
                             alignItems: 'center',
                         }}
                     >
+                        {backdrop && (
+                            <Backdrop
+                                sx={{
+                                    position: 'absolute', // 추가된 스타일
+                                    top: 0, // 추가된 스타일
+                                    left: 0, // 추가된 스타일
+                                    width: '100%', // 수정된 스타일
+                                    height: '100%', // 수정된 스타일
+                                    color: '#fff',
+                                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                                }}
+                                open={backdrop}
+                                onClick={handleBackdropClose}
+                            >
+                                <div>Ready</div>
+                            </Backdrop>
+                        )}
                         <Box sx={{ width: '80%', height: '90%', margin: '0 auto' }}>
                             <Typography variant="h6">전적</Typography>
                             <Box sx={{ width: '100%', display: 'flex', justifyCcontent: 'space-around' }}>

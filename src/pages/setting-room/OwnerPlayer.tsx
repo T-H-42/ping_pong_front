@@ -10,7 +10,6 @@ const OwnerPlayer = ({ onReady }) => {
     const { gameSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     const RisOwner = useRecoilValue(isOwnerState);
-
     const navigate = useNavigate();
     const initGameHandler = useCallback(() => {
         if (!onReady) {
