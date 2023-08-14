@@ -17,6 +17,7 @@ import { SocketContext } from './api/SocketContext';
 import { createPingpongSocket, createChatSocket, createGameSocket } from './api/socket';
 import SettingRoomLayout from './pages/setting-room/layout';
 import GameRoomLayout from './pages/game-room/layout';
+import DummyOAuth from './components/DummyOAuth';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -66,6 +67,9 @@ function App() {
                                 <Routes>
                                     <Route path="/" element={<Login />}></Route>
                                     <Route path="/redirect" element={<OAuth />}></Route>
+
+                                    <Route path="/redirect2" element={<DummyOAuth />}></Route>
+
                                     <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
                                     {/* <Route element={<PrivateRoute />}> */}
                                     <Route path="/main" element={<Main />} />

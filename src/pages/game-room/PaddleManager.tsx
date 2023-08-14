@@ -4,11 +4,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import { isOwnerState, settingRoomNameState } from '../../api/atoms';
 
 const PaddleManager = () => {
+    console.log('paddle update');
     const [keyPressed, setKeyPressed] = useState<number>(0);
     const { gameSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     const RisOwner = useRecoilValue(isOwnerState);
-    console.log(keyPressed);
     const movePaddle = (newKeyPressed) => {
         gameSocket.emit('ft_paddle_move', {
             roomName: RsettingRoomName,
