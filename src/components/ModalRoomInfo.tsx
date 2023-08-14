@@ -22,16 +22,13 @@ interface Response {
     payload: string;
 }
 
-<<<<<<< HEAD
-const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, friends, chats, setChats }) => {
-=======
 const ModalUser = ({ userName, right }) => {
     const [open, setOpen] = useState(false);
-
+    
     const handleProfileOpen = () => {
         setOpen(true);
     };
-
+    
     const handleProfileClose = () => {
         setOpen(false);
     };
@@ -49,14 +46,12 @@ const ModalUser = ({ userName, right }) => {
     );
 };
 
-const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, message }) => {
->>>>>>> 3191c79cb0e0edccccd5def9ec13f0e042947f42
+const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, friends, chats, setChats }) => {
     console.log('모달룸인포');
     const { chatSocket } = useContext(SocketContext);
     const navigate = useNavigate();
     const roomName = localStorage.getItem('room-name');
 
-<<<<<<< HEAD
     const handleFriendClick = (e) => {
         const targetUser = e.username;
         chatSocket.emit('ft_addAdmin', { roomName, targetUser }, (response: any) => {
@@ -65,8 +60,6 @@ const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, me
         });
     };
 
-=======
->>>>>>> 3191c79cb0e0edccccd5def9ec13f0e042947f42
     return (
         <Modal
             open={isOpen}
@@ -82,7 +75,6 @@ const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, me
                 <ul style={{ listStyle: 'none' }}>
                     {friends.map((element, index) => (
                         <li key={index} style={{ marginBottom: '10px' }}>
-<<<<<<< HEAD
                             {element.right === 0 ? <Button variant="contained" onClick={() => handleFriendClick(element)}>
                                 {element.username} - {element.right}
                             </Button> : null}
@@ -104,9 +96,7 @@ const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, me
                             }}>
                                 {element.username} - {element.right}
                             </Button> : null}
-=======
                             <ModalUser userName={element.username} right={element.right} />
->>>>>>> 3191c79cb0e0edccccd5def9ec13f0e042947f42
                         </li>
                     ))}
                 </ul>
