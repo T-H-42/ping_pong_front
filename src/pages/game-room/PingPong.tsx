@@ -127,21 +127,10 @@ const PingPong = (canvasRef: RefObject<HTMLCanvasElement>, gameElement): void =>
     };
     const game = (): void => {
         render();
-        requestAnimationFrame(game);
-    };
+        // requestAnimationFrame(game);
+    }
 
     game();
 };
 
 export default PingPong;
-
-// 구조
-//     const render = (): void => {
-//     drawPaddle(0, 0, cvs.width, cvs.height, 'BLACK');
-//     drawScore(user.score, cvs.width / 4, cvs.height / 5, 'WHITE');
-//     drawScore(com.score, (3 * cvs.width) / 4, cvs.height / 5, 'WHITE');
-//     drawNet();
-//     drawRect(user.x, user.y, user.width, user.height, user.color);
-//     drawRect(com.x, com.y, com.width, com.height, com.color);
-//     drawBall(ball.x, ball.y, ball.radius, ball.color);
-// };
