@@ -64,7 +64,7 @@ const PaddleManager = () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
     }, [keyPressed]);
-    return <button onClick={() => console.log('test')}>@TLQkf</button>;
+    return <></>;
 };
 
 export default PaddleManager;
