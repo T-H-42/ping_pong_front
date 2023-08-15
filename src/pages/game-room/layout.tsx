@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PingPongContainer from './PingPongContainer';
 import PaddleManager from './PaddleManager';
+import ModalContainer from '../../components/ModalContainer';
+import GameResultContainer from './GameResultContainer';
 
-const layout = () => {
+const Layout = () => {
     return (
         <>
             <PaddleManager />
@@ -11,4 +13,4 @@ const layout = () => {
     );
 };
 
-export default layout;
+export default Layout;

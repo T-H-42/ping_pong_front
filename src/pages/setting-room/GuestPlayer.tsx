@@ -6,150 +6,169 @@ import { useRecoilValue } from 'recoil';
 const GuestPlayer = ({ onReady, handleBackdropClose, onReadyToggle, backdrop }) => {
     const RisOwner = useRecoilValue(isOwnerState);
 
-    // useEffect(() => {}, []);
     return (
-        <Container
-            sx={{
-                position: 'relative', // 추가된 스타일
-                width: '60vw',
-                height: '50vh',
-                backgroundColor: 'darkgray',
-                display: 'flex',
-                justifyCcontent: ' center',
-                alignItems: 'center',
-            }}
-        >
+        <Box sx={{ width: '50%', height: '100%' }}>
             <Box
                 sx={{
-                    width: '100%',
-                    height: '90%',
+                    width: '60%',
+                    height: '100%',
                     display: 'flex',
+                    margin: '0 auto',
                     flexDirection: 'column',
-                    justifyContent: 'space-between',
+                    justifyContent: 'space-evenly',
                 }}
             >
-                <Box sx={{ width: '100%', height: '15%', justifyContent: 'space-between', display: 'flex' }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '15%', alignItems: 'center' }}>
-                        <img
-                            src="https://www.gravatar.com/avatar/HASH"
-                            alt="user_image"
-                            style={{ width: '30%', borderRadius: '50%' }}
-                        />
-                        <Typography variant="h6">김핑퐁</Typography>
-                    </Box>
-                    {!RisOwner && (
-                        <Button
-                            variant="contained"
-                            onClick={onReadyToggle}
-                            style={{
-                                backgroundColor: onReady ? '' : 'lightgray', // 대기중일 때 색상 제거
-                            }}
-                        >
-                            {onReady ? '준비 취소' : '준비'}
-                        </Button>
-                    )}
-                </Box>
-                <Box sx={{ width: '100%', height: '100%', flexDirection: 'column', justifyContent: 'space-around' }}>
+                <Box
+                    sx={{
+                        width: '100%',
+                        height: '40%',
+                        borderRadius: '24px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        backgroundColor: '#fff',
+                        boxShadow: '0px 1px 8px 0px rgba(0, 0, 0, 0.10)',
+                    }}
+                >
                     <Box
                         sx={{
-                            width: '100%',
-                            height: '60%',
-                            backgroundColor: 'lightgray',
+                            width: '90%',
+                            height: '85%',
                             display: 'flex',
-                            alignItems: 'center',
-                        }}
-                    >
-                        {backdrop && (
-                            <Backdrop
-                                sx={{
-                                    position: 'absolute', // 추가된 스타일
-                                    top: 0, // 추가된 스타일
-                                    left: 0, // 추가된 스타일
-                                    width: '100%', // 수정된 스타일
-                                    height: '100%', // 수정된 스타일
-                                    color: '#fff',
-                                    zIndex: (theme) => theme.zIndex.drawer + 1,
-                                }}
-                                open={backdrop}
-                                onClick={handleBackdropClose}
-                            >
-                                <div>Ready</div>
-                            </Backdrop>
-                        )}
-                        <Box sx={{ width: '80%', height: '90%', margin: '0 auto' }}>
-                            <Typography variant="h6">전적</Typography>
-                            <Box sx={{ width: '100%', display: 'flex', justifyCcontent: 'space-around' }}>
-                                <p>23.07.10</p>
-                                <p>WIN</p>
-                                <p>김핑퐁</p>
-                            </Box>
-                            <Box sx={{ width: '100%', display: 'flex', justifyCcontent: 'space-around' }}>
-                                <p>23.07.10</p>
-                                <p>WIN</p>
-                                <p>김핑퐁</p>
-                            </Box>
-                        </Box>
-                    </Box>
-                    <Box
-                        sx={{
-                            width: '100%',
-                            height: '15%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            backgroundColor: 'lightgray',
+                            margin: '0 auto',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
                         }}
                     >
                         <Box
                             sx={{
-                                width: '80%',
-                                height: '100%',
-                                margin: '0 auto',
                                 display: 'flex',
-                                justifyContent: 'space-between',
+                                flexDirection: 'column',
+                                width: '100%',
+                                height: '60%',
+                                textAlign: 'center',
                                 alignItems: 'center',
                             }}
                         >
-                            <Typography variant="h6" sx={{ width: '20%' }}>
-                                업적
-                            </Typography>
-                            <Box sx={{ display: 'flex', width: '30%', height: '100%' }}>
-                                <Box
+                            {/* {backdrop && (
+                                <Backdrop
                                     sx={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        width: '100%',
                                         height: '100%',
+                                        color: '#fff',
+                                        zIndex: (theme) => theme.zIndex.drawer + 1,
                                     }}
+                                    open={backdrop}
+                                    onClick={handleBackdropClose}
                                 >
-                                    <img
-                                        src="https://www.gravatar.com/avatar/HASH"
-                                        alt="user_image"
-                                        style={{ width: '30%', borderRadius: '50%', marginTop: '5px' }}
-                                    />
-                                    <p>수다의 신</p>
-                                </Box>
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        height: '100%',
-                                    }}
-                                >
-                                    <img
-                                        src="https://www.gravatar.com/avatar/HASH"
-                                        alt="user_image"
-                                        style={{ width: '30%', borderRadius: '50%', marginTop: '5px' }}
-                                    />
-                                    <p>장사의 신</p>
-                                </Box>
+                                    <div>Ready</div>
+                                </Backdrop>
+                            )} */}
+                            <img
+                                src="https://www.gravatar.com/avatar/HASH"
+                                alt="user_image"
+                                style={{ borderRadius: '30%', width: '20%' }}
+                            />
+                            <h2>박댕댕</h2>
+                        </Box>
+                        <Box>안녕하세여안녕하세여안녕하세여안녕하세여안녕하세여</Box>
+                    </Box>
+                </Box>
+                <Box
+                    sx={{
+                        width: '100%',
+                        height: '30%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        backgroundColor: '#fff',
+                        boxShadow: '0px 1px 8px 0px rgba(0, 0, 0, 0.10)',
+                        borderRadius: '24px',
+                    }}
+                >
+                    <Box
+                        sx={{
+                            width: '90%',
+                            height: '90%',
+                            margin: '0 auto',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-around',
+                        }}
+                    >
+                        <Box>
+                            <Box>전적</Box>
+                            <Box>
+                                <span>총 50판</span>
+                                <span>20승 30패</span>
+                                <span>승률 25%</span>
+                            </Box>
+                        </Box>
+                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                            <span>2023-07-10 WIN</span>
+                            <span>2023-07-10 WIN</span>
+                            <span>2023-07-10 WIN</span>
+                            <span>2023-07-10 WIN</span>
+                        </Box>
+                    </Box>
+                </Box>
+                <Box
+                    sx={{
+                        width: '100%',
+                        height: '15%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        backgroundColor: '#fff',
+                        boxShadow: '0px 1px 8px 0px rgba(0, 0, 0, 0.10)',
+                        borderRadius: '24px',
+                    }}
+                >
+                    <Box sx={{ width: '90%', height: '100%', margin: '0 auto' }}>
+                        <Box>
+                            <p>업적</p>
+                        </Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                                <img
+                                    width={'30%'}
+                                    src="https://www.gravatar.com/avatar/HASH"
+                                    alt="user_image"
+                                    style={{ borderRadius: '30%' }}
+                                />
+                                <p>초심자</p>
+                            </Box>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                                <img
+                                    width={'30%'}
+                                    src="https://www.gravatar.com/avatar/HASH"
+                                    alt="user_image"
+                                    style={{ borderRadius: '30%' }}
+                                />
+                                <p>인기쟁이</p>
                             </Box>
                         </Box>
                     </Box>
                 </Box>
+                {!RisOwner && (
+                    <Box sx={{ height: '8%' }}>
+                        <Button
+                            variant="outlined"
+                            onClick={onReadyToggle}
+                            style={{
+                                width: '100%',
+                                backgroundColor: onReady ? '#3874CB' : '#fff', // 대기중일 때 색상 제거
+                                color: onReady ? '#ffffff' : '#1976d2',
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            준비
+                        </Button>
+                    </Box>
+                )}
             </Box>
-        </Container>
+        </Box>
     );
 };
 

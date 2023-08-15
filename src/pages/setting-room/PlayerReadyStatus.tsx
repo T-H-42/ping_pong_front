@@ -1,4 +1,4 @@
-import { Backdrop, Box, Button, Container, Typography } from '@mui/material';
+import { Backdrop, Box, Button, Container, Typography, rgbToHex } from '@mui/material';
 import { SocketContext } from '../../api/SocketContext';
 import React, { useContext, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -44,8 +44,11 @@ const PlayerReadyStatus = ({ onReady, setOnReady, settingInformation }) => {
     }, [gameSocket]);
 
     return (
-        <>
+        <Container
+            style={{ width: '90%', height: '85%', display: 'flex', backgroundColor: 'rgba(242, 242, 242, 0.5)' }}
+        >
             <OwnerPlayer onReady={onReady} />
+            {/* <OwnerPlayer onReady={onReady} /> */}
 
             <GuestPlayer
                 onReady={onReady}
@@ -53,7 +56,7 @@ const PlayerReadyStatus = ({ onReady, setOnReady, settingInformation }) => {
                 onReadyToggle={onReadyToggle}
                 backdrop={backdrop}
             />
-        </>
+        </Container>
     );
 };
 

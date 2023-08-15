@@ -27,66 +27,92 @@ const OwnerPlayer = ({ onReady }) => {
         }
     }, [onReady]);
     return (
-        <Container
-            sx={{
-                width: '60vw',
-                height: '50vh',
-                backgroundColor: 'darkgray',
-                display: 'flex',
-                justifyCcontent: ' center',
-                alignItems: 'center',
-            }}
-        >
+        <Box sx={{ width: '50%', height: '100%' }}>
             <Box
                 sx={{
-                    width: '100%',
-                    height: '90%',
+                    width: '60%',
+                    height: '100%',
                     display: 'flex',
+                    margin: '0 auto',
                     flexDirection: 'column',
-                    justifyContent: 'space-between',
+                    justifyContent: 'space-evenly',
                 }}
             >
-                <Box sx={{ width: '100%', height: '15%', justifyContent: 'space-between', display: 'flex' }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '15%', alignItems: 'center' }}>
-                        <img
-                            src="https://www.gravatar.com/avatar/HASH"
-                            alt="user_image"
-                            style={{ width: '30%', borderRadius: '50%' }}
-                        />
-                        <Typography variant="h6">김핑퐁</Typography>
-                    </Box>
-                    {RisOwner && (
-                        <Button
-                            variant="contained"
-                            onClick={initGameHandler}
-                            style={{
-                                backgroundColor: onReady ? '' : 'lightgray', // 대기중일 때 색상 제거
+                <Box
+                    sx={{
+                        width: '100%',
+                        height: '40%',
+                        borderRadius: '24px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        backgroundColor: '#fff',
+                        boxShadow: '0px 1px 8px 0px rgba(0, 0, 0, 0.10)',
+                    }}
+                >
+                    <Box
+                        sx={{
+                            width: '90%',
+                            height: '85%',
+                            display: 'flex',
+                            margin: '0 auto',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                width: '100%',
+                                height: '60%',
+                                textAlign: 'center',
+                                alignItems: 'center',
                             }}
                         >
-                            게임시작
-                        </Button>
-                    )}
+                            <img
+                                src="https://www.gravatar.com/avatar/HASH"
+                                alt="user_image"
+                                style={{ borderRadius: '30%', width: '20%' }}
+                            />
+                            <h2>박댕댕</h2>
+                        </Box>
+                        <Box>안녕하세여안녕하세여안녕하세여안녕하세여안녕하세여</Box>
+                    </Box>
                 </Box>
                 <Box
                     sx={{
                         width: '100%',
-                        height: '60%',
-                        backgroundColor: 'lightgray',
+                        height: '30%',
                         display: 'flex',
                         alignItems: 'center',
+                        backgroundColor: '#fff',
+                        boxShadow: '0px 1px 8px 0px rgba(0, 0, 0, 0.10)',
+                        borderRadius: '24px',
                     }}
                 >
-                    <Box sx={{ width: '80%', height: '90%', margin: '0 auto' }}>
-                        <Typography variant="h6">전적</Typography>
-                        <Box sx={{ width: '100%', display: 'flex', justifyCcontent: 'space-around' }}>
-                            <p>23.07.10</p>
-                            <p>WIN</p>
-                            <p>김핑퐁</p>
+                    <Box
+                        sx={{
+                            width: '90%',
+                            height: '90%',
+                            margin: '0 auto',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-around',
+                        }}
+                    >
+                        <Box>
+                            <Box>전적</Box>
+                            <Box>
+                                <span>총 50판</span>
+                                <span>20승 30패</span>
+                                <span>승률 25%</span>
+                            </Box>
                         </Box>
-                        <Box sx={{ width: '100%', display: 'flex', justifyCcontent: 'space-around' }}>
-                            <p>23.07.10</p>
-                            <p>WIN</p>
-                            <p>김핑퐁</p>
+                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                            <span>2023-07-10 WIN</span>
+                            <span>2023-07-10 WIN</span>
+                            <span>2023-07-10 WIN</span>
+                            <span>2023-07-10 WIN</span>
                         </Box>
                     </Box>
                 </Box>
@@ -95,50 +121,57 @@ const OwnerPlayer = ({ onReady }) => {
                         width: '100%',
                         height: '15%',
                         display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        backgroundColor: 'lightgray',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        backgroundColor: '#fff',
+                        boxShadow: '0px 1px 8px 0px rgba(0, 0, 0, 0.10)',
+                        borderRadius: '24px',
                     }}
                 >
-                    <Box
-                        sx={{
-                            width: '80%',
-                            height: '100%',
-                            margin: '0 auto',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Typography variant="h6" sx={{ width: '20%' }}>
-                            업적
-                        </Typography>
-                        <Box sx={{ display: 'flex', width: '30%', height: '100%' }}>
-                            <Box
-                                sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}
-                            >
+                    <Box sx={{ width: '90%', height: '100%', margin: '0 auto' }}>
+                        <Box>
+                            <p>업적</p>
+                        </Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
                                 <img
+                                    width={'30%'}
                                     src="https://www.gravatar.com/avatar/HASH"
                                     alt="user_image"
-                                    style={{ width: '30%', borderRadius: '50%', marginTop: '5px' }}
+                                    style={{ borderRadius: '30%' }}
                                 />
-                                <p>수다의 신</p>
+                                <p>초심자</p>
                             </Box>
-                            <Box
-                                sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}
-                            >
+                            <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
                                 <img
+                                    width={'30%'}
                                     src="https://www.gravatar.com/avatar/HASH"
                                     alt="user_image"
-                                    style={{ width: '30%', borderRadius: '50%', marginTop: '5px' }}
+                                    style={{ borderRadius: '30%' }}
                                 />
-                                <p>장사의 신</p>
+                                <p>인기쟁이</p>
                             </Box>
                         </Box>
                     </Box>
                 </Box>
+                <Box sx={{ height: '8%' }}>
+                    {RisOwner && (
+                        <Button
+                            variant="outlined"
+                            onClick={initGameHandler}
+                            style={{
+                                width: '100%',
+                                backgroundColor: onReady ? '#3874CB' : 'rgba(255, 255, 255)', // 대기중일 때 색상 제거
+                                color: onReady ? '#ffffff' : '#1976d2',
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            게임시작
+                        </Button>
+                    )}
+                </Box>
             </Box>
-        </Container>
+        </Box>
     );
 };
 
