@@ -42,6 +42,14 @@ const Login = () => {
             >
                 <button style={{ width: '200px', height: '50px' }}>42Seoul Login</button>
             </Link>
+
+            {/* ///////////////////////Dummy Login add///////////////////////// */}
+            <h1>Dummy test 로그인</h1>
+            <input type="text" placeholder="Dummy username" value={userInput} onChange={handleInputChange} />
+            <button style={{ width: '200px', height: '50px' }} onClick={handleSubmit}>
+                Dummy Login
+            </button>
+            {/* ///////////////////////Dummy Login add///////////////////////// */}
         </div>
     );
 };
