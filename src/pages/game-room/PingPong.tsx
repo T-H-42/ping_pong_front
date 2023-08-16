@@ -39,9 +39,11 @@ interface Net {
 const PingPong = (canvasRef: RefObject<HTMLCanvasElement>, gameElement): void => {
     // const [end, setEnd] = useState(0);
 
-    // if (!canvasRef.current) return;
+    if (!canvasRef.current) return;
 
     const cvs = canvasRef.current;
+
+    // if (!cvs) return;
     // console.log('에쓰씨비', cvs);
 
     const ctx = cvs.getContext('2d');
@@ -128,7 +130,7 @@ const PingPong = (canvasRef: RefObject<HTMLCanvasElement>, gameElement): void =>
     const game = (): void => {
         render();
         // requestAnimationFrame(game);
-    }
+    };
 
     game();
 };

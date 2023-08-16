@@ -47,16 +47,10 @@ const PingPongContainer = () => {
     const [canvasSize, setCanvasSize] = useState<canvasSize>({ width: 600, height: 400 });
     const [innerSize, setInnerSize] = useState({ width: window.innerWidth * 0.8, height: window.innerHeight * 0.8 });
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const cvs = canvasRef.current;
 
     const handleClose = () => {
-        // setOpen((prevOpen) => !prevOpen);
         setOpen(true);
     };
-    // const cvs = canvasRef.current;
-    // // console.log('에쓰씨비', cvs);
-
-    // const ctx = cvs.getContext('2d');
 
     const positionUpdateHandler = (response) => {
         // console.log('positionUpdateHandler 호출 완료');
@@ -78,6 +72,13 @@ const PingPongContainer = () => {
     };
     gameSocket.on('ft_finish_game', checkGameOver);
 
+    const checkErrorOver = (response) => {
+        if (!response) return alert(`${response} : 에러가 발생했습니다.`); //1 세팅룸 2 게임룰
+        setOpen(true);
+        response.isOwner ? setGameResult(true) : setGameResult(false);
+    };
+    gameSocket.on('ft_enemy_leave_room', checkErrorOver);
+
     const amazing = (width, height) => {
         const what = width * 2 > height * 3 ? true : false;
         if (what) setCanvasSize({ width: (height * 3) / 2, height: height });
@@ -97,11 +98,12 @@ const PingPongContainer = () => {
 
     return (
         <>
-            {/* {open && (
+            {open}
+            {open && (
                 <ModalContainer open={open} handleClose={handleClose}>
                     <GameResultContainer open={open} setOpen={setOpen} gameResult={gameResult} />
                 </ModalContainer>
-            )} */}
+            )}
 
             <canvas ref={canvasRef} width={canvasSize.width} height={canvasSize.height} />
         </>

@@ -43,47 +43,49 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
     //     speed: 100,
     //     roomName: RsettingRoomName,
     // });
-    const marks = [
-        {
-            value: 0,
-            label: '0.5',
-        },
-        {
-            value: 33.33,
-            label: '1.0',
-        },
-        {
-            value: 66.66,
-            label: '1.5',
-        },
-        {
-            value: 100,
-            label: '2.0',
-        },
-    ];
+    // const marks = [
+    //     {
+    //         value: 0,
+    //         label: '0.5',
+    //     },
+    //     {
+    //         value: 33.33,
+    //         label: '1.0',
+    //     },
+    //     {
+    //         value: 66.66,
+    //         label: '1.5',
+    //     },
+    //     {
+    //         value: 100,
+    //         label: '2.0',
+    //     },
+    // ];
     const handleScoreChange = (event: ChangeEvent<HTMLInputElement>, newScore: string) => {
         setSettingInformaiton((prev) => ({ ...prev, score: parseInt(newScore, 10) }));
     };
-
+    const handleModeChange = (event: ChangeEvent<HTMLInputElement>, newMode: string) => {
+        setSettingInformaiton((prev) => ({ ...prev, newMode: parseInt(newMode, 10) }));
+    };
     const valuetext = (value: number) => {
         const calculatedValue = (value / 100) * 1.5 + 0.5;
 
         return `${calculatedValue}°C`;
     };
 
-    const handleSpeedChange = (event: Event, newValue: number | number[]) => {
-        let newSpeed = ((newValue as number) / 100) * 1.5 + 0.5;
-        if (newSpeed === 1.4999) {
-            newSpeed = 1.5;
-        }
-        if (newSpeed === 0.99995) {
-            newSpeed = 1.0;
-        }
-        setSettingInformaiton((prevSetting) => ({
-            ...prevSetting,
-            speed: newSpeed,
-        }));
-    };
+    // const handleSpeedChange = (event: Event, newValue: number | number[]) => {
+    //     let newSpeed = ((newValue as number) / 100) * 1.5 + 0.5;
+    //     if (newSpeed === 1.4999) {
+    //         newSpeed = 1.5;
+    //     }
+    //     if (newSpeed === 0.99995) {
+    //         newSpeed = 1.0;
+    //     }
+    //     setSettingInformaiton((prevSetting) => ({
+    //         ...prevSetting,
+    //         speed: newSpeed,
+    //     }));
+    // };
     const submitSelectedOptions = useCallback(() => {
         setSettingInformaiton({
             score: settingInformation.score,
@@ -121,7 +123,7 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
                         </FormControl>
                     </Box>
                 </Box>
-                <Box sx={settingBox}>
+                {/* <Box sx={settingBox}>
                     <Typography id="modal-modal-title">게임속도 설정</Typography>
                     <Box sx={buttonContainer}>
                         <Box sx={{ width: 300 }}>
@@ -135,6 +137,23 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
                                 marks={marks}
                             />
                         </Box>
+                    </Box>
+                </Box> */}
+                <Box sx={settingBox}>
+                    <p id="modal-modal-title">게임모드 설정</p>
+                    <Box sx={buttonContainer}>
+                        <FormControl>
+                            <RadioGroup
+                                row
+                                aria-labelledby="demo-row-radio-buttons-group-label"
+                                name="row-radio-buttons-group"
+                                value={settingInformation.newMode}
+                                onChange={(event, value) => handleModeChange(event, value)}
+                            >
+                                <FormControlLabel value="0" control={<Radio />} label="일반모드" />
+                                <FormControlLabel value="1" control={<Radio />} label="가속모드 " />
+                            </RadioGroup>
+                        </FormControl>
                     </Box>
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>

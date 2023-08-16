@@ -6,18 +6,20 @@ import React, { useCallback, useContext, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import { useNavigate } from 'react-router';
 
-const OwnerPlayer = ({ onReady }) => {
+const OwnerPlayer = ({ onReady, guestReady }) => {
     const { gameSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     const RisOwner = useRecoilValue(isOwnerState);
 
     const navigate = useNavigate();
+    // useCallback(() =>{
+
+    // })
     const initGameHandler = useCallback(() => {
         // if (!onReady) {
         //     alert('상대방이 준비되지 않았습니다.');
         // }
-        if (!onReady) {
-            alert('상대방이 준비되지 않았습니다.');
+        if (!guestReady) {
             return;
         }
         if (!RsettingRoomName) {
@@ -29,7 +31,7 @@ const OwnerPlayer = ({ onReady }) => {
             alert('에밋컬');
         });
         navigate(`/game-room/${RsettingRoomName}`);
-    }, [onReady]);
+    }, [onReady, guestReady]);
     return (
         <Box sx={{ width: '50%', height: '100%' }}>
             <Box
@@ -165,14 +167,15 @@ const OwnerPlayer = ({ onReady }) => {
                             onClick={initGameHandler}
                             style={{
                                 width: '100%',
-                                backgroundColor: onReady ? '#3874CB' : 'rgba(255, 255, 255)', // 대기중일 때 색상 제거
-                                color: onReady ? '#ffffff' : '#1976d2',
+                                backgroundColor: guestReady ? '#3874CB' : 'rgba(255, 255, 255)', // 대기중일 때 색상 제거
+                                color: guestReady ? '#ffffff' : '#1976d2',
                                 fontWeight: 'bold',
                             }}
                         >
                             게임시작
                         </Button>
                     )}
+                    <div>{guestReady}</div>
                 </Box>
             </Box>
         </Box>

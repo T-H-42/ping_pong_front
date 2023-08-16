@@ -10,17 +10,10 @@ const PlayerReadyStatus = ({ onReady, setOnReady, settingInformation }) => {
     const { gameSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     const [initGame, setInitGame] = useState(false);
-    const [backdrop, setBackdrop] = useState(false);
+    const [guestReady, setGuestReady] = useState(false);
 
-    const handleBackdropClose = () => {
-        setBackdrop(false);
-    };
-    const handleBackdropOpen = () => {
-        setBackdrop(true);
-    };
     const onReadyToggle = () => {
         setOnReady((prev) => !prev);
-        setBackdrop((prev) => !prev);
         console.log('온레디 토글 :', onReady);
 
         if (!onReady) {
@@ -32,7 +25,8 @@ const PlayerReadyStatus = ({ onReady, setOnReady, settingInformation }) => {
     useEffect(() => {
         const handleGameReadySetting = (response) => {
             if (!response) return alert(response);
-            alert(`${response.success} 게임 레디 완료.`);
+            // alert(`${response.success} 게임 레디 완료.`);
+            setGuestReady(true);
             setInitGame(true);
         };
 
@@ -47,15 +41,10 @@ const PlayerReadyStatus = ({ onReady, setOnReady, settingInformation }) => {
         <Container
             style={{ width: '90%', height: '85%', display: 'flex', backgroundColor: 'rgba(242, 242, 242, 0.5)' }}
         >
-            <OwnerPlayer onReady={onReady} />
+            <OwnerPlayer onReady={onReady} guestReady={guestReady} />
             {/* <OwnerPlayer onReady={onReady} /> */}
 
-            <GuestPlayer
-                onReady={onReady}
-                handleBackdropClose={handleBackdropClose}
-                onReadyToggle={onReadyToggle}
-                backdrop={backdrop}
-            />
+            <GuestPlayer onReady={onReady} onReadyToggle={onReadyToggle} />
         </Container>
     );
 };

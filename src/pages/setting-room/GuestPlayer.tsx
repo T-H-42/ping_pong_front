@@ -3,7 +3,7 @@ import { isOwnerState } from '../../api/atoms';
 import React, { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 
-const GuestPlayer = ({ onReady, handleBackdropClose, onReadyToggle, backdrop }) => {
+const GuestPlayer = ({ onReady, onReadyToggle }) => {
     const RisOwner = useRecoilValue(isOwnerState);
 
     return (
