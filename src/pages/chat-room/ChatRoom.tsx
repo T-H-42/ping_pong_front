@@ -7,18 +7,28 @@ import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { SocketContext } from '../../api/SocketContext';
 
 import ModalRoomInfo from '../../components/ModalRoomInfo';
+import ModalAddFriend from '../../components/ModalAddFriend';
+import ModalRoomInvitation from '../../components/ModalRoomInvitation';
+
+import { Button, Modal, Box, Typography, TextField, Switch, FormControlLabel, Alert } from '@mui/material';
 
 const ChatRoom: React.FC = () => {
     console.log('챗룸 컴포넌트');
     const { chatSocket } = useContext(SocketContext);
-    const [open, setOpen] = useState(false);
+    const [openRoomInfo, setOpenRoomInfo] = useState(false);
+    const [openRoomInvitation, setOpenRoomInvitation] = useState(false);
     const [chats, setChats] = useState([]);
     const [message, setMessage] = useState('');
     const [friends, setFriends] = useState([]);
+    const [chatUsers, setChatUsers] = useState([]);
     const [right, setRight] = useState<number>(-1);
+    const [showAddFriend, setShowAddFriend] = useState<boolean>(false);
     const chatContainerEl = useRef(null);
     const roomName = localStorage.getItem('room-name');
     const navigate = useNavigate();
+
+    const [sender, setSender] = useState('');
+    const [receiver, setReceiver] = useState('');
 
     useEffect(() => {
         chatSocket.emit('ft_isEmptyRoom', roomName, (res: any) => {
@@ -48,9 +58,8 @@ const ChatRoom: React.FC = () => {
 
     useEffect(() => {
         chatSocket.emit('ft_get_chat_log', { roomName }, (chat) => {
-            console.log('ft_get_chat_log: ', chat);
+            console.log('ft_get_chat_log emit: ', chat);
             setChats(chat);
-            setMessage('');
         });
 
         const messageHandler = (chat) => {
@@ -60,8 +69,25 @@ const ChatRoom: React.FC = () => {
 
         chatSocket.on('ft_message', messageHandler);
 
+        chatSocket.on('ft_kick', (res) => {
+            console.log('ft_kick on: ', res);
+            navigate('/main');
+        });
+
+        chatSocket.on('ft_addfriend', (response: any) => {
+            console.log('ft_addfriend on: ', response);
+            setSender(response.sender);
+            setReceiver(response.receiver);
+            setShowAddFriend(true);
+        });
+
+        chatSocket.on('ft_invitechat', (res: any) => {
+            console.log('ft_invitechat on: ', res);
+        });
+        
         return () => {
             // chatSocket.off('ft_message', messageHandler);
+            setShowAddFriend(false);
         };
     }, []);
 
@@ -86,25 +112,60 @@ const ChatRoom: React.FC = () => {
     }, [navigate, roomName]);
 
     const handleOpen = () => {
-        chatSocket.emit('ft_getUserListInRoom', roomName, (res: any) => {
-            console.log('ft_getUserListInRoom: ', res);
-            setFriends(res.userList);
-            setRight(res.userRight);
-            // nhwang ASIS:setFriends(res) -> setFriends(res.userList) -> res.userRight는 요청자의 권한이니, 1이상인 경우 어드민에게 보여지는 버튼 보여주면 됩니다.
+        chatSocket.on('ft_getUserListInRoom', (res) => {
+            setChatUsers(res.userList);
+            res.userList.forEach((user, index) => {
+                if (user.username === localStorage.getItem('username')) {
+                    console.log('ft_getUserListInRoom on: ', res);
+                    setRight(user.right);
+                }
+            });
         });
-        setOpen(true);
+
+        chatSocket.emit('ft_getUserListInRoom', roomName, (res: any) => {
+            setChatUsers(res.userList);
+            res.userList.forEach((user, index) => {
+                if (user.username === localStorage.getItem('username')) {
+                    console.log('ft_getUserListInRoom emit: ', res);
+                    setRight(user.right);
+                }
+            });
+        });
+
+        setOpenRoomInfo(true);
     };
 
-    const handleClose = () => {
-        setOpen(false);
+    const handleOpenInvitation = () => {
+        chatSocket.emit('ft_getfriendlist', (res: any) => {
+            console.log('ft_getfriendlist emit: ', res);
+            setFriends(res);
+        });
+        setOpenRoomInvitation(true);
+    }
+
+    const handleCloseRoomInfo = () => {
+        setOpenRoomInfo(false);
+    };
+
+    const handleCloseRoomInvitation = () => {
+        setOpenRoomInvitation(false);
+    };
+
+    const handleAddFriendClose = () => {
+        setShowAddFriend(false);
     };
 
     return (
         <>
             <div>
+                <ModalAddFriend isOpen={showAddFriend} onClose={handleAddFriendClose} title={'친구 요청'} sender={sender} receiver={receiver} />
                 <h2>채팅방 이름 : {roomName}</h2>
-                <button onClick={handleOpen}>채팅방 정보</button>
-                <ModalRoomInfo isOpen={open} onClose={handleClose} title={'채팅방 정보'} friends={friends} right={right} chats={chats} setChats={setChats} />
+                <Box sx={{ display: 'flex', gap: '10px' }}>
+                    <Button variant="contained" onClick={handleOpen}>채팅방 정보</Button>
+                    <Button variant="contained" onClick={handleOpenInvitation}>채팅방 초대</Button>
+                </Box>
+                <ModalRoomInfo isOpen={openRoomInfo} onClose={handleCloseRoomInfo} title={'채팅방 정보'} chatUsers={chatUsers} right={right} chats={chats} setChats={setChats} />
+                <ModalRoomInvitation isOpen={openRoomInvitation} onClose={handleCloseRoomInvitation} title={'채팅방 초대'} friends={friends}/>
                 <h2 />
                 <div ref={chatContainerEl}>
                     {chats.map((chat, index) => (

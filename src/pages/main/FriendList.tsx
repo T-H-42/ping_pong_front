@@ -13,9 +13,14 @@ const FriendList = ({ dmName, setDMName }) => {
     const [newDM, setNewDM] = useState(false);
     const [sender, setSender] = useState('');
 
-    const friends = useRecoilValue<IFriendsState[]>(friendsState);
+    // const friends = useRecoilValue<IFriendsState[]>(friendsState);
+    const [friends, setFriends] = useState([]);
 
     useEffect(() => {
+        chatSocket.emit('ft_getfriendlist', (res: any) => {
+            console.log('ft_getfriendlist emit: ', res);
+            setFriends(res);
+        });
         const messageHandler = (res: any) => {
             console.log('프렌드리스트 메세지 핸들러: ', res);
             setNewDM(true);
@@ -28,10 +33,17 @@ const FriendList = ({ dmName, setDMName }) => {
         };
     }, []);
 
-    const onJoinDM = useCallback((username: any, status: number) => () => {
+    useEffect(() => {
+        chatSocket.on('ft_getfriendlist', (res: any) => {
+            console.log('ft_getfriendlist on: ', res);
+            setFriends(res);
+        });
+    }, [friends]);
+
+    const onJoinDM = useCallback((username: any, status: number, receiver: string) => () => {
         if (status === 0) {
             alert(`${username}님이 오프라인 상태입니다.`);
-        } else if (status === 1) {
+        } else if (status === 1 || status === 2) {
             chatSocket.emit('join-dm', username, (response: any) => {
                 if (response.success) {
                     localStorage.setItem('dm-username', username);
@@ -39,7 +51,9 @@ const FriendList = ({ dmName, setDMName }) => {
                     navigate(`/dm/${response.index}`);
                 }
             });
-        } else if (status === 2) {
+        } else if (status === 3) {
+            alert(`${username}님이 채팅 중입니다.`);
+        } else if (status === 4) {
             alert(`${username}님이 게임 중입니다.`);
         }
     }, [navigate]);
@@ -48,7 +62,8 @@ const FriendList = ({ dmName, setDMName }) => {
         <div style={{ border: '1px solid #000', padding: '10px' }}>
             <h2>친구 목록</h2>
             <ul style={{ textAlign: 'left' }}>
-                {friends.map((friend: any) => (
+
+                {friends ? friends.map((friend: any) => (
                     <div key={friend.f_id}>
                         <li
                             style={{
@@ -92,11 +107,12 @@ const FriendList = ({ dmName, setDMName }) => {
                                         }}
                                     ></button>
                                 ) : null}
-                                <button onClick={onJoinDM(friend.username, friend.status)}>DM</button>
+                                <button onClick={onJoinDM(friend.username, friend.status, friend.receiver)}>DM</button>
                             </div>
                         </li>
                     </div>
-                ))}
+                ))
+                    : null}
             </ul>
         </div>
     );

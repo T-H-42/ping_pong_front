@@ -4,6 +4,7 @@ import { Button, Stack, Box, Typography, Modal } from '@mui/material';
 import { useQuery } from 'react-query';
 import { getJwtCookie } from '../api/cookies';
 import { SocketContext } from '../api/SocketContext';
+import styles from '../styles/main/main.module.css'
 
 const fetchProfileData = async (userName) => {
   const res = (
@@ -60,17 +61,41 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
     chatSocket.emit('ft_mute', { roomName, targetUser: e }, (response: any) => {
       console.log('ft_mute: ', response);
 
-      setInterval(() => {
+      const intervalId = setInterval(() => {
         console.log('특정 이벤트 발생');
         chatSocket.emit('ft_mute_check', { roomName, targetUser: e }, (response: any) => {
           console.log('ft_mute_check: ', response);
+          if (response.success >= 1) {
+            clearInterval(intervalId); // 컴포넌트가 언마운트될 때 인터벌 정리
+            console.log('clearInterval 실행');
+          }
         });
-      }, 2000);
+      }, 6000);
+
+      ///-> nhwang: 테스트 해보니채팅방이 폭파되어도 계속호출되니, 제가 보낸 리턴값을 보고, clearInterval()을 아마 호출해야 될 것 같아요.
+      // useEffect(() => {
+      //   const intervalId = setInterval(() => {
+      //     // 여기에 매 2분마다 실행할 코드 또는 함수를 작성합니다.
+      //     console.log('특정 이벤트 발생');
+      //   }, 120000); // 2분을 밀리초로 변환한 값
+
+      //   return () => {
+      //     clearInterval(intervalId); // 컴포넌트가 언마운트될 때 인터벌 정리
+      //   };
+      // }, []);
+    });
+  };
+
+  const handleAddFriendClick = (e) => {
+    chatSocket.emit('ft_addfriend', { receiver: e }, (response: any) => {
+      console.log('ft_addfriend emit: ', response);
     });
   };
 
   const handleKickClick = (e) => {
-
+    chatSocket.emit('ft_kick', { roomName, targetUser: e }, (response: any) => {
+      console.log('ft_kick: ', response);
+    });
   };
 
   const handleBanClick = (e) => {
@@ -105,12 +130,7 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
       <Stack spacing={5} direction="column" alignItems="center">
         <Box
           component="img"
-          sx={{
-            height: 233,
-            width: 350,
-            maxHeight: { xs: 233, md: 167 },
-            maxWidth: { xs: 350, md: 250 },
-          }}
+          className={styles.sample}
           src={userInfo.image_url}
         ></Box>
 
@@ -118,7 +138,7 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
 
         <Stack direction="column" spacing={6}>
           <Stack direction="row" spacing={5}>
-            <Button variant="contained">친구 추가</Button>
+            <Button variant="contained" onClick={() => handleAddFriendClick(username)}>친구 추가</Button>
             <Button variant="contained">메세지</Button>
             <Button variant="contained">게임 초대</Button>
           </Stack>

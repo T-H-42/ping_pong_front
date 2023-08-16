@@ -7,7 +7,7 @@ import { roomNameState } from '../../api/atoms';
 
 import { SocketContext } from '../../api/SocketContext';
 
-import ModalExample from '../../components/ModalExample';
+import ModalCreateRoom from '../../components/ModalCreateRoom';
 
 interface Response {
     index: string;
@@ -84,7 +84,7 @@ const ChatList = () => {
             >
                 <h2>채팅방 목록</h2>
                 <button onClick={handleOpen}>채팅방 생성</button>
-                <ModalExample isOpen={open} onClose={handleClose} title={'채팅방 생성'} message={''} />
+                <ModalCreateRoom isOpen={open} onClose={handleClose} title={'채팅방 생성'} message={''} />
             </div>
             <table style={{ textAlign: 'center', width: '100%' }}>
                 <thead>

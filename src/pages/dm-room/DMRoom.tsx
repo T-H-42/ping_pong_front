@@ -45,6 +45,11 @@ const DMRoom = () => {
         //     console.log('message off');
         //     chatSocket.off('ft_dm', messageHandler);
         // };
+        return () => {
+            chatSocket.emit('leave-dm', index, () => {
+                console.log('leave-dm: ', index);
+            });
+        };
     }, []);
 
     const onChange = useCallback((e) => {

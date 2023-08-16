@@ -6,7 +6,7 @@ import { getJwtCookie } from './api/cookies';
 
 import Login from './pages/root/Login';
 import Main from './pages/main/Main';
-import ChatRoom from './pages/room/ChatRoom';
+import ChatRoom from './pages/chat-room/ChatRoom';
 import DMRoom from './pages/dm-room/DMRoom';
 import OAuth from './components/OAuth';
 import TwoFactorAuth from './pages/two-factor-auth/TwoFactorAuth';
