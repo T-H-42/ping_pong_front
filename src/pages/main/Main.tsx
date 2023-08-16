@@ -61,7 +61,6 @@ const Main = () => {
             setFriends([...updatedFriends]);
         });
 
-
         return () => {
             pingpongSocket.off('ft_connect');
             pingpongSocket.off('ft_disconnect');
