@@ -10,21 +10,25 @@ const OwnerPlayer = ({ onReady }) => {
     const { gameSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     const RisOwner = useRecoilValue(isOwnerState);
+
     const navigate = useNavigate();
     const initGameHandler = useCallback(() => {
+        // if (!onReady) {
+        //     alert('상대방이 준비되지 않았습니다.');
+        // }
         if (!onReady) {
-            if (!RsettingRoomName) {
-                navigate('/');
-                alert('잘못된 접근입니다.');
-            }
-            gameSocket.emit('ft_game_play', RsettingRoomName, (response: any) => {
-                if (!response.success) return alert(response.payload);
-            });
-            navigate(`/game-room/${RsettingRoomName}`);
-        }
-        if (onReady) {
             alert('상대방이 준비되지 않았습니다.');
+            return;
         }
+        if (!RsettingRoomName) {
+            navigate('/');
+            alert('잘못된 접근입니다.');
+        }
+        gameSocket.emit('ft_game_play', RsettingRoomName, (response: any) => {
+            if (!response.success) return alert(response.payload);
+            alert('에밋컬');
+        });
+        navigate(`/game-room/${RsettingRoomName}`);
     }, [onReady]);
     return (
         <Box sx={{ width: '50%', height: '100%' }}>

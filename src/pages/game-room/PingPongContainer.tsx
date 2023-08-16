@@ -97,11 +97,11 @@ const PingPongContainer = () => {
 
     return (
         <>
-            {open && (
+            {/* {open && (
                 <ModalContainer open={open} handleClose={handleClose}>
                     <GameResultContainer open={open} setOpen={setOpen} gameResult={gameResult} />
                 </ModalContainer>
-            )}
+            )} */}
 
             <canvas ref={canvasRef} width={canvasSize.width} height={canvasSize.height} />
         </>

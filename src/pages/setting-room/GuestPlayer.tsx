@@ -158,8 +158,8 @@ const GuestPlayer = ({ onReady, handleBackdropClose, onReadyToggle, backdrop }) 
                             onClick={onReadyToggle}
                             style={{
                                 width: '100%',
-                                backgroundColor: onReady ? '#3874CB' : '#fff', // 대기중일 때 색상 제거
-                                color: onReady ? '#ffffff' : '#1976d2',
+                                backgroundColor: onReady ? '#9BD3F2' : '#fff', // 대기중일 때 색상 제거
+                                color: onReady ? '#ffffff' : '#9BD3F2',
                                 fontWeight: 'bold',
                             }}
                         >

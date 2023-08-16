@@ -25,15 +25,18 @@ const ChatList = () => {
     const { chatSocket } = useContext(SocketContext);
     const roomName = localStorage.getItem('room-name');
 
-    const onJoinRoom = useCallback((roomName: string) => () => {
-        chatSocket.emit('join-room', { roomName, password }, (response: any) => {
-            console.log(response);
-            if (response.success) {
-                localStorage.setItem('room-name', roomName);
-                navigate(`/room/${roomName}`);
-            }
-        });
-    }, [navigate]);
+    const onJoinRoom = useCallback(
+        (roomName: string) => () => {
+            chatSocket.emit('join-room', { roomName, password }, (response: any) => {
+                console.log(response);
+                if (response.success) {
+                    localStorage.setItem('room-name', roomName);
+                    navigate(`/room/${roomName}`);
+                }
+            });
+        },
+        [navigate],
+    );
 
     useEffect(() => {
         const roomListHandler = (res: any) => {
@@ -97,16 +100,30 @@ const ChatList = () => {
                 <tbody>
                     {rooms.map((room: any, index: any) => (
                         <tr key={index}>
-                            <td style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{room.room_stat === 1 ? <img src="https://media.istockphoto.com/id/936681148/vector/lock-icon.jpg?s=612x612&w=0&k=20&c=_0AmWrBagdcee-KDhBUfLawC7Gh8CNPLWls73lKaNVA=" alt="Special" style={{ width: '50px', height: '50px' }} /> : null}
-                                {room.index}</td>
+                            <td style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                {room.room_stat === 1 ? (
+                                    <img
+                                        src="https://media.istockphoto.com/id/936681148/vector/lock-icon.jpg?s=612x612&w=0&k=20&c=_0AmWrBagdcee-KDhBUfLawC7Gh8CNPLWls73lKaNVA="
+                                        alt="Special"
+                                        style={{ width: '50px', height: '50px' }}
+                                    />
+                                ) : null}
+                                {room.index}
+                            </td>
                             <td>{room.limit_user}</td>
                             <td>
-                                {room.room_stat === 0 ? <button onClick={onJoinRoom(room.index)}>입장하기</button> : null}
-                                {room.room_stat === 1 ? <form onSubmit={(e) => handleSubmit(e, room.index)}>
-                                    <input type="password" placeholder="비밀번호" onChange={handleChange} />
-                                    <button type="submit">입장하기</button>
-                                </form> : null}
-                                {room.room_stat === 2 ? <button onClick={onJoinRoom(room.index)}>입장하기</button> : null}
+                                {room.room_stat === 0 ? (
+                                    <button onClick={onJoinRoom(room.index)}>입장하기</button>
+                                ) : null}
+                                {room.room_stat === 1 ? (
+                                    <form onSubmit={(e) => handleSubmit(e, room.index)}>
+                                        <input type="password" placeholder="비밀번호" onChange={handleChange} />
+                                        <button type="submit">입장하기</button>
+                                    </form>
+                                ) : null}
+                                {room.room_stat === 2 ? (
+                                    <button onClick={onJoinRoom(room.index)}>입장하기</button>
+                                ) : null}
                             </td>
                         </tr>
                     ))}
