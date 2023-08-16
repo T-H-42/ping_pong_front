@@ -6,16 +6,34 @@ import { roomNameState } from '../../api/atoms';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { SocketContext } from '../../api/SocketContext';
 
-import ModalExample from '../../components/ModalExample';
+import ModalRoomInfo from '../../components/ModalRoomInfo';
 
 const ChatRoom: React.FC = () => {
+    console.log('챗룸 컴포넌트');
     const { chatSocket } = useContext(SocketContext);
     const [open, setOpen] = useState(false);
     const [chats, setChats] = useState([]);
     const [message, setMessage] = useState('');
+    const [friends, setFriends] = useState([]);
+    const [right, setRight] = useState<number>(-1);
     const chatContainerEl = useRef(null);
-    const RroomName = useRecoilValue(roomNameState);
+    const roomName = localStorage.getItem('room-name');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        chatSocket.emit('ft_isEmptyRoom', roomName, (res: any) => {
+            console.log('ft_isEmptyRoom: ', res);
+            if (res) {
+                navigate('/main');
+            }
+        });
+
+        return () => {
+            chatSocket.emit('leave-room', roomName, () => {
+                console.log('leave-room: ', roomName);
+            });
+        };
+    }, []);
 
     useEffect(() => {
         if (!chatContainerEl.current) return;
@@ -29,6 +47,12 @@ const ChatRoom: React.FC = () => {
     }, [chats.length]);
 
     useEffect(() => {
+        chatSocket.emit('ft_get_chat_log', { roomName }, (chat) => {
+            console.log('ft_get_chat_log: ', chat);
+            setChats(chat);
+            setMessage('');
+        });
+
         const messageHandler = (chat) => {
             console.log('ft_message: ', chat);
             setChats((prevChats) => [...prevChats, chat]);
@@ -37,8 +61,7 @@ const ChatRoom: React.FC = () => {
         chatSocket.on('ft_message', messageHandler);
 
         return () => {
-            console.log('message off');
-            chatSocket.off('ft_message', messageHandler);
+            // chatSocket.off('ft_message', messageHandler);
         };
     }, []);
 
@@ -50,19 +73,25 @@ const ChatRoom: React.FC = () => {
         e.preventDefault();
         if (message === '') return alert('메시지를 입력해 주세요.');
 
-        await chatSocket.emit('ft_message', { message, roomName: RroomName }, (chat) => {
+        await chatSocket.emit('ft_message', { message, roomName }, (chat) => {
             setChats((prevChats) => [...prevChats, chat]);
             setMessage('');
         });
-    }, [message, RroomName]);
+    }, [message, roomName]);
 
     const onLeaveRoom = useCallback(() => {
-        chatSocket.emit('leave-room', RroomName, () => {
-            navigate('/main');
-        });
-    }, [navigate, RroomName]);
+        // chatSocket.emit('leave-room', roomName, () => {
+        navigate('/main');
+        // });
+    }, [navigate, roomName]);
 
     const handleOpen = () => {
+        chatSocket.emit('ft_getUserListInRoom', roomName, (res: any) => {
+            console.log('ft_getUserListInRoom: ', res);
+            setFriends(res.userList);
+            setRight(res.userRight);
+            // nhwang ASIS:setFriends(res) -> setFriends(res.userList) -> res.userRight는 요청자의 권한이니, 1이상인 경우 어드민에게 보여지는 버튼 보여주면 됩니다.
+        });
         setOpen(true);
     };
 
@@ -73,9 +102,9 @@ const ChatRoom: React.FC = () => {
     return (
         <>
             <div>
-                <h2>채팅방 이름 : {RroomName}</h2>
+                <h2>채팅방 이름 : {roomName}</h2>
                 <button onClick={handleOpen}>채팅방 정보</button>
-                <ModalExample isOpen={open} onClose={handleClose} title={'채팅방 정보'} message={'.'} />
+                <ModalRoomInfo isOpen={open} onClose={handleClose} title={'채팅방 정보'} friends={friends} right={right} chats={chats} setChats={setChats} />
                 <h2 />
                 <div ref={chatContainerEl}>
                     {chats.map((chat, index) => (

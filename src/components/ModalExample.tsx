@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { Button, Modal, Box, Typography } from '@mui/material';
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button, Modal, Box, Typography, TextField, Switch, FormControlLabel, Alert } from '@mui/material';
+import { SocketContext } from '../api/SocketContext';
 
 interface ModalExampleProps {
     isOpen: boolean;
@@ -8,7 +10,74 @@ interface ModalExampleProps {
     message: string;
 }
 
+interface Response {
+    success: boolean;
+    payload: string;
+}
+
 const ModalExample: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, message }) => {
+    const { chatSocket } = useContext(SocketContext);
+    const navigate = useNavigate();
+    const [roomName, setRoomName] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [protectedRoom, setProtectedRoom] = useState(false);
+    const [passwordRoom, setPasswordRoom] = useState(false);
+    const [inputNumber, setInputNumber] = useState(0);
+    const [showAlert, setShowAlert] = useState(false);
+
+    const handleInputRoomNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRoomName(event.target.value);
+    };
+
+    const handleInputPasswordChange = (event) => {
+        setPassword(event.target.value);
+    };
+
+    const handleProtectedRoomSwitchChange = () => {
+        if (!passwordRoom) {
+            setProtectedRoom(!protectedRoom);
+        }
+    };
+
+    const handlePasswordSwitchChange = () => {
+        if (!protectedRoom) {
+            setPasswordRoom(!passwordRoom);
+        }
+    };
+
+    const handleInputNumberChange = (event) => {
+        setInputNumber(event.target.value);
+    };
+
+    const onCreateRoom = () => {
+        // 공개방은 0, 비밀번호방1, 비공개방 2
+        let status = 0;
+        if (passwordRoom) {
+            status = 1;
+        } else if (protectedRoom) {
+            status = 2;
+        }
+
+        const data = {
+            roomName,
+            status,
+            password,
+            limitUser: inputNumber,
+        };
+
+        chatSocket.emit('create-room', data, (response: Response) => {
+            console.log('create-room: ', response);
+            if (response.success) {
+                setShowAlert(false);
+                localStorage.setItem('room-name', response.payload);
+                navigate(`/room/${response.payload}`);
+            } else {
+                setShowAlert(true);
+            }
+        });
+        setPassword('');
+    };
+
     return (
         <Modal open={isOpen} onClose={onClose} aria-labelledby="modal-title" aria-describedby="modal-description">
             <Box
@@ -27,12 +96,31 @@ const ModalExample: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, mes
                     {title}
                 </Typography>
                 <Typography id="modal-description" sx={{ mt: 2 }}>
-                    {message}
+                    {'방제목'}
+                </Typography>
+                <TextField label="방제목을 입력해주세요." fullWidth sx={{ mt: 2 }} value={roomName}
+                    onChange={handleInputRoomNameChange} />
+
+                <FormControlLabel
+                    control={<Switch checked={protectedRoom} onChange={handleProtectedRoomSwitchChange} />}
+                    label="비공개방"
+                    sx={{ mt: 2 }}
+                />
+
+                <FormControlLabel
+                    control={<Switch checked={passwordRoom} onChange={handlePasswordSwitchChange} />}
+                    label="비밀번호 설정"
+                    sx={{ mt: 2 }}
+                />
+                {passwordRoom && (
+                    <TextField label="비밀번호를 입력해주세요." type="password" fullWidth sx={{ mt: 2 }} value={password}
+                        onChange={handleInputPasswordChange} />
+                )}
+                <Typography id="modal-description" sx={{ mt: 2 }}>
+                    {'인원 수'}
                 </Typography>
                 <Box sx={{ position: 'absolute', bottom: 10, right: 10 }}>
-                    <Button variant="contained" onClick={onClose} sx={{ mt: 2 }}>
-                        닫기
-                    </Button>
+                    <Button variant="contained" onClick={onClose} sx={{ mt: 2 }}>닫기</Button>
                 </Box>
             </Box>
         </Modal>

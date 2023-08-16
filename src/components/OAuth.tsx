@@ -35,7 +35,6 @@ const OAuth = () => {
                 localStorage.setItem('username', response.data.username);
 
                 if (getJwtCookie('jwt')) {
-                    console.log('jwt', getJwtCookie('jwt'));
                     console.log('/user/signin 요청 성공');
                     console.log(`또끈: ${getJwtCookie('jwt')}`);
                     pingpongSocket.auth = { token: `${getJwtCookie('jwt')}` };

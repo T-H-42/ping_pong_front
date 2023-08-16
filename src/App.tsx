@@ -29,7 +29,7 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-    console.log('앱콜');
+    console.log('앱 컴포넌트');
 
     const pingpongSocket = createPingpongSocket();
     const chatSocket = createChatSocket();

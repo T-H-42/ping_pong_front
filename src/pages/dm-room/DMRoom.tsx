@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback, useContext } from 'react';
-import {} from 'react-router-dom';
-import {} from '../../api/atoms';
+import { } from 'react-router-dom';
+import { } from '../../api/atoms';
 import { useSearchParams, useNavigate, Navigate } from 'react-router-dom';
 import { dmNameState } from '../../api/atoms';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
@@ -27,6 +27,13 @@ const DMRoom = () => {
     }, [chats.length]);
 
     useEffect(() => {
+        setMessage('');
+
+        chatSocket.emit('ft_get_dm_log', { roomName: index }, (chat) => {
+            console.log('ft_get_dm_log: ', chat);
+            setChats(chat);
+        });
+
         const messageHandler = (chat: any) => {
             console.log('디엠룸 메세지 핸들러: ', chat);
             setChats((prevChats) => [...prevChats, chat]);
@@ -34,18 +41,15 @@ const DMRoom = () => {
 
         chatSocket.on('ft_dm', messageHandler);
 
-        return () => {
-            console.log('message off');
-            chatSocket.off('ft_dm', messageHandler);
-        };
+        // return () => {
+        //     console.log('message off');
+        //     chatSocket.off('ft_dm', messageHandler);
+        // };
     }, []);
 
-    const onChange = useCallback(
-        (e) => {
-            setMessage(e.target.value);
-        },
-        [message],
-    );
+    const onChange = useCallback((e) => {
+        setMessage(e.target.value);
+    }, [message]);
 
     const onSendMessage = useCallback(
         async (e) => {
@@ -62,28 +66,10 @@ const DMRoom = () => {
     );
 
     const onLeaveRoom = useCallback(() => {
-        console.log('@@@@@@@@@@@');
         chatSocket.emit('leave-dm', index, () => {
             navigate('/main');
         });
     }, [navigate]);
-
-    useEffect(() => {
-        const handlePopstate = () => {
-            // This function will be called when the back button is clicked
-            console.log('Back button clicked!');
-            // Call your callback function here
-            // For example: myCallbackFunction();
-        };
-
-        // Add the event listener for the 'popstate' event
-        window.onpopstate = handlePopstate;
-
-        return () => {
-            // Remove the event listener when the component is unmounted
-            window.onpopstate = null;
-        };
-    }, []);
 
     return (
         <div
