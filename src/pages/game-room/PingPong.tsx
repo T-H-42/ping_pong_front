@@ -37,16 +37,11 @@ interface Net {
 }
 
 const PingPong = (canvasRef: RefObject<HTMLCanvasElement>, gameElement): void => {
-    // const [end, setEnd] = useState(0);
-
     if (!canvasRef.current) return;
 
     const cvs = canvasRef.current;
 
-    // if (!cvs) return;
-    // console.log('에쓰씨비', cvs);
-
-    const ctx = cvs.getContext('2d');
+    const ctx = cvs.getContext('2d'); // 캔버스의 속성 중 하나인 2D 렌더링 컨텍스트(CanvasRenderingContext2D)를 가져오는 역할을 한다.
     if (!ctx) return;
 
     const net: Net = {
@@ -77,21 +72,6 @@ const PingPong = (canvasRef: RefObject<HTMLCanvasElement>, gameElement): void =>
         radius: (gameElement.ball.radius * ((cvs.width + cvs.height) / 2)) / 100,
     };
 
-    // const controllResizeX = (x: number): number => {
-    //     return 0;
-    // }
-
-    // const controllResizeY = (x: number): number => {
-    //     return 0;
-    // }
-
-    // const movePaddle = (event: MouseEvent): void => {
-    //     const rect = cvs.getBoundingClientRect();
-    //     const root: HTMLElement | null = document.documentElement;
-    //     const mouseY: number = event.clientY - rect.top - root.scrollTop;
-    //     gameElement.leftPaddle.y = mouseY - gameElement.leftPaddle.height / 2;
-    // };
-
     const drawPaddle = (x: number, y: number, width: number, height: number, color: string): void => {
         ctx.fillStyle = color;
         ctx.fillRect(x, y, width, height);
@@ -116,7 +96,6 @@ const PingPong = (canvasRef: RefObject<HTMLCanvasElement>, gameElement): void =>
         ctx.closePath();
         ctx.fill();
     };
-    // gameElement.score;
 
     const render = (): void => {
         drawPaddle(0, 0, cvs.width, cvs.height, 'BLACK');
@@ -129,7 +108,6 @@ const PingPong = (canvasRef: RefObject<HTMLCanvasElement>, gameElement): void =>
     };
     const game = (): void => {
         render();
-        // requestAnimationFrame(game);
     };
 
     game();
