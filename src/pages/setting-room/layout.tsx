@@ -34,8 +34,6 @@ const SettingRoomLayout = () => {
     useEffect(() => {
         const preventGoBack = (event) => {
             event.preventDefault();
-            // event.returnValue = '눌러주세영';
-            // console.log('감지ㅣ짖이징지잊ㅇㅈㅇㅈㅇ');
             alert('종료하기를 눌러주세요 :D');
         };
         console.log('이펙트 발동!');
@@ -48,9 +46,7 @@ const SettingRoomLayout = () => {
             gameSocket.emit('ft_leave_setting_room', (response: any) => {
                 if (!response.success) return alert(`설정 방 나가기 실패 :  ${response.payload}`);
             });
-            // alert('종료하기를 눌러주세요 :D');
         });
-        // alert('애프터 ');
         window.addEventListener('beforeunload', preventGoBack);
         return () => {
             window.removeEventListener('popstate', preventGoBack);
@@ -110,22 +106,11 @@ const SettingRoomLayout = () => {
         };
     }, [gameSocket]);
 
-    // useEffect(() => {
-    //     console.log('개시발');
-
-    //     return () => {
-    //         console.log('ㅆ:삘ㅃ련아');
-    //     };
-    // }, []);
     return (
         <>
-            {/* <input onChange={(event) => setValue(event.target.value)} value={value} /> */}
-            {/* <Beforeunload onBeforeunload={() => 'why not'} /> */}
             {onReady ? (
                 <>
-                    <ModalContainer open={open} handleClose={handleClose}>
-                        <>{/* <GameSettingContainer open={open} handleClose={handleClose} /> */}</>
-                    </ModalContainer>
+                    <ModalContainer open={open} handleClose={handleClose}></ModalContainer>
                     <PlayerReadyStatus
                         onReady={onReady}
                         setOnReady={setOnReady}
@@ -179,7 +164,6 @@ const SettingRoomLayout = () => {
                     )}
                 </>
             )}
-            {/* <Beforeunload /> */}
         </>
     );
 };
