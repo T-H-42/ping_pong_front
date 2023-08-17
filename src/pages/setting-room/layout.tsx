@@ -10,6 +10,7 @@ import { useBeforeunload } from 'react-beforeunload';
 import { Beforeunload } from 'react-beforeunload';
 // import history from '../../api/history';
 import { useLocation } from 'react-router-dom';
+import GoHomeButton from '../../components/GoHomeButton';
 // import { useHistory } from 'react-router-dom';
 
 interface ISettingInformation {
@@ -108,62 +109,18 @@ const SettingRoomLayout = () => {
 
     return (
         <>
-            {onReady ? (
-                <>
-                    <ModalContainer open={open} handleClose={handleClose}></ModalContainer>
-                    <PlayerReadyStatus
-                        onReady={onReady}
-                        setOnReady={setOnReady}
-                        settingInformation={settingInformation}
-                    />
-                    <button onClick={handleClose}>게임 설정</button>
-                    <button onClick={handleExit}>게임 나가기</button>
-                    {open && (
-                        <ModalContainer open={open} handleClose={handleClose}>
-                            <>
-                                <GameSettingContainer
-                                    open={open}
-                                    handleClose={handleClose}
-                                    settingInformation={settingInformation}
-                                    setSettingInformaiton={setSettingInformaiton}
-                                />
-                            </>
-                        </ModalContainer>
-                    )}
-                </>
-            ) : (
-                <>
-                    <ModalContainer open={open} handleClose={handleClose}>
-                        <>
-                            <GameSettingContainer
-                                open={open}
-                                handleClose={handleClose}
-                                settingInformation={settingInformation}
-                                setSettingInformaiton={setSettingInformaiton}
-                            />
-                        </>
-                    </ModalContainer>
-                    <PlayerReadyStatus
-                        onReady={onReady}
-                        setOnReady={setOnReady}
-                        settingInformation={settingInformation}
-                    />
-                    <button onClick={handleClose}>게임 설정</button>
-                    <button onClick={handleExit}>게임 나가기</button>
-                    {open && (
-                        <ModalContainer open={open} handleClose={handleClose}>
-                            <>
-                                <GameSettingContainer
-                                    open={open}
-                                    handleClose={handleClose}
-                                    settingInformation={settingInformation}
-                                    setSettingInformaiton={setSettingInformaiton}
-                                />
-                            </>
-                        </ModalContainer>
-                    )}
-                </>
-            )}
+            <GoHomeButton />
+            <ModalContainer open={open} handleClose={handleClose}>
+                <GameSettingContainer
+                    open={open}
+                    handleClose={handleClose}
+                    settingInformation={settingInformation}
+                    setSettingInformaiton={setSettingInformaiton}
+                />
+            </ModalContainer>
+            <PlayerReadyStatus onReady={onReady} setOnReady={setOnReady} settingInformation={settingInformation} />
+            <button onClick={handleClose}>게임 설정</button>
+            <button onClick={handleExit}>게임 나가기</button>
         </>
     );
 };

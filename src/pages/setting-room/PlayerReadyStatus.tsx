@@ -39,7 +39,12 @@ const PlayerReadyStatus = ({ onReady, setOnReady, settingInformation }) => {
 
     return (
         <Container
-            style={{ width: '90%', height: '85%', display: 'flex', backgroundColor: 'rgba(242, 242, 242, 0.5)' }}
+            style={{
+                width: '1360px',
+                height: '864px',
+                display: 'flex',
+                backgroundColor: 'rgba(242, 242, 242, 0.5)',
+            }}
         >
             <OwnerPlayer onReady={onReady} guestReady={guestReady} />
             {/* <OwnerPlayer onReady={onReady} /> */}

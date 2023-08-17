@@ -13,7 +13,8 @@ import TwoFactorAuth from './pages/two-factor-auth/TwoFactorAuth';
 // import PrivateRoute from './components/PrivateRoute';
 import NotFound from './components/NotFound';
 import { SocketContext } from './api/SocketContext';
-
+import { ThemeProvider } from '@mui/material/styles';
+import theme from './styles/theme';
 import { createPingpongSocket, createChatSocket, createGameSocket } from './api/socket';
 import SettingRoomLayout from './pages/setting-room/layout';
 import GameRoomLayout from './pages/game-room/layout';
@@ -51,41 +52,43 @@ function App() {
     }, [gameSocket, pingpongSocket, chatSocket]);
     return (
         <RecoilRoot>
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '100vh',
-                }}
-            >
-                <SocketContext.Provider value={{ pingpongSocket, chatSocket, gameSocket }}>
-                    <BrowserRouter>
-                        <QueryClientProvider client={queryClient}>
-                            <Suspense fallback={<h1>Fucking Loading</h1>}>
-                                <Routes>
-                                    <Route path="/" element={<Login />}></Route>
-                                    <Route path="/redirect" element={<OAuth />}></Route>
+            <ThemeProvider theme={theme}>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '100vh',
+                    }}
+                >
+                    <SocketContext.Provider value={{ pingpongSocket, chatSocket, gameSocket }}>
+                        <BrowserRouter>
+                            <QueryClientProvider client={queryClient}>
+                                <Suspense fallback={<h1>Fucking Loading</h1>}>
+                                    <Routes>
+                                        <Route path="/" element={<Login />}></Route>
+                                        <Route path="/redirect" element={<OAuth />}></Route>
 
-                                    <Route path="/redirect2" element={<DummyOAuth />}></Route>
+                                        <Route path="/redirect2" element={<DummyOAuth />}></Route>
 
-                                    <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
-                                    {/* <Route element={<PrivateRoute />}> */}
-                                    <Route path="/main" element={<Main />} />
-                                    <Route path="/room/:roomName" element={<ChatRoom />} />
-                                    <Route path="/dm/:dmName" element={<DMRoom />} />
-                                    <Route path="/setting-room/:roomName" element={<SettingRoomLayout />} />
-                                    <Route path="/game-room/:roomName" element={<GameRoomLayout />} />
+                                        <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
+                                        {/* <Route element={<PrivateRoute />}> */}
+                                        <Route path="/main" element={<Main />} />
+                                        <Route path="/room/:roomName" element={<ChatRoom />} />
+                                        <Route path="/dm/:dmName" element={<DMRoom />} />
+                                        <Route path="/setting-room/:roomName" element={<SettingRoomLayout />} />
+                                        <Route path="/game-room/:roomName" element={<GameRoomLayout />} />
 
-                                    {/* </Route> */}
-                                    <Route path="*" element={<NotFound />} />
-                                </Routes>
-                            </Suspense>
-                        </QueryClientProvider>
-                    </BrowserRouter>
-                </SocketContext.Provider>
-            </div>
+                                        {/* </Route> */}
+                                        <Route path="*" element={<NotFound />} />
+                                    </Routes>
+                                </Suspense>
+                            </QueryClientProvider>
+                        </BrowserRouter>
+                    </SocketContext.Provider>
+                </div>
+            </ThemeProvider>
         </RecoilRoot>
     );
 }
