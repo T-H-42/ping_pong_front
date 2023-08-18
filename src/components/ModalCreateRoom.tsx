@@ -12,7 +12,7 @@ interface ModalExampleProps {
 
 interface Response {
     success: boolean;
-    payload: string;
+    faillog: string;
 }
 
 const ModalCreateRoom: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, message }) => {
@@ -24,6 +24,7 @@ const ModalCreateRoom: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, 
     const [passwordRoom, setPasswordRoom] = useState(false);
     const [inputNumber, setInputNumber] = useState(0);
     const [showAlert, setShowAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleInputRoomNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRoomName(event.target.value);
@@ -69,10 +70,11 @@ const ModalCreateRoom: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, 
             console.log('create-room: ', response);
             if (response.success) {
                 setShowAlert(false);
-                localStorage.setItem('room-name', response.payload);
-                navigate(`/room/${response.payload}`);
+                localStorage.setItem('room-name', response.faillog);
+                navigate(`/room/${response.faillog}`);
             } else {
                 setShowAlert(true);
+                setErrorMessage(response.faillog);
             }
         });
         setPassword('');
@@ -86,7 +88,7 @@ const ModalCreateRoom: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, 
             aria-describedby="modal-description"
         >
             <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, height: 500, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
-                {showAlert && <Alert severity="error">방제목과 인원 수를 입력해주세요.</Alert>}
+                {showAlert && <Alert severity="error">{errorMessage}</Alert>}
                 <Typography id="modal-title" variant="h6" component="h2">
                     {title}
                 </Typography>

@@ -30,6 +30,8 @@ const ChatRoom: React.FC = () => {
     const [sender, setSender] = useState('');
     const [receiver, setReceiver] = useState('');
 
+    const username = localStorage.getItem('username');
+
     useEffect(() => {
         chatSocket.emit('ft_isEmptyRoom', roomName, (res: any) => {
             console.log('ft_isEmptyRoom: ', res);
@@ -37,6 +39,22 @@ const ChatRoom: React.FC = () => {
                 navigate('/main');
             }
         });
+
+        chatSocket.on('ft_mute', (res: any) => {
+            console.log('ft_mute on: ', res);
+
+            const intervalId = setInterval(() => {
+                console.log('setInterval');
+                chatSocket.emit('ft_mute_check', { roomName, targetUser: username }, (response: any) => {
+                    console.log('ft_mute_check: ', response);
+                    if (response.success >= 1) {
+                        console.log('clearInterval 실행');
+                        clearInterval(intervalId); // 컴포넌트가 언마운트될 때 인터벌 정리
+                    }
+                });
+            }, 6000);
+
+        })
 
         return () => {
             chatSocket.emit('leave-room', roomName, () => {
@@ -81,10 +99,6 @@ const ChatRoom: React.FC = () => {
             setShowAddFriend(true);
         });
 
-        chatSocket.on('ft_invitechat', (res: any) => {
-            console.log('ft_invitechat on: ', res);
-        });
-        
         return () => {
             // chatSocket.off('ft_message', messageHandler);
             setShowAddFriend(false);
@@ -100,8 +114,15 @@ const ChatRoom: React.FC = () => {
         if (message === '') return alert('메시지를 입력해 주세요.');
 
         await chatSocket.emit('ft_message', { message, roomName }, (chat) => {
-            setChats((prevChats) => [...prevChats, chat]);
-            setMessage('');
+            console.log('ft_message: ', chat);
+            if (chat.success) {
+                setChats((prevChats) => [...prevChats, chat]);
+                setMessage('');
+            } else {
+                const error = { username: chat.username, message: chat.faillog }
+                setChats((prevChats) => [...prevChats, error]);
+                setMessage('');
+            }
         });
     }, [message, roomName]);
 
@@ -165,7 +186,7 @@ const ChatRoom: React.FC = () => {
                     <Button variant="contained" onClick={handleOpenInvitation}>채팅방 초대</Button>
                 </Box>
                 <ModalRoomInfo isOpen={openRoomInfo} onClose={handleCloseRoomInfo} title={'채팅방 정보'} chatUsers={chatUsers} right={right} chats={chats} setChats={setChats} />
-                <ModalRoomInvitation isOpen={openRoomInvitation} onClose={handleCloseRoomInvitation} title={'채팅방 초대'} friends={friends}/>
+                <ModalRoomInvitation isOpen={openRoomInvitation} onClose={handleCloseRoomInvitation} title={'채팅방 초대'} friends={friends} />
                 <h2 />
                 <div ref={chatContainerEl}>
                     {chats.map((chat, index) => (

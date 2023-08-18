@@ -59,19 +59,8 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
 
   const handleMuteClick = (e) => {
     chatSocket.emit('ft_mute', { roomName, targetUser: e }, (response: any) => {
-      console.log('ft_mute: ', response);
-
-      const intervalId = setInterval(() => {
-        console.log('특정 이벤트 발생');
-        chatSocket.emit('ft_mute_check', { roomName, targetUser: e }, (response: any) => {
-          console.log('ft_mute_check: ', response);
-          if (response.success >= 1) {
-            clearInterval(intervalId); // 컴포넌트가 언마운트될 때 인터벌 정리
-            console.log('clearInterval 실행');
-          }
-        });
-      }, 6000);
-
+      console.log('ft_mute: ');
+      // console.log('ft_mute: ', response);
       ///-> nhwang: 테스트 해보니채팅방이 폭파되어도 계속호출되니, 제가 보낸 리턴값을 보고, clearInterval()을 아마 호출해야 될 것 같아요.
       // useEffect(() => {
       //   const intervalId = setInterval(() => {

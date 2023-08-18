@@ -85,7 +85,7 @@ const Main = () => {
 
     return (
         <div style={{ textAlign: 'center' }}>
-            <ModalRoomInvitationReceiver isOpen={openInvitation} onClose={handleClose} title={'채팅방 초대'} roomName={roomName} sender={sender} />
+            <ModalRoomInvitationReceiver isOpen={openInvitation} onClose={handleClose} title={'채팅방 초대'} roomName={roomName} sender={sender} />            
             <GameStartButton />
             <LogOutButton />
             <h1> {localStorage.getItem('username')}의 메인 페이지</h1>

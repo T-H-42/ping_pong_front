@@ -4,6 +4,8 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { IFriendsState, friendsState, dmNameState } from '../../api/atoms';
 import { SocketContext } from '../../api/SocketContext';
 
+import ModalError from '../../components/ModalError';
+
 const FriendList = ({ dmName, setDMName }) => {
     console.log('프렌드리스트 컴포넌트');
 
@@ -12,9 +14,12 @@ const FriendList = ({ dmName, setDMName }) => {
 
     const [newDM, setNewDM] = useState(false);
     const [sender, setSender] = useState('');
-
+    
     // const friends = useRecoilValue<IFriendsState[]>(friendsState);
     const [friends, setFriends] = useState([]);
+    
+    const [openError, setOpenError] = useState(false);
+    const [message, setMessage] = useState('');
 
     useEffect(() => {
         chatSocket.emit('ft_getfriendlist', (res: any) => {
@@ -41,25 +46,43 @@ const FriendList = ({ dmName, setDMName }) => {
     }, [friends]);
 
     const onJoinDM = useCallback((username: any, status: number, receiver: string) => () => {
-        if (status === 0) {
-            alert(`${username}님이 오프라인 상태입니다.`);
-        } else if (status === 1 || status === 2) {
-            chatSocket.emit('join-dm', username, (response: any) => {
-                if (response.success) {
-                    localStorage.setItem('dm-username', username);
-                    localStorage.setItem('dm-index', response.index);
-                    navigate(`/dm/${response.index}`);
-                }
-            });
-        } else if (status === 3) {
-            alert(`${username}님이 채팅 중입니다.`);
-        } else if (status === 4) {
-            alert(`${username}님이 게임 중입니다.`);
-        }
+
+        chatSocket.emit('join-dm', username, (response: any) => {
+            console.log('join-dm: ', response);
+            if (response.success) {
+                localStorage.setItem('dm-username', username);
+                localStorage.setItem('dm-index', response.index);
+                navigate(`/dm/${response.index}`);
+            } else {
+                setOpenError(true);
+                setMessage(response.faillog);
+            }
+        });
+        // if (status === 0) {
+        //     alert(`${username}님이 오프라인 상태입니다.`);
+        // } else if (status === 1 || status === 2) {
+        //     chatSocket.emit('join-dm', username, (response: any) => {
+        //         if (response.success) {
+        //             localStorage.setItem('dm-username', username);
+        //             localStorage.setItem('dm-index', response.index);
+        //             navigate(`/dm/${response.index}`);
+        //         }
+        //     });
+        // } else if (status === 3) {
+        //     alert(`${username}님이 채팅 중입니다.`);
+        // } else if (status === 4) {
+        //     alert(`${username}님이 게임 중입니다.`);
+        // }
     }, [navigate]);
+
+    const handleClose = () => {
+        setOpenError(false);
+    };
 
     return (
         <div style={{ border: '1px solid #000', padding: '10px' }}>
+            <ModalError isOpen={openError} onClose={handleClose} title={'입장 불가'} message={message} />
+
             <h2>친구 목록</h2>
             <ul style={{ textAlign: 'left' }}>
 

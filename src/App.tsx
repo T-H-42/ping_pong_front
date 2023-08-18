@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { RecoilRoot } from 'recoil';
 import { getJwtCookie } from './api/cookies';
 
-import Login from './pages/root/Login';
+import Login from './pages/login/Login';
 import Main from './pages/main/Main';
 import ChatRoom from './pages/chat-room/ChatRoom';
 import DMRoom from './pages/dm-room/DMRoom';
