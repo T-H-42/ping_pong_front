@@ -6,12 +6,8 @@ import { useRecoilValue } from 'recoil';
 import { settingRoomNameState } from '../../api/atoms';
 import { useNavigate } from 'react-router-dom';
 import PlayerReadyStatus from './PlayerReadyStatus';
-import { useBeforeunload } from 'react-beforeunload';
-import { Beforeunload } from 'react-beforeunload';
-// import history from '../../api/history';
-import { useLocation } from 'react-router-dom';
 import GoHomeButton from '../../components/GoHomeButton';
-// import { useHistory } from 'react-router-dom';
+import { Box, Button } from '@mui/material';
 
 interface ISettingInformation {
     score: number;
@@ -60,12 +56,12 @@ const SettingRoomLayout = () => {
     const handleClose = () => {
         setOpen((prevOpen) => !prevOpen);
     };
-    const handleExit = () => {
-        gameSocket.emit('ft_leave_setting_room', (response: any) => {
-            if (!response.success) return alert(`설정 방 나가기 실패 :  ${response.payload}`);
-        });
-        navigate('/');
-    };
+    // const handleExit = () => {
+    //     gameSocket.emit('ft_leave_setting_room', (response: any) => {
+    //         if (!response.success) return alert(`설정 방 나가기 실패 :  ${response.payload}`);
+    //     });
+    //     navigate('/');
+    // };
 
     useEffect(() => {
         const handleEnemyLeaveSettingRoom = (response) => {
@@ -109,7 +105,20 @@ const SettingRoomLayout = () => {
 
     return (
         <>
-            <GoHomeButton />
+            <Box
+                sx={{
+                    display: 'flex',
+                    width: '1360px',
+                    height: '40px',
+                    justifyContent: 'space-between',
+                    marginBottom: '32px',
+                }}
+            >
+                <GoHomeButton />
+                <Button variant="outlined" onClick={handleClose}>
+                    게임 설정
+                </Button>
+            </Box>
             <ModalContainer open={open} handleClose={handleClose}>
                 <GameSettingContainer
                     open={open}
@@ -119,8 +128,7 @@ const SettingRoomLayout = () => {
                 />
             </ModalContainer>
             <PlayerReadyStatus onReady={onReady} setOnReady={setOnReady} settingInformation={settingInformation} />
-            <button onClick={handleClose}>게임 설정</button>
-            <button onClick={handleExit}>게임 나가기</button>
+            {/* <Button onClick={handleClose}>게임 설정</Button> */}
         </>
     );
 };

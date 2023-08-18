@@ -60,6 +60,7 @@ function App() {
                         alignItems: 'center',
                         justifyContent: 'center',
                         height: '100vh',
+                        width: '100vw',
                     }}
                 >
                     <SocketContext.Provider value={{ pingpongSocket, chatSocket, gameSocket }}>

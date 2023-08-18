@@ -1,11 +1,13 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
+'use strict';
+var __importDefault =
+    (this && this.__importDefault) ||
+    function (mod) {
+        return mod && mod.__esModule ? mod : { default: mod };
+    };
+Object.defineProperty(exports, '__esModule', { value: true });
 exports.MessageForm = exports.Message = exports.MessageBox = exports.ChatContainer = void 0;
-const styled_1 = __importDefault(require("@emotion/styled"));
-const ChatContainer = styled_1.default.div `
+const styled_1 = __importDefault(require('@emotion/styled'));
+const ChatContainer = styled_1.default.div`
   display: flex;
   flex-direction: column;
   border: 1px solid #000;
@@ -20,7 +22,7 @@ const ChatContainer = styled_1.default.div `
   background: #b2c7d9;
 `;
 exports.ChatContainer = ChatContainer;
-const MessageBox = styled_1.default.div `
+const MessageBox = styled_1.default.div`
   display: flex;
   flex-direction: column;
 
@@ -41,7 +43,7 @@ const MessageBox = styled_1.default.div `
   }
 `;
 exports.MessageBox = MessageBox;
-const Message = styled_1.default.span `
+const Message = styled_1.default.span`
   margin-bottom: 0.5rem;
   background: #fff;
   width: fit-content;
@@ -49,7 +51,7 @@ const Message = styled_1.default.span `
   border-radius: 0.5rem;
 `;
 exports.Message = Message;
-const MessageForm = styled_1.default.form `
+const MessageForm = styled_1.default.form`
   display: flex;
   margin-top: 24px;
 

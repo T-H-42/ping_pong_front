@@ -1,4 +1,4 @@
-import { Backdrop, Box, Button, Container, Typography, rgbToHex } from '@mui/material';
+import { Box } from '@mui/material';
 import { SocketContext } from '../../api/SocketContext';
 import React, { useContext, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -14,7 +14,7 @@ const PlayerReadyStatus = ({ onReady, setOnReady, settingInformation }) => {
 
     const onReadyToggle = () => {
         setOnReady((prev) => !prev);
-        console.log('온레디 토글 :', onReady);
+        console.log('ready 상태', onReady);
 
         if (!onReady) {
             gameSocket.emit('ft_game_ready', RsettingRoomName, (response: any) => {
@@ -25,7 +25,6 @@ const PlayerReadyStatus = ({ onReady, setOnReady, settingInformation }) => {
     useEffect(() => {
         const handleGameReadySetting = (response) => {
             if (!response) return alert(response);
-            // alert(`${response.success} 게임 레디 완료.`);
             setGuestReady(true);
             setInitGame(true);
         };
@@ -38,7 +37,7 @@ const PlayerReadyStatus = ({ onReady, setOnReady, settingInformation }) => {
     }, [gameSocket]);
 
     return (
-        <Container
+        <Box
             style={{
                 width: '1360px',
                 height: '864px',
@@ -50,7 +49,7 @@ const PlayerReadyStatus = ({ onReady, setOnReady, settingInformation }) => {
             {/* <OwnerPlayer onReady={onReady} /> */}
 
             <GuestPlayer onReady={onReady} onReadyToggle={onReadyToggle} />
-        </Container>
+        </Box>
     );
 };
 

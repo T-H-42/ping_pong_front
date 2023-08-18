@@ -1,18 +1,25 @@
-import { Backdrop, Box, Button, Container, Typography } from '@mui/material';
+import { Link, Box, Button, Typography } from '@mui/material';
 import { isOwnerState } from '../../api/atoms';
-import React, { useEffect } from 'react';
+import React, { useContext } from 'react';
 import { useRecoilValue } from 'recoil';
+import { SocketContext } from '../..//api/SocketContext';
+import { useNavigate } from 'react-router';
+import styles from '../../styles/setting-room/setting-room.module.css';
 
 const GuestPlayer = ({ onReady, onReadyToggle }) => {
     const RisOwner = useRecoilValue(isOwnerState);
+    const { gameSocket } = useContext(SocketContext);
+    const navigate = useNavigate();
+
+    const handleExit = () => {
+        gameSocket.emit('ft_leave_setting_room', (response: any) => {
+            if (!response.success) return alert(`설정 방 나가기 실패 :  ${response.payload}`);
+        });
+        navigate('/');
+    };
 
     return (
-        <Box
-            sx={{ width: '680px', height: '864px', borderLeft: '1px solid var(--text-light, #C1C1C1)' }}
-            display={'flex'}
-            flexDirection={'column'}
-            alignItems={'center'}
-        >
+        <Box className={styles.GuestContainer}>
             <Box
                 sx={{
                     width: '100%',
@@ -37,16 +44,7 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                         boxShadow: '0px 1px 8px 0px rgba(0, 0, 0, 0.10)',
                     }}
                 >
-                    <Box
-                        sx={{
-                            width: '90%',
-                            height: '85%',
-                            display: 'flex',
-                            margin: '0 auto',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                        }}
-                    >
+                    <Box>
                         <Box
                             sx={{
                                 display: 'flex',
@@ -57,23 +55,6 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                                 alignItems: 'center',
                             }}
                         >
-                            {/* {backdrop && (
-                                <Backdrop
-                                    sx={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        left: 0,
-                                        width: '100%',
-                                        height: '100%',
-                                        color: '#fff',
-                                        zIndex: (theme) => theme.zIndex.drawer + 1,
-                                    }}
-                                    open={backdrop}
-                                    onClick={handleBackdropClose}
-                                >
-                                    <div>Ready</div>
-                                </Backdrop>
-                            )} */}
                             <img
                                 src="/images/profile.jpg"
                                 alt="user_image"
@@ -107,23 +88,11 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                         </Typography>
                     </Box>
                 </Box>
-                <Box
-                    sx={{
-                        width: '345px',
-                        height: '251px',
-                        padding: '16px 24px',
-                        gap: '16px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        backgroundColor: '#fff',
-                        boxShadow: '0px 1px 8px 0px rgba(0, 0, 0, 0.10)',
-                        borderRadius: '24px',
-                    }}
-                >
+                <Box className={styles.RecordContainer}>
                     <Box
                         sx={{
-                            width: '345px',
-                            height: '251px',
+                            width: '100%',
+                            height: '100%',
                             padding: '16px 24px',
                             gap: '16px',
                             margin: '0 auto',
@@ -164,71 +133,14 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                             </Box>
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                            <Typography
-                                sx={{
-                                    color: 'var(--primary, #3874CB)',
-                                    fontFamily: 'Pretendard',
-                                    fontSize: '14px',
-                                    fontStyle: 'normal',
-                                    fontWeight: 500,
-                                    lineHeight: '18px',
-                                }}
-                            >
-                                2023-07-10 WIN
-                            </Typography>
-                            <Typography
-                                sx={{
-                                    color: 'var(--primary, #3874CB)',
-                                    fontFamily: 'Pretendard',
-                                    fontSize: '14px',
-                                    fontStyle: 'normal',
-                                    fontWeight: 500,
-                                    lineHeight: '18px',
-                                }}
-                            >
-                                2023-07-10 WIN
-                            </Typography>
-                            <Typography
-                                sx={{
-                                    color: 'var(--primary, #3874CB)',
-                                    fontFamily: 'Pretendard',
-                                    fontSize: '14px',
-                                    fontStyle: 'normal',
-                                    fontWeight: 500,
-                                    lineHeight: '18px',
-                                }}
-                            >
-                                2023-07-10 WIN
-                            </Typography>
-                            <Typography
-                                sx={{
-                                    color: 'var(--primary, #3874CB)',
-                                    fontFamily: 'Pretendard',
-                                    fontSize: '14px',
-                                    fontStyle: 'normal',
-                                    fontWeight: 500,
-                                    lineHeight: '18px',
-                                }}
-                            >
-                                2023-07-10 WIN
-                            </Typography>
+                            <Typography className={styles.RecentRecordComment}>2023-07-10 WIN</Typography>
+                            <Typography className={styles.RecentRecordComment}>2023-07-10 WIN</Typography>
+                            <Typography className={styles.RecentRecordComment}>2023-07-10 WIN</Typography>
+                            <Typography className={styles.RecentRecordComment}>2023-07-10 WIN</Typography>
                         </Box>
                     </Box>
                 </Box>
-                <Box
-                    sx={{
-                        width: '345px',
-                        height: '64 px',
-                        padding: '16px 24px',
-                        gap: '16px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        backgroundColor: '#fff',
-                        boxShadow: '0px 1px 8px 0px rgba(0, 0, 0, 0.10)',
-                        borderRadius: '24px',
-                    }}
-                >
+                <Box className={styles.ArchvimentsContainer}>
                     <Box sx={{ width: '90%', height: '100%', margin: '0 auto' }}>
                         <Box>
                             <Typography
@@ -328,15 +240,14 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                         </Box>
                     </Box>
                 </Box>
-                {!RisOwner && (
-                    // <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', height: '8%' }}>
+                <Box className={styles.ReadyContainer}>
                     <Button
                         variant="outlined"
                         onClick={onReadyToggle}
+                        disabled={RisOwner}
                         style={{
                             width: '395px',
-                            height: '32px',
-                            padding: '1 6px ',
+                            padding: '16px ',
                             backgroundColor: onReady ? '#9BD3F2' : '#fff', // 대기중일 때 색상 제거
                             color: onReady ? '#ffffff' : '#9BD3F2',
                             fontWeight: 'bold',
@@ -344,8 +255,10 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                     >
                         준비
                     </Button>
-                    // </Box>
-                )}
+                    <Link sx={{ marginTop: '16px' }} component="button" variant="body2" onClick={handleExit}>
+                        게임 나가기
+                    </Link>
+                </Box>
             </Box>
         </Box>
     );
