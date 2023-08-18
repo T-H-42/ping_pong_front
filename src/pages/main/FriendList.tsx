@@ -22,6 +22,14 @@ const FriendList = ({ dmName, setDMName }) => {
     const [message, setMessage] = useState('');
 
     useEffect(() => {
+        chatSocket.on('ft_trigger', (res: any) => {
+            console.log('ft_trigger on: ', res);
+            chatSocket.emit('ft_getfriendlist', (res: any) => {
+                console.log('ft_getfriendlist emit: ', res);
+                setFriends(res);
+            });    
+        });
+
         chatSocket.emit('ft_getfriendlist', (res: any) => {
             console.log('ft_getfriendlist emit: ', res);
             setFriends(res);
@@ -82,7 +90,6 @@ const FriendList = ({ dmName, setDMName }) => {
     return (
         <div style={{ border: '1px solid #000', padding: '10px' }}>
             <ModalError isOpen={openError} onClose={handleClose} title={'입장 불가'} message={message} />
-
             <h2>친구 목록</h2>
             <ul style={{ textAlign: 'left' }}>
 

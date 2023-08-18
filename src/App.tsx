@@ -36,6 +36,7 @@ function App() {
     const gameSocket = createGameSocket();
 
     if (getJwtCookie('jwt')) {
+        console.log('jwt쿠키있음')
         pingpongSocket.auth = { token: `${getJwtCookie('jwt')}` };
         pingpongSocket.connect();
         chatSocket.auth = { token: `${getJwtCookie('jwt')}` };

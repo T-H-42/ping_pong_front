@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Modal, Box, Typography, TextField, Switch, FormControlLabel, Alert } from '@mui/material';
 import { SocketContext } from '../api/SocketContext';
 
+import ModalError from './ModalError';
+
 interface ModalExampleProps {
     isOpen: boolean;
     onClose: () => void;
@@ -20,10 +22,22 @@ const ModalRoomInvitation: React.FC<ModalExampleProps> = ({ isOpen, onClose, tit
     const navigate = useNavigate();
     const roomName = localStorage.getItem('room-name');
 
+    const [openError, setOpenError] = useState(false);
+    const [message, setMessage] = useState('');
+
     const handleFriendClick = (e) => {
         chatSocket.emit('ft_invitechat', { roomName, targetUser: e }, (res: any) => {
             console.log('ft_invitechat emit: ', res);
+            if (!res.success) {
+                setOpenError(true);
+                setMessage(res.faillog);
+                return;
+            }
         });
+    };
+
+    const handleClose = () => {
+        setOpenError(false);
     };
 
     return (
@@ -34,6 +48,7 @@ const ModalRoomInvitation: React.FC<ModalExampleProps> = ({ isOpen, onClose, tit
             aria-describedby="modal-description"
         >
             <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, height: 300, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+                <ModalError isOpen={openError} onClose={handleClose} title={'에러'} message={message} />
                 <Typography id="modal-title" variant="h6" component="h2">
                     {title}
                 </Typography>

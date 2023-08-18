@@ -8,6 +8,7 @@ import { roomNameState } from '../../api/atoms';
 import { SocketContext } from '../../api/SocketContext';
 
 import ModalCreateRoom from '../../components/ModalCreateRoom';
+import ModalError from '../../components/ModalError';
 
 interface Response {
     index: string;
@@ -25,12 +26,18 @@ const ChatList = () => {
     const { chatSocket } = useContext(SocketContext);
     const roomName = localStorage.getItem('room-name');
 
+    const [openError, setOpenError] = useState(false);
+    const [message, setMessage] = useState('');
+
     const onJoinRoom = useCallback((roomName: string) => () => {
         chatSocket.emit('join-room', { roomName, password }, (response: any) => {
             console.log(response);
             if (response.success) {
                 localStorage.setItem('room-name', roomName);
                 navigate(`/room/${roomName}`);
+            } else {
+                setOpenError(true);
+                setMessage(response.faillog);
             }
         });
     }, [navigate]);
@@ -55,6 +62,7 @@ const ChatList = () => {
 
     const handleClose = () => {
         setOpen(false);
+        setOpenError(false);
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,6 +77,9 @@ const ChatList = () => {
             if (response.success) {
                 localStorage.setItem('room-name', roomName);
                 navigate(`/room/${roomName}`);
+            } else {
+                setOpenError(true);
+                setMessage(response.faillog);
             }
         });
     };
@@ -82,6 +93,7 @@ const ChatList = () => {
                     justifyContent: 'space-between',
                 }}
             >
+                <ModalError isOpen={openError} onClose={handleClose} title={'채팅방 입장 에러'} message={message} />
                 <h2>채팅방 목록</h2>
                 <button onClick={handleOpen}>채팅방 생성</button>
                 <ModalCreateRoom isOpen={open} onClose={handleClose} title={'채팅방 생성'} message={''} />
