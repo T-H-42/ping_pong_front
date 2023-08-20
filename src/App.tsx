@@ -16,7 +16,7 @@ import { SocketContext } from './api/SocketContext';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './styles/theme';
 import { createPingpongSocket, createChatSocket, createGameSocket } from './api/socket';
-import SettingRoomLayout from './pages/setting-room/layout';
+import SettingRoomLayout from './pages/setting-room/layout';
 import GameRoomLayout from './pages/game-room/layout';
 import DummyOAuth from './components/DummyOAuth';
 

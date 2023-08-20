@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext, useEffect, ChangeEvent } from 'react';
+import React, { useState, useCallback, useContext, useEffect, ChangeEvent, forwardRef } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -7,7 +7,7 @@ import { useRecoilValue } from 'recoil';
 import { settingRoomNameState } from '../../api/atoms';
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Slider } from '@mui/material';
 
-const GameSettingContainer = ({ open, handleClose, settingInformation, setSettingInformaiton }) => {
+const GameSettingContainer = ({ open, handleClose, settingInformation, setSettingInformaiton }, modalRef) => {
     const [modalStatus, setModalStatus] = useState(false);
 
     const style = {
@@ -40,10 +40,9 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
         alignItems: 'center',
         gap: '24px',
     };
-
+    
     const { gameSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
-
     // const [settingInformation, setSettingInformaiton] = useState<ISettingInformation>({
     //     score: 5,
     //     speed: 100,
@@ -70,8 +69,8 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
     const handleScoreChange = (event: ChangeEvent<HTMLInputElement>, newScore: string) => {
         setSettingInformaiton((prev) => ({ ...prev, score: parseInt(newScore, 10) }));
     };
-    const handleModeChange = (event: ChangeEvent<HTMLInputElement>, newMode: string) => {
-        setSettingInformaiton((prev) => ({ ...prev, newMode: parseInt(newMode, 10) }));
+    const handleModeChange = (event: ChangeEvent<HTMLInputElement>, speedMode: string) => {
+        setSettingInformaiton((prev) => ({ ...prev, speedMode: parseInt(speedMode, 10) }));
     };
     const valuetext = (value: number) => {
         const calculatedValue = (value / 100) * 1.5 + 0.5;
@@ -95,22 +94,27 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
     const submitSelectedOptions = useCallback(() => {
         setSettingInformaiton({
             score: settingInformation.score,
-            speed: settingInformation.speed,
+            speedMode: settingInformation.speedMode,
             roomName: RsettingRoomName,
         });
+        console.log(settingInformation);
         gameSocket.emit('ft_game_setting', settingInformation, (response: any) => {
-            if (!response.success) return alert(response.payload);
+            if (!response.success) 
+                return
+            alert(response.payload);
             console.log('게임 설정 요청', response);
         });
         console.log('게임 설정 로그');
 
         setModalStatus(true);
         handleClose();
-    }, [settingInformation.roomName, settingInformation.score, settingInformation.speed]);
+    }, [settingInformation.roomName, settingInformation.score, settingInformation.speedMode]);
 
     return (
-        <Box sx={style}>
+        <Box sx={style} tabIndex={-1} ref={modalRef}>
+
             <Box sx={settingBox}>
+
                 <Box sx={{ ...settingBox, display: 'flex' }}>
                     <Typography
                         id="modal-modal-title"
@@ -126,6 +130,7 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
                         점수 설정
                     </Typography>
                 </Box>
+
                 <Box sx={buttonContainer}>
                     <FormControl>
                         <RadioGroup
@@ -141,9 +146,13 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
                         </RadioGroup>
                     </FormControl>
                 </Box>
+
             </Box>
+            
             <Box sx={settingBox}>
-                <Typography
+                
+                <Box sx={{ ...settingBox, display: 'flex' }}>
+                    <Typography
                     id="modal-modal-title"
                     style={{
                         color: 'var(--text-primary, #000)',
@@ -153,9 +162,10 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
                         fontWeight: '600',
                         lineHeight: '24px',
                     }}
-                >
+                    >
                     게임모드 설정
-                </Typography>
+                    </Typography>
+                </Box>
 
                 <Box sx={buttonContainer}>
                     <FormControl>
@@ -163,7 +173,7 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
                             row
                             aria-labelledby="demo-row-radio-buttons-group-label"
                             name="row-radio-buttons-group"
-                            value={settingInformation.newMode}
+                            value={settingInformation.speedMode}
                             onChange={(event, value) => handleModeChange(event, value)}
                         >
                             <FormControlLabel value="0" control={<Radio />} label="일반모드" />
@@ -171,7 +181,9 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
                         </RadioGroup>
                     </FormControl>
                 </Box>
+
             </Box>
+
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <Box>
                     <Button variant="contained" onClick={submitSelectedOptions}>
@@ -186,4 +198,4 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
     );
 };
 
-export default GameSettingContainer;
+export default forwardRef(GameSettingContainer);

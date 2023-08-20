@@ -1,5 +1,5 @@
 import ModalContainer from '../../components/ModalContainer';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import GameSettingContainer from './GameSettingContainer';
 import { SocketContext } from '../../api/SocketContext';
 import { useRecoilValue } from 'recoil';
@@ -27,6 +27,7 @@ const SettingRoomLayout = () => {
         roomName: RsettingRoomName,
     });
     const navigate = useNavigate();
+    const modalRef = useRef();
 
     useEffect(() => {
         const preventGoBack = (event) => {
@@ -81,7 +82,8 @@ const SettingRoomLayout = () => {
 
     useEffect(() => {
         const handleGameSettingSuccess = (response: any) => {
-            if (!response.success) return alert(response.payload);
+            console.log('게임 설정 성공', response);
+            // if (!response.success) return alert(response.payload);
         };
 
         gameSocket.on('ft_game_setting_success', handleGameSettingSuccess);
@@ -125,6 +127,7 @@ const SettingRoomLayout = () => {
                     handleClose={handleClose}
                     settingInformation={settingInformation}
                     setSettingInformaiton={setSettingInformaiton}
+                    ref={modalRef}
                 />
             </ModalContainer>
             <PlayerReadyStatus onReady={onReady} setOnReady={setOnReady} settingInformation={settingInformation} />

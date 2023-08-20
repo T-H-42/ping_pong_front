@@ -47,6 +47,7 @@ const PingPongContainer = () => {
     const [canvasSize, setCanvasSize] = useState<canvasSize>({ width: 600, height: 400 });
     const [innerSize, setInnerSize] = useState({ width: window.innerWidth * 0.8, height: window.innerHeight * 0.8 });
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const modalRef = useRef();
 
     const handleClose = () => {
         setOpen(true);
@@ -101,7 +102,7 @@ const PingPongContainer = () => {
         <>
             {open && (
                 <ModalContainer open={open} handleClose={handleClose}>
-                    <GameResultContainer open={open} setOpen={setOpen} gameResult={gameResult} />
+                    <GameResultContainer open={open} setOpen={setOpen} gameResult={gameResult} ref={modalRef} />
                 </ModalContainer>
             )}
 

@@ -1,12 +1,12 @@
 import { Box, Button, Container } from '@mui/material';
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { useNavigate } from 'react-router';
 import styles from './gameRoom.module.css';
-const GameResultContainer = ({ open, setOpen, gameResult }) => {
+const GameResultContainer = ({ open, setOpen, gameResult }, modalRef) => {
     const navigate = useNavigate();
 
     return (
-        <Box className={styles.container}>
+        <Box className={styles.container} ref={modalRef} tabIndex={-1}>
             <Box>
                 <h2 style={{ textAlign: 'center', fontSize: '20px' }}>승리</h2>
                 <Button
@@ -34,4 +34,4 @@ const GameResultContainer = ({ open, setOpen, gameResult }) => {
     );
 };
 
-export default GameResultContainer;
+export default forwardRef(GameResultContainer);

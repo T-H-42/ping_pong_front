@@ -2,7 +2,7 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 
-export default function ModalContainer({ open, handleClose, children }) {
+const ModalContainer = ({ open, handleClose, children }) => {
     return (
         <div>
             <Modal
@@ -16,3 +16,5 @@ export default function ModalContainer({ open, handleClose, children }) {
         </div>
     );
 }
+
+export default ModalContainer;
