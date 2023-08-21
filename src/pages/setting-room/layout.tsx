@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import PlayerReadyStatus from './PlayerReadyStatus';
 import GoHomeButton from '../../components/GoHomeButton';
 import { Box, Button } from '@mui/material';
+import { isOwnerState } from '../../api/atoms';
 
 interface ISettingInformation {
     score: number;
@@ -21,6 +22,8 @@ const SettingRoomLayout = () => {
     const [onReady, setOnReady] = useState(false);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     const { gameSocket } = useContext(SocketContext);
+    const RisOwner = useRecoilValue(isOwnerState);
+
     const [settingInformation, setSettingInformaiton] = useState<ISettingInformation>({
         score: 5,
         speedMode: 0,
@@ -99,7 +102,7 @@ const SettingRoomLayout = () => {
     // };
 
     useEffect(() => {
-        const handleEnemyLeaveSettingRoom = (response) => {
+        const handleEnemyLeaveSettingRoom = (response : any) => {
             if (!response) {
                 return alert(`${response} 에러가 발생했습니다.`);
             }
@@ -151,7 +154,7 @@ const SettingRoomLayout = () => {
                 }}
             >
                 <GoHomeButton />
-                <Button variant="outlined" onClick={handleClose}>
+                <Button variant="outlined" disabled={!RisOwner} onClick={handleClose}>
                     게임 설정
                 </Button>
             </Box>

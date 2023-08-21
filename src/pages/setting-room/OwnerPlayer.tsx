@@ -6,7 +6,7 @@ import React, { useCallback, useContext, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import { useNavigate } from 'react-router';
 import styles from '../../styles/setting-room/setting-room.module.css';
-const OwnerPlayer = ({ onReady, guestReady }) => {
+const OwnerPlayer = ({ onReady, guestReady , onReadyToggle}) => {
     const { gameSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     const RisOwner = useRecoilValue(isOwnerState);
@@ -27,6 +27,11 @@ const OwnerPlayer = ({ onReady, guestReady }) => {
         });
         navigate(`/game-room/${RsettingRoomName}`);
     }, [onReady, guestReady]);
+
+    useEffect(() =>{
+        console.log("돈ㄷ ㅏ 돌아");
+        
+    }, [guestReady])
     return (
         <Box sx={{ width: '680px', height: '864px' }} display={'flex'} flexDirection={'column'} alignItems={'center'}>
             <Box
@@ -262,6 +267,7 @@ const OwnerPlayer = ({ onReady, guestReady }) => {
                 >
                     게임시작
                 </Button> */}
+                <div>{guestReady}</div>
                 <Box sx={{ height: '32px' }}>
                     <Button
                         variant="outlined"
