@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Modal, Box, Typography, TextField, Switch, FormControlLabel, Alert } from '@mui/material';
 import { SocketContext } from '../api/SocketContext';
 
+import ModalError from './ModalError';
+
 interface ModalExampleProps {
     isOpen: boolean;
     onClose: () => void;
@@ -21,6 +23,9 @@ const ModalRoomInvitationReceiver: React.FC<ModalExampleProps> = ({ isOpen, onCl
     const navigate = useNavigate();
     const password = '';
 
+    const [openError, setOpenError] = useState(false);
+    const [message, setMessage] = useState('');
+
     const onAccept = () => {
         chatSocket.emit('join-room', { roomName, password }, (response: any) => {
             console.log(response);
@@ -28,8 +33,16 @@ const ModalRoomInvitationReceiver: React.FC<ModalExampleProps> = ({ isOpen, onCl
                 localStorage.setItem('room-name', roomName);
                 navigate(`/room/${roomName}`);
                 // onClose();
+            } else {
+                setOpenError(true);
+                setMessage(response.faillog);
+                return;
             }
         });
+    };
+
+    const handleClose = () => {
+        setOpenError(false);
     };
 
     return (
@@ -40,14 +53,14 @@ const ModalRoomInvitationReceiver: React.FC<ModalExampleProps> = ({ isOpen, onCl
             aria-describedby="modal-description"
         >
             <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, height: 300, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
-                
+                <ModalError isOpen={openError} onClose={handleClose} title={'에러'} message={message} />
                 <Typography id="modal-title" variant="h6" component="h2">
                     {title}
                 </Typography>
                 <Typography id="modal-description" sx={{ mt: 2 }}>
                     {sender + '님의 채팅방 초대를 수락하시겠습니까?'}
                 </Typography>
-                
+
                 <Box sx={{ position: 'absolute', bottom: 20, right: 10 }}>
                     <Button variant="contained" onClick={onAccept} sx={{ mt: 2 }}>수락</Button>
                     <Button variant="contained" onClick={onClose} sx={{
