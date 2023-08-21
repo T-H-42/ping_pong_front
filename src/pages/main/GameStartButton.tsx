@@ -13,14 +13,14 @@ const GameStartButton = () => {
 
     const onGameStart = useCallback(() => {
         if (initialGameState) {
-            console.log('매치 취소기');
+            console.log('매치 취소기', RsetIsOwner);
 
             setInitGameState((prev) => !prev);
             gameSocket.emit('ft_exit_match_queue', (response: any) => {
                 if (!response.success) return alert(`ft_exit_queue : ${response.payload}`);
             });
         } else {
-            console.log('매치 잡기');
+            console.log('매치 잡기', RsetIsOwner);
             setInitGameState((prev) => !prev);
             gameSocket.emit('ft_enter_match_queue', (response: any) => {
                 if (!response.success) return alert(`ft_enter_match_queue : ${response.payload}`);

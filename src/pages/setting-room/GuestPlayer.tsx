@@ -127,9 +127,6 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                                 >
                                     총 50판 20승 30패 승률 25%
                                 </Typography>
-                                {/* <span>총 50판</span>
-                                <span>20승 30패</span>
-                                <span>승률 25%</span> */}
                             </Box>
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>

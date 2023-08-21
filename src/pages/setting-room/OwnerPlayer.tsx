@@ -138,9 +138,6 @@ const OwnerPlayer = ({ onReady, guestReady , onReadyToggle}) => {
                                 >
                                     총 50판 20승 30패 승률 25%
                                 </Typography>
-                                {/* <span>총 50판</span>
-                            <span>20승 30패</span>
-                            <span>승률 25%</span> */}
                             </Box>
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -223,14 +220,10 @@ const OwnerPlayer = ({ onReady, guestReady , onReadyToggle}) => {
                                     fill="none"
                                 >
                                     <path
-                                        // fill-rule="evenodd"
-                                        // clip-rule="evenodd"
                                         d="M13.2529 3.006C12.8678 2.34045 11.907 2.34045 11.5219 3.006L8.36596 8.45996L3.76326 7.14111C3.02171 6.92862 2.33372 7.61613 2.53285 8.37066L3.81213 13.218C3.81681 13.2468 3.82278 13.2758 3.83009 13.3047L5.45581 19.7448C5.56792 20.1889 5.96738 20.5 6.4254 20.5H18.3216C18.7738 20.5 19.1697 20.1966 19.2872 19.7599L21.0206 13.3199C21.0449 13.2294 21.0561 13.1391 21.0554 13.0509L22.2899 8.37338C22.489 7.61885 21.801 6.93135 21.0595 7.14383L16.417 8.47408L13.2529 3.006Z"
                                         fill="#FAB507"
                                     />
                                     <path
-                                        // fill-rule="evenodd"
-                                        // clip-rule="evenodd"
                                         d="M14.1689 14.3945C14.2583 14.2398 14.2583 14.0492 14.1689 13.8945L12.9328 11.7534C12.7404 11.4201 12.2592 11.4201 12.0668 11.7534L10.8307 13.8945C10.7413 14.0492 10.7413 14.2398 10.8307 14.3945L12.0668 16.5355C12.2592 16.8688 12.7404 16.8688 12.9328 16.5355L14.1689 14.3945Z"
                                         fill="#FA8A07"
                                     />
@@ -251,23 +244,6 @@ const OwnerPlayer = ({ onReady, guestReady , onReadyToggle}) => {
                         </Box>
                     </Box>
                 </Box>
-                {/* 
-                <Button
-                    variant="outlined"
-                    onClick={initGameHandler}
-                    disabled={!RisOwner}
-                    style={{
-                        width: '395px',
-                        height: '32px',
-                        padding: '1 6px ',
-                        backgroundColor: guestReady ? '#3874CB' : 'rgba(255, 255, 255)', // 대기중일 때 색상 제거
-                        color: guestReady ? '#ffffff' : '#1976d2',
-                        fontWeight: 'bold',
-                    }}
-                >
-                    게임시작
-                </Button> */}
-                <div>{guestReady}</div>
                 <Box sx={{ height: '32px' }}>
                     <Button
                         variant="outlined"

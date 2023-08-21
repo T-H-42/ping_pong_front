@@ -9,6 +9,7 @@ import PlayerReadyStatus from './PlayerReadyStatus';
 import GoHomeButton from '../../components/GoHomeButton';
 import { Box, Button } from '@mui/material';
 import { isOwnerState } from '../../api/atoms';
+import { useSetRecoilState } from 'recoil';
 
 interface ISettingInformation {
     score: number;
@@ -17,6 +18,7 @@ interface ISettingInformation {
 }
 
 const SettingRoomLayout = () => {
+    const RsetIsOwner = useSetRecoilState<boolean>(isOwnerState);
     const [open, setOpen] = useState(false);
     const [guestOnReady, setGuestOnReady] = useState(false);
     const [onReady, setOnReady] = useState(false);
@@ -32,58 +34,24 @@ const SettingRoomLayout = () => {
     const navigate = useNavigate();
     const modalRef = useRef();
 
-    // useEffect(() => {
-    //     const preventGoBack = (event) => {
-    //         event.preventDefault();
-    //         alert('종료하기를 눌러주세요 :D');
-    //     };
-    //     console.log('이펙트 발동!');
-    //     console.log('++', window.history);
-
-    //     window.history.pushState(null, '', window.location.href);
-
-    //     window.addEventListener('popstate', function (event) {
-    //         event.preventDefault();
-    //         gameSocket.emit('ft_leave_setting_room', (response: any) => {
-    //             if (!response.success) return alert(`설정 방 나가기 실패 :  ${response.payload}`);
-    //         });
-    //     });
-    //     window.addEventListener('beforeunload', preventGoBack);
-    //     return () => {
-    //         window.removeEventListener('popstate', preventGoBack);
-    //         // window.removeEventListener('beforeunload', preventGoBack);
-    //     };
-    // }, []);
-
     // 새로고침 이벤트는  beforeunload, popstate는 새로 고침
     useEffect(() => {
         window.history.pushState(null, '', window.location.href);
-
-        const confirmRefresh = (event) => {
+    
+        const confirmGoBack = (event : any) => {
             event.preventDefault();
-            event.returnValue = '';
-            console.log('새로고침 에밋');
-
-            gameSocket.emit('ft_leave_setting_room', (response: any) => {
-                if (!response.success) return alert(`설정 방 나가기 실패 :  ${response.payload}`);
-            });
-        };
-        const confirmGoBack = (event) => {
-            event.preventDefault();
-            const result = window.confirm('현재 정보를 잃으실 수 있습니다. 정말로 뒤로 가시겠습니까?');
-            if (result) {
+           
                 console.log('백으로 에밋');
                 gameSocket.emit('ft_leave_setting_room', (response: any) => {
                     if (!response.success) return alert(`설정 방 나가기 실패 :  ${response.payload}`);
+                    alert(`${response.username}님이 나갔습니다.`);
                 });
                 navigate('/main');
             }
-        };
+  
         window.addEventListener('popstate', confirmGoBack);
-        window.addEventListener('beforeunload', confirmRefresh);
 
         return () => {
-            window.removeEventListener('beforeunload', confirmRefresh);
             window.removeEventListener('popstate', confirmGoBack);
         };
     }, []);
@@ -94,26 +62,37 @@ const SettingRoomLayout = () => {
     const handleClose = () => {
         setOpen((prevOpen) => !prevOpen);
     };
-    // const handleExit = () => {
-    //     gameSocket.emit('ft_leave_setting_room', (response: any) => {
-    //         if (!response.success) return alert(`설정 방 나가기 실패 :  ${response.payload}`);
-    //     });
-    //     navigate('/');
-    // };
 
     useEffect(() => {
+        const handleMyselfLeaveSettingRoom = (response : any) => { //자신 나가는 로직
+            if (!response) {
+                return alert(`${response} 에러가 발생했습니다.`);
+            }
+            gameSocket.emit('ft_leave_setting_room', (response: any) => {
+                if (!response.success) return alert(`설정 방 나가기 실패 :  ${response.payload}`);
+            });
+            navigate('/');
+        };
+
         const handleEnemyLeaveSettingRoom = (response : any) => {
             if (!response) {
                 return alert(`${response} 에러가 발생했습니다.`);
+            }
+            if(RisOwner)
+            {
+                RsetIsOwner(false)
             }
             alert(`${response.username}님이 나갔습니다.`);
             navigate('/');
         };
 
+        gameSocket.on('ft_tomain', handleMyselfLeaveSettingRoom);
         gameSocket.on('ft_enemy_leave_room', handleEnemyLeaveSettingRoom);
 
         return () => {
+            gameSocket.off('ft_tomain', handleMyselfLeaveSettingRoom);
             gameSocket.off('ft_enemy_leave_room', handleEnemyLeaveSettingRoom);
+
         };
     }, [gameSocket, navigate]);
 
@@ -168,7 +147,6 @@ const SettingRoomLayout = () => {
                 />
             </ModalContainer>
             <PlayerReadyStatus onReady={onReady} setOnReady={setOnReady} settingInformation={settingInformation} />
-            {/* <Button onClick={handleClose}>게임 설정</Button> */}
         </>
     );
 };

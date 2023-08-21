@@ -10,15 +10,17 @@ const PaddleManager = () => {
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     const RisOwner = useRecoilValue(isOwnerState);
 
-    const movePaddle = (newKeyPressed) => {
-        gameSocket.emit('ft_paddle_move', {
-            roomName: RsettingRoomName,
-            isOwner: RisOwner,
-            paddleStatus: newKeyPressed,
-        });
-    };
+    
 
     useEffect(() => {
+        const movePaddle = (newKeyPressed) => {
+            gameSocket.emit('ft_paddle_move', {
+                roomName: RsettingRoomName,
+                isOwner: RisOwner,
+                paddleStatus: newKeyPressed,
+            });
+        };
+        
         const handleKeyDown = async (event: KeyboardEvent) => {
             if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
                 const newKeyPressed = event.key === 'ArrowUp' ? 1 : 2;
@@ -52,7 +54,7 @@ const PaddleManager = () => {
             window.removeEventListener('keyup', handleKeyUp);
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, []);
+    }, [gameSocket]);
     return <></>; //얘 없애도 될듯?
 };
 
