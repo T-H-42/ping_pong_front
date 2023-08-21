@@ -29,28 +29,62 @@ const SettingRoomLayout = () => {
     const navigate = useNavigate();
     const modalRef = useRef();
 
-    useEffect(() => {
-        const preventGoBack = (event) => {
-            event.preventDefault();
-            alert('종료하기를 눌러주세요 :D');
-        };
-        console.log('이펙트 발동!');
-        console.log('++', window.history);
+    // useEffect(() => {
+    //     const preventGoBack = (event) => {
+    //         event.preventDefault();
+    //         alert('종료하기를 눌러주세요 :D');
+    //     };
+    //     console.log('이펙트 발동!');
+    //     console.log('++', window.history);
 
+    //     window.history.pushState(null, '', window.location.href);
+
+    //     window.addEventListener('popstate', function (event) {
+    //         event.preventDefault();
+    //         gameSocket.emit('ft_leave_setting_room', (response: any) => {
+    //             if (!response.success) return alert(`설정 방 나가기 실패 :  ${response.payload}`);
+    //         });
+    //     });
+    //     window.addEventListener('beforeunload', preventGoBack);
+    //     return () => {
+    //         window.removeEventListener('popstate', preventGoBack);
+    //         // window.removeEventListener('beforeunload', preventGoBack);
+    //     };
+    // }, []);
+
+    // 새로고침 이벤트는  beforeunload, popstate는 새로 고침
+    useEffect(() => {
         window.history.pushState(null, '', window.location.href);
 
-        window.addEventListener('popstate', function (event) {
+        const confirmRefresh = (event) => {
             event.preventDefault();
+            event.returnValue = '';
+            console.log('새로고침 에밋');
+
             gameSocket.emit('ft_leave_setting_room', (response: any) => {
                 if (!response.success) return alert(`설정 방 나가기 실패 :  ${response.payload}`);
             });
-        });
-        window.addEventListener('beforeunload', preventGoBack);
+        };
+        const confirmGoBack = (event) => {
+            event.preventDefault();
+            const result = window.confirm('Are you sure you want to go back?');
+            if (result) {
+                console.log('백으로 에밋');
+                gameSocket.emit('ft_leave_setting_room', (response: any) => {
+                    if (!response.success) return alert(`설정 방 나가기 실패 :  ${response.payload}`);
+                });
+                navigate('/main');
+            }
+        };
+        window.addEventListener('popstate', confirmGoBack);
+        window.addEventListener('beforeunload', confirmRefresh);
+
         return () => {
-            window.removeEventListener('popstate', preventGoBack);
-            // window.removeEventListener('beforeunload', preventGoBack);
+            window.removeEventListener('beforeunload', confirmRefresh);
+            window.removeEventListener('popstate', confirmGoBack);
         };
     }, []);
+
     const onReadyToggle = () => {
         setOnReady((prev) => !prev);
     };

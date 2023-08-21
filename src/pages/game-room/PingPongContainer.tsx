@@ -69,6 +69,8 @@ const PingPongContainer = () => {
     const checkGameOver = (response) => {
         if (!response) return alert(`${response} : 에러가 발생했습니다.`);
         setOpen(true);
+        console.log('게임 결과로 넘어온' + response);
+
         response.isOwner ? setGameResult(true) : setGameResult(false);
     };
     gameSocket.on('ft_finish_game', checkGameOver); // 게임 종료 이벤트

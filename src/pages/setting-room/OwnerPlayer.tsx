@@ -266,7 +266,7 @@ const OwnerPlayer = ({ onReady, guestReady }) => {
                     <Button
                         variant="outlined"
                         onClick={initGameHandler}
-                        // disabled={!RisOwner}
+                        disabled={!RisOwner}
                         style={{
                             width: '395px',
                             padding: '16px ',
