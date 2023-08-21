@@ -33,12 +33,20 @@ const ChatRoom: React.FC = () => {
     const username = localStorage.getItem('username');
 
     useEffect(() => {
+        chatSocket.on('ft_tomain', (res: any) => {
+            console.log('ft_tomain on: ', res);
+            if (res.success) {
+                navigate('/main');
+            }
+        });
+        
         chatSocket.emit('ft_isEmptyRoom', roomName, (res: any) => {
             console.log('ft_isEmptyRoom: ', res);
             if (res) {
                 navigate('/main');
             }
         });
+
 
         chatSocket.on('ft_mute', (res: any) => {
             console.log('ft_mute on: ', res);
@@ -53,7 +61,6 @@ const ChatRoom: React.FC = () => {
                     }
                 });
             }, 6000);
-
         })
 
         return () => {
@@ -127,10 +134,8 @@ const ChatRoom: React.FC = () => {
     }, [message, roomName]);
 
     const onLeaveRoom = useCallback(() => {
-        // chatSocket.emit('leave-room', roomName, () => {
         navigate('/main');
-        // });
-    }, [navigate, roomName]);
+    }, [navigate]);
 
     const handleOpen = () => {
         chatSocket.on('ft_getUserListInRoom', (res) => {

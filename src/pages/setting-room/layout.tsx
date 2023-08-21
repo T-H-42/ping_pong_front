@@ -1,11 +1,14 @@
-import ModalContainer from '../../components/ModalContainer';
 import React, { useContext, useEffect, useState } from 'react';
-import GameSettingContainer from './GameSettingContainer';
+import { useNavigate } from 'react-router-dom';
+
 import { SocketContext } from '../../api/SocketContext';
+
+import GameSettingContainer from './GameSettingContainer';
+import ModalContainer from '../../components/ModalContainer';
+import PlayerReadyStatus from './PlayerReadyStatus';
+
 import { useRecoilValue } from 'recoil';
 import { settingRoomNameState } from '../../api/atoms';
-import { useNavigate } from 'react-router-dom';
-import PlayerReadyStatus from './PlayerReadyStatus';
 
 interface ISettingInformation {
     score: number;

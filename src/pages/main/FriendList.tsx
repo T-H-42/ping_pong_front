@@ -14,10 +14,10 @@ const FriendList = ({ dmName, setDMName }) => {
 
     const [newDM, setNewDM] = useState(false);
     const [sender, setSender] = useState('');
-    
+
     // const friends = useRecoilValue<IFriendsState[]>(friendsState);
     const [friends, setFriends] = useState([]);
-    
+
     const [openError, setOpenError] = useState(false);
     const [message, setMessage] = useState('');
 
@@ -27,20 +27,37 @@ const FriendList = ({ dmName, setDMName }) => {
             chatSocket.emit('ft_getfriendlist', (res: any) => {
                 console.log('ft_getfriendlist emit: ', res);
                 setFriends(res);
-            });    
+            });
         });
 
         chatSocket.emit('ft_getfriendlist', (res: any) => {
             console.log('ft_getfriendlist emit: ', res);
             setFriends(res);
         });
+
         const messageHandler = (res: any) => {
-            console.log('프렌드리스트 메세지 핸들러: ', res);
-            setNewDM(true);
-            setSender(res.username);
+            console.log('ft_dm on: ', res);
+            chatSocket.emit('ft_getfriendlist', (res: any) => {
+                console.log('ft_getfriendlist emit: ', res);
+                setFriends(res);
+                setNewDM(true);
+                setSender(res.username);
+            });
         };
         chatSocket.on('ft_dm', messageHandler);
 
+
+        /*
+        chatSocket.emit('ft_getfriendlist', (res: any) => {
+                console.log('ft_getfriendlist emit: ', res);
+                setFriends(res);
+            });
+            const messageHandler = (res: any) => {
+                console.log('프렌드리스트 메세지 핸들러: ', res);
+                setNewDM(true);
+                setSender(res.username);
+            };
+        */
         return () => {
             chatSocket.off('ft_dm', messageHandler);
         };
@@ -127,7 +144,7 @@ const FriendList = ({ dmName, setDMName }) => {
                             )}{' '}
                             {friend.username}
                             <div>
-                                {newDM && friend.username === sender ? (
+                                {friend.alert || (newDM && friend.username === sender) ? (
                                     <button
                                         style={{
                                             width: '15px',

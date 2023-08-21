@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+import {useNavigate} from 'react-router-dom';
 import { getJwtCookie } from '../../api/cookies';
 import axios from 'axios';
 import ChatList from './ChatList';
@@ -21,6 +22,8 @@ const Main = () => {
     const [roomName, setRoomname] = useState('');
     const [sender, setSender] = useState('');
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         // axios
         //     .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/friend/allfriend`, {
@@ -36,6 +39,9 @@ const Main = () => {
         //         console.log(`/user/allfriend 요청 실패: ${err}`);
         //     });
 
+        if (!getJwtCookie('jwt')) {
+            navigate('/');
+        }
         chatSocket.on('ft_invitechat', (res: any) => {
             console.log('ft_invitechat on: ', res);
             setRoomname(res.index);

@@ -41,6 +41,14 @@ const DMRoom = () => {
 
         chatSocket.on('ft_dm', messageHandler);
 
+        chatSocket.on('ft_tomain', (res: any) => {
+            console.log('ft_tomain on: ', res);
+            if (res) {
+                navigate('/main');
+            }
+        });
+
+
         // return () => {
         //     console.log('message off');
         //     chatSocket.off('ft_dm', messageHandler);

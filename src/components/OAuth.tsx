@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useSearchParams, Navigate } from 'react-router-dom';
 import axios from 'axios';
+
 import { getJwtCookie } from '../api/cookies';
 import { SocketContext } from '../api/SocketContext';
 
@@ -17,6 +18,7 @@ const OAuth = () => {
     const { pingpongSocket, chatSocket, gameSocket } = useContext(SocketContext);
 
     useEffect(() => {
+        console.log('/user/signin 요청 시작');
         setLoading(true);
         axios
             .post(
