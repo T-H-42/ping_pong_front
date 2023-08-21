@@ -13,7 +13,7 @@ const OwnerPlayer = ({ onReady, guestReady }) => {
     const navigate = useNavigate();
 
     const initGameHandler = useCallback(() => {
-        if (!onReady) {
+        if (!guestReady) {
             alert('상대방이 준비되지 않았습니다.');
             return;
         }
@@ -270,8 +270,8 @@ const OwnerPlayer = ({ onReady, guestReady }) => {
                         style={{
                             width: '395px',
                             padding: '16px ',
-                            backgroundColor: onReady ? '#3874CB' : 'rgba(255, 255, 255)', // 대기중일 때 색상 제거
-                            color: onReady ? '#ffffff' : '#1976d2',
+                            backgroundColor: guestReady ? '#3874CB' : 'rgba(255, 255, 255)', // 대기중일 때 색상 제거
+                            color: guestReady ? '#ffffff' : '#1976d2',
                             fontWeight: 'bold',
                         }}
                     >

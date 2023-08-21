@@ -53,7 +53,7 @@ const PaddleManager = () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
     }, []);
-    return <></>;
+    return <></>; //얘 없애도 될듯?
 };
 
 export default PaddleManager;

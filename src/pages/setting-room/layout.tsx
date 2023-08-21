@@ -67,7 +67,7 @@ const SettingRoomLayout = () => {
         };
         const confirmGoBack = (event) => {
             event.preventDefault();
-            const result = window.confirm('Are you sure you want to go back?');
+            const result = window.confirm('현재 정보를 잃으실 수 있습니다. 정말로 뒤로 가시겠습니까?');
             if (result) {
                 console.log('백으로 에밋');
                 gameSocket.emit('ft_leave_setting_room', (response: any) => {
