@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { SocketContext } from '../api/SocketContext';
 import { removeJwtCookie } from '../api/cookies';
+import { Button } from '@mui/material';
 
 const LogOutButton = () => {
     const { pingpongSocket, chatSocket, gameSocket } = useContext(SocketContext);
@@ -14,7 +15,7 @@ const LogOutButton = () => {
         removeJwtCookie('jwt');
         navigate('/');
     };
-    return <button onClick={logoutHandler}>로그아웃</button>;
+    return <Button variant='contained' onClick={logoutHandler}>로그아웃</Button>;
 };
 
 export default LogOutButton;

@@ -5,6 +5,7 @@ import { IFriendsState, friendsState, dmNameState } from '../../api/atoms';
 import { SocketContext } from '../../api/SocketContext';
 
 import ModalError from '../../components/ModalError';
+import { Button } from '@mui/material';
 
 const FriendList = ({ dmName, setDMName }) => {
     console.log('프렌드리스트 컴포넌트');
@@ -154,7 +155,7 @@ const FriendList = ({ dmName, setDMName }) => {
                                         }}
                                     ></button>
                                 ) : null}
-                                <button onClick={onJoinDM(friend.username, friend.status, friend.receiver)}>DM</button>
+                                <Button onClick={onJoinDM(friend.username, friend.status, friend.receiver)}>DM</Button>
                             </div>
                         </li>
                     </div>

@@ -51,8 +51,25 @@ const GameHistory = ({ userName, history }) => {
   });
 };
 
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  pt: 2,
+  px: 4,
+  pb: 3,
+  height: '80vh',
+  // minHeight: '80vh',
+  width: '60vw',
+  // minWidth: '60vw'
+};
+
 const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }) => {
-  const { chatSocket } = useContext(SocketContext);
+  const { chatSocket, gameSocket } = useContext(SocketContext);
   const { data: userInfo } = useQuery(
     ['userInfo', username],
     () => fetchProfileData(username),
@@ -93,6 +110,17 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
         setMessage(response.faillog);
         return;
       }
+    });
+  };
+
+  const handleInviteGameClick = (e) => {
+    gameSocket.emit('ft_invite_game', { guestName:e, }, (response: any) => {
+      console.log('ft_invite_game: ', response);
+      // if (!response.success) {
+      //   setOpenError(true);
+      //   setMessage(response.faillog);
+      //   return;
+      // }
     });
   };
 
@@ -149,17 +177,16 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
     <Modal
       open={isOpen}
       onClose={onClose}
-      BackdropProps={{
-        sx: { backgroundColor: 'rgba(255, 255, 255, 1)' },
-      }}>
+      sx={{ overflow: 'auto' }}
+      >
 
-
-      <Stack spacing={5} direction="column" alignItems="center">
+      <Stack spacing={5} direction="column" alignItems="center" sx={{ ...style, overflow: 'auto',}}>
         <ModalError isOpen={openError} onClose={handleClose} title={'에러'} message={message} />
         <Box
           component="img"
           className={styles.sample}
-          src={userInfo.image_url}
+          // src={userInfo.image_url}
+          src='https://i.namu.wiki/i/pe-mDpohyATcc-1ffk013reOJ5wnMBz85wUBBPYqV6Rh_R5OOkynNPXfLnK8tIle14LllEEHqOEUcVvZbXr4qJ-2w1GbYpK6F2IzdfeGXhQ8jDZElj48XV6NdNuaAJYsSX1iALj9o7ciwHeGXtfZuA.webp'
         ></Box>
 
         <Typography variant="h3">{userInfo.username}</Typography>
@@ -168,7 +195,7 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
           <Stack direction="row" spacing={5}>
             <Button variant="contained" onClick={() => handleAddFriendClick(username)}>친구 추가</Button>
             <Button variant="contained">메세지</Button>
-            <Button variant="contained">게임 초대</Button>
+            <Button variant="contained" onClick={() => handleInviteGameClick(username)}>게임 초대</Button>
           </Stack>
 
           <Stack spacing={2}>

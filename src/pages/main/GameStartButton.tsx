@@ -3,6 +3,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { settingRoomNameState, isOwnerState } from '../../api/atoms';
+import { Button } from '@mui/material';
 
 const GameStartButton = () => {
     const [initialGameState, setInitGameState] = useState(false);
@@ -56,7 +57,7 @@ const GameStartButton = () => {
     }, [gameSocket]);
     
 
-    return <button onClick={onGameStart}>{initialGameState ? '매칭 중...' : '게임 시작'}</button>;
+    return <Button variant='contained' onClick={onGameStart}>{initialGameState ? '매칭 중...' : '게임 시작'}</Button>;
 };
 
 export default GameStartButton;

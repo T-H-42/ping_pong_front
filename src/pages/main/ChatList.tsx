@@ -9,6 +9,8 @@ import { SocketContext } from '../../api/SocketContext';
 
 import ModalCreateRoom from '../../components/ModalCreateRoom';
 import ModalError from '../../components/ModalError';
+import { Button } from '@mui/material';
+
 
 interface Response {
     index: string;
@@ -95,7 +97,7 @@ const ChatList = () => {
             >
                 <ModalError isOpen={openError} onClose={handleClose} title={'채팅방 입장 에러'} message={message} />
                 <h2>채팅방 목록</h2>
-                <button onClick={handleOpen}>채팅방 생성</button>
+                <Button variant='outlined' onClick={handleOpen}>채팅방 생성</Button>
                 <ModalCreateRoom isOpen={open} onClose={handleClose} title={'채팅방 생성'} message={''} />
             </div>
             <table style={{ textAlign: 'center', width: '100%' }}>
@@ -122,16 +124,16 @@ const ChatList = () => {
                             <td>{room.limit_user}</td>
                             <td>
                                 {room.room_stat === 0 ? (
-                                    <button onClick={onJoinRoom(room.index)}>입장하기</button>
+                                    <Button variant='outlined' onClick={onJoinRoom(room.index)}>입장하기</Button>
                                 ) : null}
                                 {room.room_stat === 1 ? (
                                     <form onSubmit={(e) => handleSubmit(e, room.index)}>
                                         <input type="password" placeholder="비밀번호" onChange={handleChange} />
-                                        <button type="submit">입장하기</button>
+                                        <Button variant='outlined' type="submit">입장하기</Button>
                                     </form>
                                 ) : null}
                                 {room.room_stat === 2 ? (
-                                    <button onClick={onJoinRoom(room.index)}>입장하기</button>
+                                    <Button variant='outlined' onClick={onJoinRoom(room.index)}>입장하기</Button>
                                 ) : null}
                             </td>
                         </tr>

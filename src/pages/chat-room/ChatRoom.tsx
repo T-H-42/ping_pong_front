@@ -14,7 +14,7 @@ import { Button, Modal, Box, Typography, TextField, Switch, FormControlLabel, Al
 
 const ChatRoom: React.FC = () => {
     console.log('챗룸 컴포넌트');
-    const { chatSocket } = useContext(SocketContext);
+    const { chatSocket, gameSocket } = useContext(SocketContext);
     const [openRoomInfo, setOpenRoomInfo] = useState(false);
     const [openRoomInvitation, setOpenRoomInvitation] = useState(false);
     const [chats, setChats] = useState([]);
@@ -69,7 +69,6 @@ const ChatRoom: React.FC = () => {
             });
         };
     }, []);
-
     useEffect(() => {
         if (!chatContainerEl.current) return;
 
@@ -104,6 +103,11 @@ const ChatRoom: React.FC = () => {
             setSender(response.sender);
             setReceiver(response.receiver);
             setShowAddFriend(true);
+        });
+
+        gameSocket.on('ft_invite_game_from_chat', (response: any) => {
+            console.log('ft_invite_game_from_chat on: ', response);
+            
         });
 
         return () => {
