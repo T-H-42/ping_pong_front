@@ -9,11 +9,14 @@ import { useRecoilValue, useRecoilState } from 'recoil';
 import { IFriendsState, usernameState, friendsState } from '../../api/atoms';
 import { SocketContext } from '../../api/SocketContext';
 import GameStartButton from './GameStartButton';
+import { isOwnerState, settingRoomNameState } from '../../api/atoms';
 
 import ModalRoomInvitationReceiver from '../../components/ModalRoomInvitationReceiver';
 
 const Main = () => {
-    console.log('메인 컴포넌트');
+    const RisOwner = useRecoilValue(isOwnerState);
+
+    console.log('!!!!!메인 컴포넌트 이즈 오너!!!!!!!!', RisOwner);
     const { pingpongSocket, chatSocket } = useContext(SocketContext);
     // const [friends, setFriends] = useRecoilState<IFriendsState[]>(friendsState);
     const [friends, setFriends] = useState([]);

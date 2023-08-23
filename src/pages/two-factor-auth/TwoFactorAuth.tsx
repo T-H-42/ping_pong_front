@@ -10,7 +10,7 @@ const TwoFactorAuth = () => {
         username: localStorage.getItem('username'),
         two_factor_authentication_code: null,
     });
-    const { pingpongSocket, chatSocket } = useContext(SocketContext);
+    const { pingpongSocket, chatSocket, gameSocket} = useContext(SocketContext);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setInfo({
@@ -35,6 +35,8 @@ const TwoFactorAuth = () => {
                 pingpongSocket.connect();
                 chatSocket.auth = { token: `${getJwtCookie('jwt')}` };
                 chatSocket.connect();
+                gameSocket.auth = { token: `${getJwtCookie('jwt')}` };
+                gameSocket.connect();
 
                 navigate('/main');
             })
