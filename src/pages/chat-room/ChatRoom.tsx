@@ -39,8 +39,10 @@ const ChatRoom: React.FC = () => {
                 navigate('/main');
             }
         });
-        
-        chatSocket.emit('ft_isEmptyRoom', roomName, (res: any) => {
+        const data = {// roomName -> data nhwang
+            roomName,
+        }
+        chatSocket.emit('ft_isEmptyRoom', data, (res: any) => {
             console.log('ft_isEmptyRoom: ', res);
             if (res) {
                 navigate('/main');
@@ -62,10 +64,10 @@ const ChatRoom: React.FC = () => {
                 });
             }, 6000);
         })
-
-        return () => {
-            chatSocket.emit('leave-room', roomName, () => {
-                console.log('leave-room: ', roomName);
+         
+        return () => { // roomName -> data nhwang -> 상단으로 뺐습니다. ft_isEmptyRoom에서도 사용하기 때문
+            chatSocket.emit('leave-room', data, () => {
+                console.log('leave-room: ', data);
             });
         };
     }, []);
@@ -82,7 +84,10 @@ const ChatRoom: React.FC = () => {
     }, [chats.length]);
 
     useEffect(() => {
-        chatSocket.emit('ft_get_chat_log', { roomName }, (chat) => {
+        const data = {
+            roomName,
+        }; // { roomName } -> data nhwang
+        chatSocket.emit('ft_get_chat_log', data, (chat) => {
             console.log('ft_get_chat_log emit: ', chat);
             setChats(chat);
         });
@@ -119,8 +124,11 @@ const ChatRoom: React.FC = () => {
     const onSendMessage = useCallback(async (e) => {
         e.preventDefault();
         if (message === '') return alert('메시지를 입력해 주세요.');
-
-        await chatSocket.emit('ft_message', { message, roomName }, (chat) => {
+        const data = {
+            message,
+            roomName,
+        }
+        await chatSocket.emit('ft_message', data, (chat) => {
             console.log('ft_message: ', chat);
             if (chat.success) {
                 setChats((prevChats) => [...prevChats, chat]);
@@ -147,8 +155,10 @@ const ChatRoom: React.FC = () => {
                 }
             });
         });
-
-        chatSocket.emit('ft_getUserListInRoom', roomName, (res: any) => {
+        const data ={
+            roomName,
+        };
+        chatSocket.emit('ft_getUserListInRoom', data, (res: any) => {
             setChatUsers(res.userList);
             res.userList.forEach((user, index) => {
                 if (user.username === localStorage.getItem('username')) {
