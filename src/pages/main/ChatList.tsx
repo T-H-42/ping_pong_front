@@ -25,19 +25,16 @@ const ChatList = () => {
     const { chatSocket } = useContext(SocketContext);
     const roomName = localStorage.getItem('room-name');
 
-    const onJoinRoom = useCallback(
-        (roomName: string) => () => {
-            chatSocket.emit('join-room', { roomName, password }, (response: any) => {
-                console.log(response);
-                if (response.success) {
-                    localStorage.setItem('room-name', roomName);
-                    navigate(`/room/${roomName}`);
-                }
-            });
-        },
-        [navigate],
-    );
-
+    const onJoinRoom = useCallback((roomName: string) => () => {
+        chatSocket.emit('join-room', { roomName, password }, (response: any) => {
+            console.log(response);
+            if (response.success) {
+                localStorage.setItem('room-name', roomName);
+                navigate(`/room/${roomName}`);
+            }
+        });
+    }, [navigate]);
+    
     useEffect(() => {
         const roomListHandler = (res: any) => {
             console.log('room-list: ', res);
