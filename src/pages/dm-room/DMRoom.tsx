@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback, useContext } from 'react';
 import { } from 'react-router-dom';
 import { } from '../../api/atoms';
-import { useSearchParams, useNavigate, Navigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, Navigate, useLocation } from 'react-router-dom';
 import { dmNameState } from '../../api/atoms';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { SocketContext } from '../../api/SocketContext';
@@ -41,10 +41,23 @@ const DMRoom = () => {
 
         chatSocket.on('ft_dm', messageHandler);
 
+        chatSocket.on('ft_tomain', (res: any) => {
+            console.log('ft_tomain on: ', res);
+            if (res) {
+                navigate('/main');
+            }
+        });
+
+
         // return () => {
         //     console.log('message off');
         //     chatSocket.off('ft_dm', messageHandler);
         // };
+        return () => {
+            chatSocket.emit('leave-dm', index, () => {
+                console.log('leave-dm: ', index);
+            });
+        };
     }, []);
 
     const onChange = useCallback((e) => {
@@ -66,9 +79,9 @@ const DMRoom = () => {
     );
 
     const onLeaveRoom = useCallback(() => {
-        chatSocket.emit('leave-dm', index, () => {
+        // chatSocket.emit('leave-dm', index, () => {
             navigate('/main');
-        });
+        // });
     }, [navigate]);
 
     return (

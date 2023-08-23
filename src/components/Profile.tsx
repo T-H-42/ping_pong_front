@@ -4,6 +4,9 @@ import { Button, Stack, Box, Typography, Modal } from '@mui/material';
 import { useQuery } from 'react-query';
 import { getJwtCookie } from '../api/cookies';
 import { SocketContext } from '../api/SocketContext';
+import styles from '../styles/main/main.module.css'
+
+import ModalError from './ModalError';
 
 const fetchProfileData = async (userName) => {
   const res = (
@@ -56,32 +59,73 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
     { suspense: true, useErrorBoundary: true },
   );
 
+  const [openError, setOpenError] = useState(false);
+  const [message, setMessage] = useState('');
+
   const handleMuteClick = (e) => {
     chatSocket.emit('ft_mute', { roomName, targetUser: e }, (response: any) => {
-      console.log('ft_mute: ', response);
+      console.log('ft_mute: ');
+      if (!response.success) {
+        setOpenError(true);
+        setMessage(response.faillog);
+        return;
+      }
+      // console.log('ft_mute: ', response);
+      ///-> nhwang: 테스트 해보니채팅방이 폭파되어도 계속호출되니, 제가 보낸 리턴값을 보고, clearInterval()을 아마 호출해야 될 것 같아요.
+      // useEffect(() => {
+      //   const intervalId = setInterval(() => {
+      //     // 여기에 매 2분마다 실행할 코드 또는 함수를 작성합니다.
+      //     console.log('특정 이벤트 발생');
+      //   }, 120000); // 2분을 밀리초로 변환한 값
 
-      setInterval(() => {
-        console.log('특정 이벤트 발생');
-        chatSocket.emit('ft_mute_check', { roomName, targetUser: e }, (response: any) => {
-          console.log('ft_mute_check: ', response);
-        });
-      }, 2000);
+      //   return () => {
+      //     clearInterval(intervalId); // 컴포넌트가 언마운트될 때 인터벌 정리
+      //   };
+      // }, []);
+    });
+  };
+
+  const handleAddFriendClick = (e) => {
+    chatSocket.emit('ft_addfriend', { receiver: e }, (response: any) => {
+      console.log('ft_addfriend emit: ', response);
+      if (!response.success) {
+        setOpenError(true);
+        setMessage(response.faillog);
+        return;
+      }
     });
   };
 
   const handleKickClick = (e) => {
-
+    chatSocket.emit('ft_kick', { roomName, targetUser: e }, (response: any) => {
+      console.log('ft_kick: ', response);
+      if (!response.success) {
+        setOpenError(true);
+        setMessage(response.faillog);
+        return;
+      }
+    });
   };
 
   const handleBanClick = (e) => {
     chatSocket.emit('ft_ban', { roomName, targetUser: e }, (response: any) => {
       console.log('ft_ban: ', response);
+      if (!response.success) {
+        setOpenError(true);
+        setMessage(response.faillog);
+        return;
+      }
     });
   };
 
   const handleBlockClick = (e) => {
     chatSocket.emit('ft_block', { roomName, targetUser: e }, (response: any) => {
       console.log('ft_block: ', response);
+      if (!response.success) {
+        setOpenError(true);
+        setMessage(response.faillog);
+        return;
+      }
     });
   };
 
@@ -89,10 +133,16 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
     chatSocket.emit('ft_addAdmin', { roomName, targetUser: e }, (response: any) => {
       console.log('ft_addAdmin: ', response);
       if (!response.success) {
+        setOpenError(true);
+        setMessage(response.faillog);
         return;
       }
       setChats([...chats, response]);
     });
+  };
+
+  const handleClose = () => {
+    setOpenError(false);
   };
 
   return (
@@ -102,15 +152,13 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
       BackdropProps={{
         sx: { backgroundColor: 'rgba(255, 255, 255, 1)' },
       }}>
+
+
       <Stack spacing={5} direction="column" alignItems="center">
+        <ModalError isOpen={openError} onClose={handleClose} title={'에러'} message={message} />
         <Box
           component="img"
-          sx={{
-            height: 233,
-            width: 350,
-            maxHeight: { xs: 233, md: 167 },
-            maxWidth: { xs: 350, md: 250 },
-          }}
+          className={styles.sample}
           src={userInfo.image_url}
         ></Box>
 
@@ -118,7 +166,7 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
 
         <Stack direction="column" spacing={6}>
           <Stack direction="row" spacing={5}>
-            <Button variant="contained">친구 추가</Button>
+            <Button variant="contained" onClick={() => handleAddFriendClick(username)}>친구 추가</Button>
             <Button variant="contained">메세지</Button>
             <Button variant="contained">게임 초대</Button>
           </Stack>
@@ -148,9 +196,10 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
                 <Button variant="text" onClick={() => handleMuteClick(username)}>음소거</Button>
                 <Button variant="text" onClick={() => handleKickClick(username)}>강제 퇴장</Button>
                 <Button variant="text" onClick={() => handleBanClick(username)}>채팅 접근 금지</Button>
+                <Button variant="text" onClick={() => handleHostClick(username)}>Admin로 지정</Button>
               </>
             )}
-            {right === 2 && <Button variant="text" onClick={() => handleHostClick(username)}>호스트로 지정</Button>}
+            {/* {right === 2 && <Button variant="text" onClick={() => handleHostClick(username)}>Admin로 지정</Button>} */}
 
             <Button variant="text" color="error" onClick={() => handleBlockClick(username)}>
               사용자 차단

@@ -8,12 +8,13 @@ import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { roomFriendsState } from '../api/atoms';
 
 import Profile from './Profile';
+import ModalError from './ModalError';
 
 interface ModalExampleProps {
     isOpen: boolean;
     onClose: () => void;
     title: string;
-    friends: any[];
+    chatUsers: any[];
     right: number;
     chats: any[];
     setChats: (data: any[]) => void;
@@ -21,40 +22,25 @@ interface ModalExampleProps {
 
 interface Response {
     success: boolean;
-    payload: string;
+    faillog: string;
 }
 
-// const ModalUser = ({ userName, right }) => {
-//     const [open, setOpen] = useState(false);
-
-//     const handleProfileOpen = () => {
-//         setOpen(true);
-//     };
-
-//     const handleProfileClose = () => {
-//         setOpen(false);
-//     };
-//     return (
-//         <>
-//             <Button variant="contained" onClick={() => handleProfileOpen()}>
-//                 {userName} - {right}
-//             </Button>
-//             <Modal open={open} onClose={handleProfileClose}>
-//                 <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
-//                     <Profile username={userName} right={right}></Profile>
-//                 </Box>
-//             </Modal>
-//         </>
-//     );
-// };
-
-const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, friends, right, chats, setChats }) => {
+const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, chatUsers: friends, right, chats, setChats }) => {
     console.log('모달룸인포');
     const { chatSocket } = useContext(SocketContext);
     const navigate = useNavigate();
     const roomName = localStorage.getItem('room-name');
     const [profile, setProfile] = useState(false);
     const [username, setUsername] = useState('');
+
+    const [password, setPassword] = useState<string>('');
+
+    const [openError, setOpenError] = useState(false);
+    const [message, setMessage] = useState('');
+
+    const handleInputPasswordChange = (event) => {
+        setPassword(event.target.value);
+    };
 
     const handleCloseModal = () => {
         setProfile(false); // 모달이 닫힐 때 profile 상태를 false로 설정합니다.
@@ -64,15 +50,41 @@ const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, fr
     const handleFriendClick = (e) => {
         setProfile(true);
         setUsername(e.username);
-        // const targetUser = e.username;
-        // chatSocket.emit('ft_addAdmin', { roomName, targetUser }, (response: any) => {
-        //     console.log('ft_addAdmin: ', response);
-        //     if (!response.success) {
-        //         return;
-        //     }
-        //     setChats([...chats, response]);
-        // });
     };
+
+    const handleChangePassword = () => {
+        chatSocket.emit('ft_changeroompassword', { roomName, password }, (response: Response) => {
+            console.log('ft_changeroompassword emit: ', response);
+            if (response.success) {
+                setOpenError(true);
+                setMessage(response.faillog);
+            } else {
+                setOpenError(true);
+                setMessage(response.faillog);
+            }
+        });
+        setPassword('');
+    };
+
+    const handleDeletePassword = () => {
+        chatSocket.emit('ft_deleteroompassword', { roomName }, (response: Response) => {
+            console.log('ft_deleteroompassword emit: ', response);
+            if (response.success) {
+                setOpenError(true);
+                setMessage(response.faillog);
+            } else {
+                setOpenError(true);
+                setMessage(response.faillog);
+            }
+        });
+        setPassword('');
+
+    };
+
+    const handleClose = () => {
+        setOpenError(false);
+    };
+
 
     return (
         <Modal
@@ -82,10 +94,12 @@ const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, fr
             aria-describedby="modal-description"
         >
             <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, height: 500, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
-                {/* {showAlert && <Alert severity="error">방제목과 인원 수를 입력해주세요.</Alert>} */}
+                <ModalError isOpen={openError} onClose={handleClose} title={'비밀번호 변경/삭제'} message={message} />
                 <Typography id="modal-title" variant="h6" component="h2">
                     {title}
                 </Typography>
+
+
                 <ul style={{ listStyle: 'none' }}>
                     {friends.map((element, index) => (
                         <li key={index} style={{ marginBottom: '10px' }}>
@@ -110,12 +124,26 @@ const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, fr
                             }}>
                                 {element.username} - {element.right}
                             </Button> : null}
-                            {/* <ModalUser userName={element.username} right={element.right} /> */}
                         </li>
                     ))}
                 </ul>
-                {profile ? <Profile username={username} right={right} isOpen={profile} onClose={handleCloseModal} roomName={roomName} chats={chats} setChats={setChats}/> : null}
+
+                {right === 2 ?
+                    <Box>
+                        <Typography id="modal-description" sx={{ mt: 2 }}>
+                            {'비밀번호 설정'}
+                        </Typography>
+                        <TextField label="비밀번호를 입력해주세요." type="password" fullWidth sx={{ mt: 2 }} value={password} onChange={handleInputPasswordChange} />
+                    </Box>
+                    : null}
+                {profile ? <Profile username={username} right={right} isOpen={profile} onClose={handleCloseModal} roomName={roomName} chats={chats} setChats={setChats} /> : null}
+
                 <Box sx={{ position: 'absolute', bottom: 20, right: 10 }}>
+                    {right === 2 ?
+                        <>
+                            <Button variant="contained" onClick={handleChangePassword} sx={{ mt: 2, mx: 1 }}>비밀번호 변경</Button>
+                            <Button variant="contained" onClick={handleDeletePassword} sx={{ mt: 2, backgroundColor: 'orange', }}>비밀번호 삭제</Button> </>
+                        : null}
                     <Button variant="contained" onClick={onClose} sx={{
                         mt: 2,
                         mx: 1,

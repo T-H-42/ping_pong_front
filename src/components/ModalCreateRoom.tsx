@@ -12,10 +12,10 @@ interface ModalExampleProps {
 
 interface Response {
     success: boolean;
-    payload: string;
+    faillog: string;
 }
 
-const ModalExample: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, message }) => {
+const ModalCreateRoom: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, message }) => {
     const { chatSocket } = useContext(SocketContext);
     const navigate = useNavigate();
     const [roomName, setRoomName] = useState<string>('');
@@ -24,6 +24,7 @@ const ModalExample: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, mes
     const [passwordRoom, setPasswordRoom] = useState(false);
     const [inputNumber, setInputNumber] = useState(0);
     const [showAlert, setShowAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleInputRoomNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRoomName(event.target.value);
@@ -69,29 +70,25 @@ const ModalExample: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, mes
             console.log('create-room: ', response);
             if (response.success) {
                 setShowAlert(false);
-                localStorage.setItem('room-name', response.payload);
-                navigate(`/room/${response.payload}`);
+                localStorage.setItem('room-name', response.faillog);
+                navigate(`/room/${response.faillog}`);
             } else {
                 setShowAlert(true);
+                setErrorMessage(response.faillog);
             }
         });
         setPassword('');
     };
 
     return (
-        <Modal open={isOpen} onClose={onClose} aria-labelledby="modal-title" aria-describedby="modal-description">
-            <Box
-                sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: 400,
-                    bgcolor: 'background.paper',
-                    boxShadow: 24,
-                    p: 4,
-                }}
-            >
+        <Modal
+            open={isOpen}
+            onClose={onClose}
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
+        >
+            <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, height: 500, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+                {showAlert && <Alert severity="error">{errorMessage}</Alert>}
                 <Typography id="modal-title" variant="h6" component="h2">
                     {title}
                 </Typography>
@@ -119,12 +116,30 @@ const ModalExample: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, mes
                 <Typography id="modal-description" sx={{ mt: 2 }}>
                     {'인원 수'}
                 </Typography>
-                <Box sx={{ position: 'absolute', bottom: 10, right: 10 }}>
-                    <Button variant="contained" onClick={onClose} sx={{ mt: 2 }}>닫기</Button>
+
+                <TextField label="인원 수를 입력해주세요." type="number" fullWidth sx={{ mt: 2 }} InputProps={{
+                    inputProps: {
+                        min: 1,
+                        max: 8,
+                    },
+                }} value={inputNumber}
+                    onChange={handleInputNumberChange} />
+
+                <Box sx={{ position: 'absolute', bottom: 20, right: 10 }}>
+                    <Button variant="contained" onClick={onCreateRoom} sx={{ mt: 2 }}>생성</Button>
+                    <Button variant="contained" onClick={onClose} sx={{
+                        mt: 2,
+                        mx: 1,
+                        backgroundColor: 'red',
+                        color: 'white',
+                        '&:hover': {
+                            backgroundColor: 'red', // Keep the same color on hover
+                        },
+                    }}>닫기</Button>
                 </Box>
             </Box>
         </Modal>
     );
 };
 
-export default ModalExample;
+export default ModalCreateRoom;
