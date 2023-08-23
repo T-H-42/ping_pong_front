@@ -28,8 +28,10 @@ const DMRoom = () => {
 
     useEffect(() => {
         setMessage('');
-
-        chatSocket.emit('ft_get_dm_log', { roomName: index }, (chat) => {
+        const data = {
+            roomName:index
+        }; // { roomName: index }
+        chatSocket.emit('ft_get_dm_log', data, (chat) => {
             console.log('ft_get_dm_log: ', chat);
             setChats(chat);
         });
@@ -53,9 +55,11 @@ const DMRoom = () => {
         //     console.log('message off');
         //     chatSocket.off('ft_dm', messageHandler);
         // };
+
+        // //// nhwang index->data (상단으로 옮겼습니다. ft_get_dm_log에서도 같은 형국이라)
         return () => {
-            chatSocket.emit('leave-dm', index, () => {
-                console.log('leave-dm: ', index);
+            chatSocket.emit('leave-dm', data, () => {
+                console.log('leave-dm: ', data);
             });
         };
     }, []);
@@ -69,13 +73,19 @@ const DMRoom = () => {
             e.preventDefault();
 
             if (message === '') return alert('메시지를 입력해 주세요.');
-
-            await chatSocket.emit('ft_dm', { roomName: index, message, receiver }, (chat) => {
+            /// nhwang { roomName: index, message, receiver } -> data
+            const data = {
+                roomName:index,
+                message,
+                receiver,
+            };
+            ///
+            await chatSocket.emit('ft_dm', data, (chat) => {
                 setChats((prevChats) => [...prevChats, chat]);
                 setMessage('');
             });
         },
-        [index, message],
+        [index, message], ////이 부분은 안 건드렸어요 nhwang (data로 변경하는 부분에서 건드리지 않음.)
     );
 
     const onLeaveRoom = useCallback(() => {
