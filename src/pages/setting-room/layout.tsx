@@ -41,10 +41,12 @@ const SettingRoomLayout = () => {
         const confirmGoBack = (event : any) => {
             event.preventDefault();
            
-                console.log('백으로 에밋');
                 gameSocket.emit('ft_leave_setting_room', (response: any) => {
-                    if (!response.success) return alert(`설정 방 나가기 실패 :  ${response.payload}`);
-                    alert(`${response.username}님이 나갔습니다.`);
+                    if (!response.success){
+                        alert(`설정 방 나가기 실패 :  ${response.payload}`);
+                        return
+                    } 
+                    alert(`${response.username}님이 나갔습니다.2`);
                 });
                 navigate('/main');
             }
@@ -65,11 +67,15 @@ const SettingRoomLayout = () => {
 
     useEffect(() => {
         const handleMyselfLeaveSettingRoom = (response : any) => { //자신 나가는 로직
+            console.log("너 여기서 돌지 ????????????????!!!!!!!!!!!!1")
             if (!response) {
                 return alert(`${response} 에러가 발생했습니다.`);
             }
             gameSocket.emit('ft_leave_setting_room', (response: any) => {
-                if (!response.success) return alert(`설정 방 나가기 실패 :  ${response.payload}`);
+                if (!response.success){
+                    alert(`설정 방 나가기 실패 :  ${response.payload}`);
+                    return
+                } 
             });
             navigate('/');
         };
@@ -98,7 +104,6 @@ const SettingRoomLayout = () => {
 
     useEffect(() => {
         const handleGameSettingSuccess = (response: any) => {
-            console.log('게임 설정 성공', response);
             // if (!response.success) return alert(response.payload);
         };
 
@@ -111,7 +116,10 @@ const SettingRoomLayout = () => {
 
     useEffect(() => {
         const handleInitSuccess = (response: any) => {
-            if (!response.success) return alert(response.payload);
+            if (!response.success) {
+                alert(response.payload);
+                return 
+            }
             navigate(`/game-room/${RsettingRoomName}`);
         };
 

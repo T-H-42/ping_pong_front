@@ -3,8 +3,7 @@ import { SocketContext } from '../../api/SocketContext';
 import React, { useContext, useEffect, useState } from 'react';
 import { isOwnerState, settingRoomNameState } from '../../api/atoms';
 
-const PaddleManager = () => {
-    console.log('paddle update');
+const PaddleManager = ({open}) => {
     const [keyPressed, setKeyPressed] = useState<number>(0);
     const { gameSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
@@ -14,46 +13,52 @@ const PaddleManager = () => {
 
     useEffect(() => {
         const movePaddle = (newKeyPressed) => {
-            gameSocket.emit('ft_paddle_move', {
-                roomName: RsettingRoomName,
-                isOwner: RisOwner,
-                paddleStatus: newKeyPressed,
-            });
+            // if(!open){
+                gameSocket.emit('ft_paddle_move', {
+                    roomName: RsettingRoomName,
+                    isOwner: RisOwner,
+                    paddleStatus: newKeyPressed,
+                });
+            // }
         };
-        
-        const handleKeyDown = async (event: KeyboardEvent) => {
-            if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-                const newKeyPressed = event.key === 'ArrowUp' ? 1 : 2;
-                if (keyPressed !== newKeyPressed) {
-                    setKeyPressed(newKeyPressed);
-                    movePaddle(newKeyPressed);
+        if(!open){
+            const handleKeyMove = async (event: KeyboardEvent) => {
+    
+                if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+                    const newKeyPressed = event.key === 'ArrowUp' ? 1 : 2;
+                    if (keyPressed !== newKeyPressed) {
+                        setKeyPressed(newKeyPressed);
+                        movePaddle(newKeyPressed);
+                    }
+                    //     if (keyPressed !== 1) {
+                    //         setKeyPressed(1);
+                    //         movePaddle(1);
+                    //     }
+                    // } else if (event.key === 'ArrowDown') {
+                    //     if (keyPressed !== 2) {
+                    //         setKeyPressed(2);
+                    //         movePaddle(2);
+                    //     }
+                    // console.log('ArrowDown key pressed');
                 }
-                //     if (keyPressed !== 1) {
-                //         setKeyPressed(1);
-                //         movePaddle(1);
-                //     }
-                // } else if (event.key === 'ArrowDown') {
-                //     if (keyPressed !== 2) {
-                //         setKeyPressed(2);
-                //         movePaddle(2);
-                //     }
-                // console.log('ArrowDown key pressed');
-            }
-        };
-        const handleKeyUp = (event: KeyboardEvent) => {
-            if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-                setKeyPressed(0);
-                movePaddle(0);
-            }
-        };
+            };
+            const handleKeyStopper = (event: KeyboardEvent) => {
+                
+                if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+                    setKeyPressed(0);
+                    movePaddle(0);
+                }
+            };
+            window.addEventListener('keydown', handleKeyMove); //키가 눌릴 때 keydown이 발생하고 그거에 따라 윗 방향인지 아래 방향인지 감지
+            window.addEventListener('keyup', handleKeyStopper); // 키가 떼지는 시점에 키 움직임을 0로 초기화 하는 함수
 
-        window.addEventListener('keydown', handleKeyDown);
-        window.addEventListener('keyup', handleKeyUp);
+            return () => {
+                window.removeEventListener('keydown', handleKeyMove);
+                window.removeEventListener('keyup', handleKeyStopper);
+            };
+        }
 
-        return () => {
-            window.removeEventListener('keyup', handleKeyUp);
-            window.removeEventListener('keydown', handleKeyDown);
-        };
+
     }, [gameSocket]);
     return <></>; //얘 없애도 될듯?
 };

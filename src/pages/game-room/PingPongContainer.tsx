@@ -35,10 +35,10 @@ type canvasSize = {
     width: number;
     height: number;
 };
-const PingPongContainer = () => {
+const PingPongContainer = ({open, setOpen}) => {
     console.log('레이아웃 업데이트');
     const [gameResult, setGameResult] = useState(false);
-    const [open, setOpen] = useState(false);
+    // const [open, setOpen] = useState(false);
 
     const { gameSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
@@ -78,6 +78,7 @@ const PingPongContainer = () => {
             setOpen(true);
             response.isOwner ? setGameResult(true) : setGameResult(false);
         };
+
         gameSocket.on('ft_finish_game', checkGameOver); // 게임 종료 이벤트
         gameSocket.on('ft_position_update', positionUpdateHandler); // 게임 좌표 업데이트 해주는 이벤트
         gameSocket.on('ft_enemy_leave_room', checkErrorOver);

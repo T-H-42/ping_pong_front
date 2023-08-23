@@ -1,19 +1,27 @@
 import { Link, Box, Button, Typography } from '@mui/material';
 import { isOwnerState } from '../../api/atoms';
-import React, { useContext } from 'react';
+import React, { useContext , useEffect, useState} from 'react';
 import { useRecoilValue } from 'recoil';
 import { SocketContext } from '../..//api/SocketContext';
 import { useNavigate } from 'react-router';
 import styles from '../../styles/setting-room/setting-room.module.css';
+import axios from 'axios';
+import { getJwtCookie } from '../../api/cookies';
 
 const GuestPlayer = ({ onReady, onReadyToggle }) => {
     const RisOwner = useRecoilValue(isOwnerState);
     const { gameSocket } = useContext(SocketContext);
     const navigate = useNavigate();
+    const [userInformation, setUserInformation] = useState<string>('');
 
+    
+    
     const handleExit = () => {
         gameSocket.emit('ft_leave_setting_room', (response: any) => {
-            if (!response.success) return alert(`설정 방 나가기 실패 :  ${response.payload}`);
+            if (!response.success){
+                alert(`설정 방 나가기 실패 :  ${response.payload}`);
+                return
+            } 
         });
         navigate('/');
     };

@@ -2,15 +2,50 @@ import { Backdrop, Box, Button, Container, Typography } from '@mui/material';
 import { SocketContext } from '../../api/SocketContext';
 import { isOwnerState, settingRoomNameState } from '../../api/atoms';
 import { createGameSocket } from '../../api/socket';
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect , useState} from 'react';
 import { useRecoilValue } from 'recoil';
 import { useNavigate } from 'react-router';
 import styles from '../../styles/setting-room/setting-room.module.css';
+import { getJwtCookie } from '../../api/cookies';
+import axios from 'axios';
+
+interface UserInfo{
+    id : number;
+    image_url : string | null;
+    ladder_lv : number
+status : number
+// userGameHistory : Object,
+userGameHistory: { [key: string]: any };
+username : string 
+}
 const OwnerPlayer = ({ onReady, guestReady , onReadyToggle}) => {
     const { gameSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     const RisOwner = useRecoilValue(isOwnerState);
     const navigate = useNavigate();
+    const [userInformation, setUserInformation] = useState<UserInfo | null>();
+
+
+    useEffect(() => {
+        axios.get(
+            `http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`,
+            {
+              params: {
+                username: localStorage.getItem('username'),
+              },
+              headers: {
+                Authorization: `Bearer ${getJwtCookie('jwt')}`,
+              },
+            }
+          ).then((response) =>{
+              setUserInformation(response.data);
+              console.log("나현ㄴ미 이걸 보세여", response.data);
+             console.log("있겠져 ? ", userInformation.id);
+             
+          });
+        }
+       ,[]);
+      
 
     const initGameHandler = useCallback(() => {
         if (!guestReady) {
@@ -22,16 +57,16 @@ const OwnerPlayer = ({ onReady, guestReady , onReadyToggle}) => {
             alert('잘못된 접근입니다.');
         }
         gameSocket.emit('ft_game_play', RsettingRoomName, (response: any) => {
-            if (!response.success) return alert(response.payload);
+            if (!response.success){
+                alert(response.payload);
+                return
+            } 
             alert('에밋컬');
         });
         navigate(`/game-room/${RsettingRoomName}`);
     }, [onReady, guestReady]);
 
-    useEffect(() =>{
-        console.log("돈ㄷ ㅏ 돌아");
-        
-    }, [guestReady])
+
     return (
         <Box sx={{ width: '680px', height: '864px' }} display={'flex'} flexDirection={'column'} alignItems={'center'}>
             <Box

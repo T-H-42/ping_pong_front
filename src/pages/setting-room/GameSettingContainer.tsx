@@ -100,9 +100,9 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
         console.log(settingInformation);
         gameSocket.emit('ft_game_setting', settingInformation, (response: any) => {
             if (!response.success) 
+                alert(response.payload);
+                console.log('게임 설정 요청', response);
                 return
-            alert(response.payload);
-            console.log('게임 설정 요청', response);
         });
         console.log('게임 설정 로그');
 

@@ -30,7 +30,10 @@ const PlayerReadyStatus = ({ onReady, setOnReady, settingInformation }) => {
         
         // if (!onReady) {
           gameSocket.emit('ft_game_ready', RsettingRoomName, guestReady ,(response: any) => {
-            if (!response.success) return alert(response.payload);
+            if (!response.success) {
+                alert(response.payload);
+                return
+            }
           });
         // }
         // else{

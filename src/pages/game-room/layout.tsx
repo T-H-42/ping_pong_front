@@ -11,12 +11,12 @@ import { useSetRecoilState } from 'recoil';
 import { isOwnerState, settingRoomNameState } from '../../api/atoms';
 
 const Layout = () => {
+    const [open, setOpen] = useState(false);
     const RsetIsOwner = useSetRecoilState<boolean>(isOwnerState);
     const RisOwner = useRecoilValue(isOwnerState);
-    
+    const [gameResult, setGameResult] = useState(false);
     const { gameSocket } = useContext(SocketContext);
     const navigate = useNavigate();
-
     useEffect(() => {
         window.history.pushState(null, '', window.location.href);
 
@@ -26,9 +26,11 @@ const Layout = () => {
             {
                 RsetIsOwner(false)
             }
-                console.log('백으로 에밋');
                 gameSocket.emit('ft_leave_setting_room', (response: any) => {
-                    if (!response.success) return alert(`설정 방 나가기 실패 :  ${response.payload}`);
+                    if (!response.success) {
+                        alert(`설정 방 나가기 실패 :  ${response.payload}`);
+                        return
+                    }
                     alert(`${response.username}님이 나갔습니다.`);
                 });
                 navigate('/main');
@@ -73,8 +75,8 @@ const Layout = () => {
 
     return (
         <>
-            <PaddleManager />
-            <PingPongContainer />
+            <PaddleManager  open={open} />
+            <PingPongContainer open={open} setOpen={setOpen}/>
         </>
     );
 };
