@@ -11,8 +11,11 @@ const fetchOauth = async ({ code }) => {
     const response = await axios.post(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/signin`,
     { code },
     {
-        headers: { 'Content-Type': 'application/json' },
+        // headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
+         headers: {
+                    Authorization: `Bearer ${getJwtCookie('jwt')}`,
+                },
     },);
     return (response);
 }
