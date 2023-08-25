@@ -2,7 +2,7 @@ import { SocketContext } from '../../api/SocketContext';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
-import { settingRoomNameState, isOwnerState, enemyState } from '../../api/atoms';
+import { settingRoomNameState, isOwnerState } from '../../api/atoms';
 import { Button } from '@mui/material';
 
 const GameStartButton = () => {
@@ -11,7 +11,7 @@ const GameStartButton = () => {
     const navigate = useNavigate();
     const RsetSettingRoomName = useSetRecoilState<string>(settingRoomNameState);
     const RsetIsOwner = useSetRecoilState<boolean>(isOwnerState);
-    const RsetEnemy = useSetRecoilState<string>(enemyState);
+    // const RsetEnemy = useSetRecoilState<string>(enemyState);
 
     
     const onGameStart = useCallback(() => {
@@ -40,13 +40,14 @@ const GameStartButton = () => {
 
     useEffect(() => {
         const goToSettingsRoom = (response: any) => {
+            console.log('ft_match_success on: ', response);
             if (!response.success) {
                 alert(`ft__match_success : ${response.payload}`);
                 return;
             }
             console.log('매치 성공 후 받은 res ', response);
             RsetSettingRoomName(response.roomName);
-            RsetEnemy(response.username)
+            // RsetEnemy(response.username)
             if (response.isOwner) {
                 RsetIsOwner(true);
             }
@@ -54,8 +55,9 @@ const GameStartButton = () => {
         };
     
         gameSocket.on('ft_match_success', goToSettingsRoom);
+        
         return () => {
-            gameSocket.off('ft_match_success', goToSettingsRoom);
+            // gameSocket.off('ft_match_success', goToSettingsRoom);
         };
     }, [gameSocket]);
     

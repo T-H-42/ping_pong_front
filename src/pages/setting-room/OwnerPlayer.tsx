@@ -17,6 +17,7 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
     const navigate = useNavigate();
     const [userInformation, setUserInformation] = useState<UserInfo | null>();
     const queryParams = { username: localStorage.getItem('username') };
+    //방장이랑 게스트 네임 둘 다 받아와야 함
 
     useEffect(() => {
         axios
