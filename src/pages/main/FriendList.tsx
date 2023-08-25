@@ -72,11 +72,13 @@ const FriendList = ({ dmName, setDMName }) => {
     }, [friends]);
 
     const onJoinDM = useCallback((username: any, status: number, receiver: string) => () => {
-
-        chatSocket.emit('join-dm', username, (response: any) => {
+        const data = {
+            username,
+        };////nhwang
+        chatSocket.emit('join-dm', data, (response: any) => { //// nhwang
             console.log('join-dm: ', response);
             if (response.success) {
-                localStorage.setItem('dm-username', username);
+                localStorage.setItem('dm-username', username); 
                 localStorage.setItem('dm-index', response.index);
                 navigate(`/dm/${response.index}`);
             } else {
