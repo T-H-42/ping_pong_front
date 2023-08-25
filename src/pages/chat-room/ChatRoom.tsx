@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback, useContext } from 'react';
-import {} from 'react-router-dom';
-import {} from '../../api/atoms';
+import { } from 'react-router-dom';
+import { } from '../../api/atoms';
 import { useSearchParams, useNavigate, Navigate } from 'react-router-dom';
 import { roomNameState } from '../../api/atoms';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
@@ -32,6 +32,7 @@ const ChatRoom: React.FC = () => {
     const [openRoomInvitation, setOpenRoomInvitation] = useState(false);
     const [chats, setChats] = useState([]);
     const [message, setMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
     const [friends, setFriends] = useState([]);
     const [chatUsers, setChatUsers] = useState([]);
     const [right, setRight] = useState<number>(-1);
@@ -56,7 +57,6 @@ const ChatRoom: React.FC = () => {
             }
         });
         const data = {
-            // roomName -> data nhwang
             roomName,
         };
         chatSocket.emit('ft_isEmptyRoom', data, (res: any) => {
@@ -143,7 +143,7 @@ const ChatRoom: React.FC = () => {
             console.log('ft_invite_game_result on: ', res);
             if (!res.success) {
                 setOpenError(true);
-                setMessage(res.faillog);
+                setErrorMessage(res.faillog);
                 return;
             }
         });
@@ -243,7 +243,7 @@ const ChatRoom: React.FC = () => {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <ModalError isOpen={openError} onClose={handleCloseError} title={'에러'} message={message} />
+            <ModalError isOpen={openError} onClose={handleCloseError} title={'에러'} message={errorMessage} />
             <ModalAddFriend
                 isOpen={showAddFriend}
                 onClose={handleAddFriendClose}
@@ -273,7 +273,7 @@ const ChatRoom: React.FC = () => {
                 roomName={roomName}
                 sender={sender}
             />
-            <AppBar position="static" background-color="white">
+            <AppBar position="static">
                 <Stack direction="column" spacing={2}>
                     <h2>채팅방 이름 : {roomName}</h2>
                     <Box sx={{ display: 'flex', gap: '10px' }}>
@@ -286,12 +286,13 @@ const ChatRoom: React.FC = () => {
                     </Box>
                 </Stack>
             </AppBar>
+            <div style={{ margin: '30px 0' }} />
             <div ref={chatContainerEl} style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 200px)' }}>
                 {chats.map((chat, index) => (
                     <div key={index}>
+                        <div style={{ margin: '20px 0' }} />
                         <span style={{ fontWeight: 'bold', color: 'green' }}>{chat.username} : </span>
                         <span style={{ fontWeight: 'bold', color: 'black' }}>{chat.message}</span>
-                        <div style={{ margin: '30px 0' }} />
                     </div>
                 ))}
             </div>
