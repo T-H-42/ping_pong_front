@@ -54,8 +54,7 @@ export const isOwnerState = atom<boolean>({
     default: false,
 });
 
-
-export const enemyState = atom<string>({
-    key: 'enemyState',
-    default: '',
+export const settingState = atom<{}>({
+    key: 'settingState',
+    default: { guest: '', owner: '' },
 });
