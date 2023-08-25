@@ -1,5 +1,5 @@
 import { Link, Box, Button, Typography } from '@mui/material';
-import { isOwnerState } from '../../api/atoms';
+import { isOwnerState, settingState } from '../../api/atoms';
 import React, { useContext, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
@@ -8,22 +8,22 @@ import { useNavigate } from 'react-router';
 import styles from '../../styles/setting-room/setting-room.module.css';
 import axios from 'axios';
 import { getJwtCookie } from '../../api/cookies';
-import { enemyState } from '../../api/atoms';
 import UserInfo from '../../types/UserInfo';
 
 const GuestPlayer = ({ onReady, onReadyToggle }) => {
     const RisOwner = useRecoilValue(isOwnerState);
     const { gameSocket } = useContext(SocketContext);
     const navigate = useNavigate();
-    const [guestInformation, setGuestInformation] = useState<UserInfo | null>();
-    // const queryParams = { username: localStorage.getItem('username') };
-    const guestName = useRecoilValue(enemyState);
+    const [guestInformation, setGuestInformation] = useState<UserInfo | null>(null);
+    const settingInfo = useRecoilValue(settingState);
+    const queryParams = { username: settingInfo || '' };
+
+    console.log('쿼리 파람의 값은 게스트', queryParams);
 
     useEffect(() => {
         axios
             .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
-                params: guestName,
-                withCredentials: true,
+                params: queryParams,
                 headers: {
                     Authorization: `Bearer ${getJwtCookie('jwt')}`,
                 },
@@ -32,7 +32,7 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                 setGuestInformation(response.data);
             })
             .catch((err) => {
-                alert(`방장 정보를 불러오는데 실패하였습니다. : ${err}`);
+                alert(`게스트 정보를 불러오는데 실패하였습니다. : ${err}`);
             });
     }, []);
     const handleExit = () => {
@@ -44,7 +44,6 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
         });
         navigate('/');
     };
-    console.log('게스트으으으ㅇ', guestInformation);
 
     return (
         <Box className={styles.GuestContainer}>
@@ -112,7 +111,7 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                                 lineHeight: '24px',
                             }}
                         >
-                            안녕하세여안녕하세여안녕하세여안녕하세여안녕하세여
+                            {/* 안녕하세여안녕하세여안녕하세여안녕하세여안녕하세여 */}
                         </Typography>
                     </Box>
                 </Box>

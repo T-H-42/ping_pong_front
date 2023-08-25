@@ -1,6 +1,6 @@
 import { Backdrop, Box, Button, Container, Typography } from '@mui/material';
 import { SocketContext } from '../../api/SocketContext';
-import { isOwnerState, settingRoomNameState } from '../../api/atoms';
+import { isOwnerState, settingRoomNameState, settingState } from '../../api/atoms';
 import { createGameSocket } from '../../api/socket';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -16,8 +16,10 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
     const RisOwner = useRecoilValue(isOwnerState);
     const navigate = useNavigate();
     const [userInformation, setUserInformation] = useState<UserInfo | null>();
-    const queryParams = { username: localStorage.getItem('username') };
+    const settingInfo = useRecoilValue(settingState);
+    const queryParams = { username: settingInfo || '' };
 
+    console.log('쿼리 파람의 값은 방장', queryParams);
     useEffect(() => {
         axios
             .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
@@ -34,7 +36,7 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                 alert(`방장 정보를 불러오는데 실패하였습니다. : ${err}`);
             });
     }, []);
-    console.log('user if', userInformation);
+    // console.log('user if', userInformation);
 
     const initGameHandler = useCallback(() => {
         if (!guestReady) {
@@ -127,7 +129,7 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                                 lineHeight: '24px',
                             }}
                         >
-                            안녕하세여안녕하세여안녕하세여안녕하세여안녕하세여
+                            {/* 안녕하세여안녕하세여안녕하세여안녕하세여안녕하세여 */}
                         </Typography>
                     </Box>
                 </Box>
