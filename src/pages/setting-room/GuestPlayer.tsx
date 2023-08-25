@@ -163,8 +163,8 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                             {guestInformation?.userGameHistory.length === 0 ? (
                                 <Typography>최근 게임 기록 없음</Typography>
                             ) : (
-                                guestInformation?.userGameHistory.map((item) => (
-                                    <Typography className={styles.RecentRecordComment} key={item.time}>
+                                guestInformation?.userGameHistory.map((item, idx) => (
+                                    <Typography className={styles.RecentRecordComment} key={idx}>
                                         {item.time}
                                     </Typography>
                                 ))
@@ -194,8 +194,8 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                                     {guestInformation?.achievements.length === 0 ? (
                                         <Typography>업적 없음</Typography>
                                     ) : (
-                                        guestInformation?.achievements.map((item) => (
-                                            <Typography className={styles.RecentRecordComment} key={item.time}>
+                                        guestInformation?.achievements.map((item, idx) => (
+                                            <Typography className={styles.RecentRecordComment} key={idx}>
                                                 {item.time}
                                             </Typography>
                                         ))

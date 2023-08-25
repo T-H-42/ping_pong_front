@@ -30,13 +30,12 @@ const ModalGameInvitationReceiver: React.FC<ModalExampleProps> = ({ isOpen, onCl
         const data = { sender: sender, receiver: localStorage.getItem('username'), result: true, roomName: roomName };
         gameSocket.emit('ft_invite_game_result', data, (res: any) => {
             console.log('ft_invite_game_result emit: ', res);
-            // 수정해야함
-            // if (!res.success) {
-            //     setOpenError(true);
-            //     setMessage(res.faillog);   
-            // }
+            if (!res.success) {
+                setOpenError(true);
+                setMessage(res.faillog);   
+                return ;
+            }
         });
-        onClose();
     };
 
     const handleClose = () => {

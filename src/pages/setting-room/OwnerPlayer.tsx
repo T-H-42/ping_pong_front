@@ -180,8 +180,8 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                             {userInformation?.userGameHistory.length === 0 ? (
                                 <Typography>최근 게임 기록 없음</Typography>
                             ) : (
-                                userInformation?.userGameHistory.map((item) => (
-                                    <Typography className={styles.RecentRecordComment} key={item.time}>
+                                userInformation?.userGameHistory.map((item, idx) => (
+                                    <Typography className={styles.RecentRecordComment} key={idx}>
                                         {item.time}
                                     </Typography>
                                 ))
@@ -210,8 +210,8 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                                 {userInformation?.achievements.length === 0 ? (
                                     <Typography>업적 없음</Typography>
                                 ) : (
-                                    userInformation?.achievements.map((item) => (
-                                        <Typography className={styles.RecentRecordComment} key={item.time}>
+                                    userInformation?.achievements.map((item ,idx) => (
+                                        <Typography className={styles.RecentRecordComment} key={idx}>
                                             {item.time}
                                         </Typography>
                                     ))

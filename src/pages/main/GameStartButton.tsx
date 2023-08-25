@@ -54,7 +54,7 @@ const GameStartButton = () => {
 
         gameSocket.on('ft_match_success', goToSettingsRoom);
         return () => {
-            gameSocket.off('ft_match_success', goToSettingsRoom);
+            // gameSocket.off('ft_match_success', goToSettingsRoom);
         };
     }, [gameSocket]);
 

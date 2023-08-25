@@ -12,7 +12,18 @@ import ModalAddFriend from '../../components/ModalAddFriend';
 import ModalRoomInvitation from '../../components/ModalRoomInvitation';
 import ModalGameInvitationReceiver from '../../components/ModalGameInvitationReceiver';
 
-import { Button, Modal, Box, Typography, TextField, Switch, FormControlLabel, Alert, AppBar, Stack } from '@mui/material';
+import {
+    Button,
+    Modal,
+    Box,
+    Typography,
+    TextField,
+    Switch,
+    FormControlLabel,
+    Alert,
+    AppBar,
+    Stack,
+} from '@mui/material';
 
 const ChatRoom: React.FC = () => {
     console.log('챗룸 컴포넌트');
@@ -231,75 +242,70 @@ const ChatRoom: React.FC = () => {
     };
 
     return (
-        <>
-            <Box sx={{ flexGrow: 1 }}>
-                <ModalError isOpen={openError} onClose={handleCloseError} title={'에러'} message={message} />
-                <ModalAddFriend
-                    isOpen={showAddFriend}
-                    onClose={handleAddFriendClose}
-                    title={'친구 요청'}
-                    sender={sender}
-                    receiver={receiver}
-                />
-                <ModalRoomInfo
-                    isOpen={openRoomInfo}
-                    onClose={handleCloseRoomInfo}
-                    title={'채팅방 정보'}
-                    chatUsers={chatUsers}
-                    right={right}
-                    chats={chats}
-                    setChats={setChats}
-                />
-                <ModalRoomInvitation
-                    isOpen={openRoomInvitation}
-                    onClose={handleCloseRoomInvitation}
-                    title={'채팅방 초대'}
-                    friends={friends}
-                />
-                <ModalGameInvitationReceiver
-                    isOpen={openGameInvitation}
-                    onClose={handleCloseGameInvitation}
-                    title={'게임 초대'}
-                    roomName={roomName}
-                    sender={sender}
-                />
-                <AppBar position="static" background-color="white">
-                    <Stack direction="column" spacing={2}>
-                        <h2>채팅방 이름 : {roomName}</h2>
-                        <Box sx={{ display: 'flex', gap: '10px' }}>
-                            <Button variant="contained" onClick={handleOpen}>
-                                채팅방 정보
-                            </Button>
-                            <Button variant="contained" onClick={handleOpenInvitation}>
-                                채팅방 초대
-                            </Button>
-                        </Box>
-                    </Stack>
-                </AppBar>
-                <h2 />
-                <div ref={chatContainerEl}>
-                    {chats.map((chat, index) => (
-                        <div key={index}>
-                            <span style={{ fontWeight: 'bold', color: 'green' }}>{chat.username} : </span>
-                            <span style={{ fontWeight: 'bold', color: 'black' }}>{chat.message}</span>
-
-                            <div style={{ margin: '30px 0' }} />
-                        </div>
-                    ))}
-                </div>
-                <div>
-                    <form onSubmit={onSendMessage}>
-                        <input type="text" onChange={onChange} value={message} />
-                        <button>Send</button>
-                    </form>
-                    <div>
-                        <button onClick={onLeaveRoom} style={{ position: 'absolute', right: '12px', bottom: '35vh' }}>
-                            나가기
-                        </button>
+        <Box sx={{ flexGrow: 1 }}>
+            <ModalError isOpen={openError} onClose={handleCloseError} title={'에러'} message={message} />
+            <ModalAddFriend
+                isOpen={showAddFriend}
+                onClose={handleAddFriendClose}
+                title={'친구 요청'}
+                sender={sender}
+                receiver={receiver}
+            />
+            <ModalRoomInfo
+                isOpen={openRoomInfo}
+                onClose={handleCloseRoomInfo}
+                title={'채팅방 정보'}
+                chatUsers={chatUsers}
+                right={right}
+                chats={chats}
+                setChats={setChats}
+            />
+            <ModalRoomInvitation
+                isOpen={openRoomInvitation}
+                onClose={handleCloseRoomInvitation}
+                title={'채팅방 초대'}
+                friends={friends}
+            />
+            <ModalGameInvitationReceiver
+                isOpen={openGameInvitation}
+                onClose={handleCloseGameInvitation}
+                title={'게임 초대'}
+                roomName={roomName}
+                sender={sender}
+            />
+            <AppBar position="static" background-color="white">
+                <Stack direction="column" spacing={2}>
+                    <h2>채팅방 이름 : {roomName}</h2>
+                    <Box sx={{ display: 'flex', gap: '10px' }}>
+                        <Button variant="contained" onClick={handleOpen}>
+                            채팅방 정보
+                        </Button>
+                        <Button variant="contained" onClick={handleOpenInvitation}>
+                            채팅방 초대
+                        </Button>
+                    </Box>
+                </Stack>
+            </AppBar>
+            <div ref={chatContainerEl} style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 200px)' }}>
+                {chats.map((chat, index) => (
+                    <div key={index}>
+                        <span style={{ fontWeight: 'bold', color: 'green' }}>{chat.username} : </span>
+                        <span style={{ fontWeight: 'bold', color: 'black' }}>{chat.message}</span>
+                        <div style={{ margin: '30px 0' }} />
                     </div>
-                </div>
-            </Box>
-        </>
+                ))}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <form onSubmit={onSendMessage}>
+                    <input type="text" onChange={onChange} value={message} />
+                    <button>Send</button>
+                </form>
+
+                <button onClick={onLeaveRoom} style={{ marginLeft: '10px' }}>
+                    나가기
+                </button>
+            </div>
+        </Box>
     );
 };
 
