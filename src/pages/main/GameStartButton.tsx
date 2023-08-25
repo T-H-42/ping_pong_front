@@ -2,7 +2,7 @@ import { SocketContext } from '../../api/SocketContext';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
-import { settingRoomNameState, isOwnerState } from '../../api/atoms';
+import { settingRoomNameState, isOwnerState, enemyState } from '../../api/atoms';
 import { Button } from '@mui/material';
 
 const GameStartButton = () => {
@@ -11,6 +11,7 @@ const GameStartButton = () => {
     const navigate = useNavigate();
     const RsetSettingRoomName = useSetRecoilState<string>(settingRoomNameState);
     const RsetIsOwner = useSetRecoilState<boolean>(isOwnerState);
+    const RsetEnemy = useSetRecoilState<string>(enemyState);
 
     
     const onGameStart = useCallback(() => {
@@ -36,6 +37,7 @@ const GameStartButton = () => {
         }
        
     }, [initialGameState, navigate]);
+
     useEffect(() => {
         const goToSettingsRoom = (response: any) => {
             if (!response.success) {
@@ -44,6 +46,7 @@ const GameStartButton = () => {
             }
             console.log('매치 성공 후 받은 res ', response);
             RsetSettingRoomName(response.roomName);
+            RsetEnemy(response.username)
             if (response.isOwner) {
                 RsetIsOwner(true);
             }
