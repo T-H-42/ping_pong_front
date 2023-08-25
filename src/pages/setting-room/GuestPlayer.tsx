@@ -1,7 +1,7 @@
 import { Link, Box, Button, Typography } from '@mui/material';
 import { isOwnerState } from '../../api/atoms';
-import React, { useContext , useEffect, useState} from 'react';
-import {  useRecoilValue } from 'recoil';
+import React, { useContext, useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { SocketContext } from '../..//api/SocketContext';
 import { useNavigate } from 'react-router';
@@ -9,33 +9,22 @@ import styles from '../../styles/setting-room/setting-room.module.css';
 import axios from 'axios';
 import { getJwtCookie } from '../../api/cookies';
 import { enemyState } from '../../api/atoms';
-
-
-interface UserInfo{
-    id : number;
-    image_url : string | null;
-    ladder_lv : number
-status : number
-// userGameHistory : Object,
-userGameHistory: { [key: string]: any };
-achievements: { [key : string] : any}
-username : string 
-}
+import UserInfo from '../../types/UserInfo';
 
 const GuestPlayer = ({ onReady, onReadyToggle }) => {
     const RisOwner = useRecoilValue(isOwnerState);
     const { gameSocket } = useContext(SocketContext);
     const navigate = useNavigate();
     const [guestInformation, setGuestInformation] = useState<UserInfo | null>();
-    const queryParams = { username: localStorage.getItem('username') };
-    const guestName = useRecoilValue(enemyState)
-    
-     useEffect(() => {
+    // const queryParams = { username: localStorage.getItem('username') };
+    const guestName = useRecoilValue(enemyState);
+
+    useEffect(() => {
         axios
             .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
-               params :queryParams,
-               withCredentials: true,
-                   headers: {
+                params: guestName,
+                withCredentials: true,
+                headers: {
                     Authorization: `Bearer ${getJwtCookie('jwt')}`,
                 },
             })
@@ -45,20 +34,17 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
             .catch((err) => {
                 alert(`방장 정보를 불러오는데 실패하였습니다. : ${err}`);
             });
-        
-            
     }, []);
     const handleExit = () => {
         gameSocket.emit('ft_leave_setting_room', (response: any) => {
-            if (!response.success){
+            if (!response.success) {
                 alert(`설정 방 나가기 실패 :  ${response.payload}`);
-                return
-            } 
+                return;
+            }
         });
         navigate('/');
     };
-    console.log("게스트으으으ㅇ", guestInformation);
-    
+    console.log('게스트으으으ㅇ', guestInformation);
 
     return (
         <Box className={styles.GuestContainer}>
@@ -171,18 +157,16 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                                 </Typography>
                             </Box>
                         </Box>
-                          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                          {guestInformation?.userGameHistory.length === 0 ? (
-                            <Typography>
-                              최근 게임 기록 없음
-                            </Typography>
-                          ) : (
-                            guestInformation?.userGameHistory.map((item) => (
-                              <Typography className={styles.RecentRecordComment} key={item.time}>
-                                {item.time}
-                              </Typography>
-                            ))
-                          )}
+                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                            {guestInformation?.userGameHistory.length === 0 ? (
+                                <Typography>최근 게임 기록 없음</Typography>
+                            ) : (
+                                guestInformation?.userGameHistory.map((item) => (
+                                    <Typography className={styles.RecentRecordComment} key={item.time}>
+                                        {item.time}
+                                    </Typography>
+                                ))
+                            )}
                         </Box>
                     </Box>
                 </Box>
@@ -204,19 +188,17 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                         </Box>
                         <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                                 <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                                   {guestInformation?.achievements.length === 0 ? (
-                            <Typography>
-                              업적 없음
-                            </Typography>
-                          ) : (
-                            guestInformation?.achievements.map((item) => (
-                              <Typography className={styles.RecentRecordComment} key={item.time}>
-                                {item.time}
-                              </Typography>
-                            ))
-                          )}
-                            </Box>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                                    {guestInformation?.achievements.length === 0 ? (
+                                        <Typography>업적 없음</Typography>
+                                    ) : (
+                                        guestInformation?.achievements.map((item) => (
+                                            <Typography className={styles.RecentRecordComment} key={item.time}>
+                                                {item.time}
+                                            </Typography>
+                                        ))
+                                    )}
+                                </Box>
                             </Box>
                         </Box>
                     </Box>

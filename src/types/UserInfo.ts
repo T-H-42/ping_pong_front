@@ -8,3 +8,5 @@ interface UserInfo {
     achievements: { [key: string]: any };
     username: string;
 }
+
+export default UserInfo;

@@ -2,38 +2,28 @@ import { Backdrop, Box, Button, Container, Typography } from '@mui/material';
 import { SocketContext } from '../../api/SocketContext';
 import { isOwnerState, settingRoomNameState } from '../../api/atoms';
 import { createGameSocket } from '../../api/socket';
-import React, { useCallback, useContext, useEffect , useState} from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { useNavigate } from 'react-router';
 import styles from '../../styles/setting-room/setting-room.module.css';
 import { getJwtCookie } from '../../api/cookies';
 import axios from 'axios';
+import UserInfo from '../../types/UserInfo';
 
-interface UserInfo{
-    id : number;
-    image_url : string | null;
-    ladder_lv : number
-status : number
-// userGameHistory : Object,
-userGameHistory: { [key: string]: any };
-achievements: { [key : string] : any}
-username : string 
-}
-
-const OwnerPlayer = ({ onReady, guestReady , onReadyToggle}) => {
+const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
     const { gameSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     const RisOwner = useRecoilValue(isOwnerState);
     const navigate = useNavigate();
     const [userInformation, setUserInformation] = useState<UserInfo | null>();
     const queryParams = { username: localStorage.getItem('username') };
-    
+
     useEffect(() => {
         axios
             .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
-               params :queryParams,
-               withCredentials: true,
-                   headers: {
+                params: queryParams,
+                withCredentials: true,
+                headers: {
                     Authorization: `Bearer ${getJwtCookie('jwt')}`,
                 },
             })
@@ -43,10 +33,8 @@ const OwnerPlayer = ({ onReady, guestReady , onReadyToggle}) => {
             .catch((err) => {
                 alert(`방장 정보를 불러오는데 실패하였습니다. : ${err}`);
             });
-        
-            
     }, []);
-       console.log("user if", userInformation);
+    console.log('user if', userInformation);
 
     const initGameHandler = useCallback(() => {
         if (!guestReady) {
@@ -58,15 +46,14 @@ const OwnerPlayer = ({ onReady, guestReady , onReadyToggle}) => {
             alert('잘못된 접근입니다.');
         }
         gameSocket.emit('ft_game_play', RsettingRoomName, (response: any) => {
-            if (!response.success){
+            if (!response.success) {
                 alert(response.payload);
-                return
-            } 
+                return;
+            }
             alert('에밋컬');
         });
         navigate(`/game-room/${RsettingRoomName}`);
     }, [onReady, guestReady]);
-
 
     return (
         <Box sx={{ width: '680px', height: '864px' }} display={'flex'} flexDirection={'column'} alignItems={'center'}>
@@ -102,22 +89,20 @@ const OwnerPlayer = ({ onReady, guestReady , onReadyToggle}) => {
                                 alignItems: 'center',
                             }}
                         >
-                            {userInformation?.image_url 
-                            ? 
-                             <img
-                                src={userInformation.image_url}
-                                alt="user_image"
-                                style={{ borderRadius: '30%', width: '80px', height: '119.774px' }}
-                            />
-                            : 
-                            
-                             <img
-                                src="/images/profile.jpg"
-                                alt="user_image"
-                                style={{ borderRadius: '30%', width: '80px', height: '119.774px' }}
-                            />
-                            }
-                           
+                            {userInformation?.image_url ? (
+                                <img
+                                    src={userInformation.image_url}
+                                    alt="user_image"
+                                    style={{ borderRadius: '30%', width: '80px', height: '119.774px' }}
+                                />
+                            ) : (
+                                <img
+                                    src="/images/profile.jpg"
+                                    alt="user_image"
+                                    style={{ borderRadius: '30%', width: '80px', height: '119.774px' }}
+                                />
+                            )}
+
                             <Typography
                                 sx={{
                                     color: 'var(--text-primary, #000)',
@@ -129,7 +114,7 @@ const OwnerPlayer = ({ onReady, guestReady , onReadyToggle}) => {
                                     marginTop: '16px',
                                 }}
                             >
-                           {userInformation ? userInformation.username : '정보 없음'}
+                                {userInformation ? userInformation.username : '정보 없음'}
                             </Typography>
                         </Box>
                         <Typography
@@ -188,17 +173,15 @@ const OwnerPlayer = ({ onReady, guestReady , onReadyToggle}) => {
                             </Box>
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                          {userInformation?.userGameHistory.length === 0 ? (
-                            <Typography>
-                              최근 게임 기록 없음
-                            </Typography>
-                          ) : (
-                            userInformation?.userGameHistory.map((item) => (
-                              <Typography className={styles.RecentRecordComment} key={item.time}>
-                                {item.time}
-                              </Typography>
-                            ))
-                          )}
+                            {userInformation?.userGameHistory.length === 0 ? (
+                                <Typography>최근 게임 기록 없음</Typography>
+                            ) : (
+                                userInformation?.userGameHistory.map((item) => (
+                                    <Typography className={styles.RecentRecordComment} key={item.time}>
+                                        {item.time}
+                                    </Typography>
+                                ))
+                            )}
                         </Box>
                     </Box>
                 </Box>
@@ -220,17 +203,15 @@ const OwnerPlayer = ({ onReady, guestReady , onReadyToggle}) => {
                         </Box>
                         <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                                   {userInformation?.achievements.length === 0 ? (
-                            <Typography>
-                              업적 없음
-                            </Typography>
-                          ) : (
-                            userInformation?.achievements.map((item) => (
-                              <Typography className={styles.RecentRecordComment} key={item.time}>
-                                {item.time}
-                              </Typography>
-                            ))
-                          )}
+                                {userInformation?.achievements.length === 0 ? (
+                                    <Typography>업적 없음</Typography>
+                                ) : (
+                                    userInformation?.achievements.map((item) => (
+                                        <Typography className={styles.RecentRecordComment} key={item.time}>
+                                            {item.time}
+                                        </Typography>
+                                    ))
+                                )}
                             </Box>
                         </Box>
                     </Box>
