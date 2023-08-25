@@ -1,0 +1,15 @@
+.centeredTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.centeredTable td {
+  padding: 10px;
+  /* border: 1px solid #ccc; */
+}
+
+/* 옵션: 셀 내용 가운데 정렬 */
+.centeredTable td {
+  vertical-align: middle;
+}

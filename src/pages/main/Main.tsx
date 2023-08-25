@@ -10,7 +10,6 @@ import { IFriendsState, usernameState, friendsState } from '../../api/atoms';
 import { SocketContext } from '../../api/SocketContext';
 import GameStartButton from './GameStartButton';
 import { isOwnerState, settingRoomNameState } from '../../api/atoms';
-
 import ModalRoomInvitationReceiver from '../../components/ModalRoomInvitationReceiver';
 
 const Main = () => {

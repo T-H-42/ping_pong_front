@@ -5,6 +5,7 @@ import { useQuery } from 'react-query';
 import { getJwtCookie } from '../api/cookies';
 import { SocketContext } from '../api/SocketContext';
 import styles from '../styles/main/main.module.css'
+import stylesP from '../styles/profile.module.css'
 
 import ModalError from './ModalError';
 
@@ -20,7 +21,10 @@ const fetchProfileData = async (userName) => {
           Authorization: `Bearer ${getJwtCookie('jwt')}`,
         },
       },
-    )
+    ).catch((res) => {
+      console.log(res);
+      return res;
+    })
   );
   return res.data;
 };
@@ -31,24 +35,45 @@ const Achievements = ({ achievements }) => {
   ));
 };
 
-const GameHistory = ({ userName, history }) => {
-  return history.map((data) => {
-    const date = new Date(data.time);
-    const gameDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-    return (
-      <>
-        <Typography key={gameDate} variant="body1">
-          {gameDate}
-          {userName === data.winner ? (
+const GameHistory = ({ username, history }) => {
+  return (
+    <div>
+      <table cellPadding={10} cellSpacing={10} className={stylesP.centeredTable}>
+    <tr>
+      <td>결과</td>
+      <td>winner</td>
+      {/* <td>loser</td> */}
+      <td>플레이 날짜</td>
+    </tr>
+    {history.map((data) => {
+      const date = new Date(data.time);
+      const gameDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+      return (
+        <tr key={ gameDate }>
+          <td>
+          {username === data.winuser ? (
             ' WIN '
-          ) : (
-            ' LOOSE '
-          )}
-          {data.winner}
+            ) : (
+              ' LOOSE '
+              )}
+          </td>
+          <td>
+          {data.winuser}
+          </td>
+          {/* <td>
+          {data.loseuser}
+          </td> */}
+          <td>
+        <Typography variant="body1">
+          {gameDate}
         </Typography>
-      </>
+          </td>
+
+      </tr>
     );
-  });
+  })}
+  </table>
+  </div>)
 };
 
 const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }) => {
@@ -159,9 +184,8 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
         <Box
           component="img"
           className={styles.sample}
-          src={userInfo.image_url}
-        ></Box>
-
+          src={userInfo.image_url ? `http://${process.env.REACT_APP_IP_ADDRESS}:4000/${userInfo.image_url}` : "/images/profile.jpg"}
+        ></Box> 
         <Typography variant="h3">{userInfo.username}</Typography>
 
         <Stack direction="column" spacing={6}>
@@ -177,7 +201,7 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
             >
               <Typography variant="h6">전적</Typography>
               <GameHistory
-                userName={userInfo.username}
+                username={username}
                 history={userInfo.userGameHistory}
               />
             </Box>
@@ -213,3 +237,4 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
 
 export default Profile;
 
+export { fetchProfileData, Achievements, GameHistory };
