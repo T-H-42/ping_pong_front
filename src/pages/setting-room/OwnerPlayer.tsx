@@ -17,13 +17,15 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
     const navigate = useNavigate();
     const [userInformation, setUserInformation] = useState<UserInfo | null>();
     const settingInfo = useRecoilValue(settingState);
-    const queryParams = { username: settingInfo || '' };
+    // const queryParams = { settingInfo };
 
-    console.log('쿼리 파람의 값은 방장', queryParams);
+    console.log('쿼리 파람의 값은 방장', settingInfo.ownerName);
     useEffect(() => {
         axios
             .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
-                params: queryParams,
+                params: {
+                    username :  settingInfo.ownerName
+                },
                 withCredentials: true,
                 headers: {
                     Authorization: `Bearer ${getJwtCookie('jwt')}`,
@@ -33,7 +35,7 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                 setUserInformation(response.data);
             })
             .catch((err) => {
-                alert(`방장 정보를 불러오는데 실패하였습니다. : ${err}`);
+                console.log(`방장 정보를 불러오는데 실패하였습니다. : ${err}`);
             });
     }, []);
     // console.log('user if', userInformation);
@@ -178,8 +180,8 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                             {userInformation?.userGameHistory.length === 0 ? (
                                 <Typography>최근 게임 기록 없음</Typography>
                             ) : (
-                                userInformation?.userGameHistory.map((item) => (
-                                    <Typography className={styles.RecentRecordComment} key={item.time}>
+                                userInformation?.userGameHistory.map((item, idx) => (
+                                    <Typography className={styles.RecentRecordComment} key={idx}>
                                         {item.time}
                                     </Typography>
                                 ))
@@ -208,8 +210,8 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                                 {userInformation?.achievements.length === 0 ? (
                                     <Typography>업적 없음</Typography>
                                 ) : (
-                                    userInformation?.achievements.map((item) => (
-                                        <Typography className={styles.RecentRecordComment} key={item.time}>
+                                    userInformation?.achievements.map((item ,idx) => (
+                                        <Typography className={styles.RecentRecordComment} key={idx}>
                                             {item.time}
                                         </Typography>
                                     ))

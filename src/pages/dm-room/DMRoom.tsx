@@ -6,6 +6,19 @@ import { dmNameState } from '../../api/atoms';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { SocketContext } from '../../api/SocketContext';
 
+import {
+    Button,
+    Modal,
+    Box,
+    Typography,
+    TextField,
+    Switch,
+    FormControlLabel,
+    Alert,
+    AppBar,
+    Stack,
+} from '@mui/material';
+
 const DMRoom = () => {
     const { chatSocket } = useContext(SocketContext);
     const [chats, setChats] = useState([]);
@@ -29,7 +42,7 @@ const DMRoom = () => {
     useEffect(() => {
         setMessage('');
         const data = {
-            roomName:index
+            roomName: index
         }; // { roomName: index }
         chatSocket.emit('ft_get_dm_log', data, (chat) => {
             console.log('ft_get_dm_log: ', chat);
@@ -75,7 +88,7 @@ const DMRoom = () => {
             if (message === '') return alert('메시지를 입력해 주세요.');
             /// nhwang { roomName: index, message, receiver } -> data
             const data = {
-                roomName:index,
+                roomName: index,
                 message,
                 receiver,
             };
@@ -90,22 +103,16 @@ const DMRoom = () => {
 
     const onLeaveRoom = useCallback(() => {
         // chatSocket.emit('leave-dm', index, () => {
-            navigate('/main');
+        navigate('/main');
         // });
     }, [navigate]);
 
     return (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '100vh',
-            }}
-        >
-            <h2>{receiver}님과의 DM</h2>
-            <div ref={chatContainerEl}>
+        <Box sx={{ flexGrow: 1 }}>
+            <AppBar position="static">
+                <h2>{receiver}님과의 DM</h2>
+            </AppBar>
+            <div ref={chatContainerEl} style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 200px)' }}>
                 {chats.map((chat, index) => (
                     <div key={index}>
                         <span style={{ fontWeight: 'bold', color: 'green' }}>{chat.username} : </span>
@@ -114,18 +121,17 @@ const DMRoom = () => {
                     </div>
                 ))}
             </div>
-            <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <form onSubmit={onSendMessage}>
                     <input type="text" onChange={onChange} value={message} />
                     <button>Send</button>
                 </form>
-                <div>
-                    <button onClick={onLeaveRoom} style={{ position: 'absolute', right: '12px', bottom: '35vh' }}>
-                        나가기
-                    </button>
-                </div>
+
+                <button onClick={onLeaveRoom} style={{ marginLeft: '10px' }}>
+                    나가기
+                </button>
             </div>
-        </div>
+        </Box>
     );
 };
 

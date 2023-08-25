@@ -59,8 +59,8 @@ const PaddleManager = ({open}) => {
         }
 
 
-    }, [gameSocket]);
-    return <></>; //얘 없애도 될듯?
+    }, [open, gameSocket, keyPressed, RsettingRoomName, RisOwner]);
+    return null; //얘 없애도 될듯?
 };
 
 export default PaddleManager;

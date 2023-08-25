@@ -16,14 +16,17 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
     const navigate = useNavigate();
     const [guestInformation, setGuestInformation] = useState<UserInfo | null>(null);
     const settingInfo = useRecoilValue(settingState);
-    const queryParams = { username: settingInfo || '' };
+    // const queryParams = { settingInfo };
+    // console.log('쿼리 파람의 값은 게스트111', settingInfo);
 
-    console.log('쿼리 파람의 값은 게스트', queryParams);
+    console.log('쿼리 파람의 값은 게스트222', settingInfo.guestName);
 
     useEffect(() => {
         axios
             .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
-                params: queryParams,
+                params: {
+                    username :  settingInfo.guestName
+                },
                 headers: {
                     Authorization: `Bearer ${getJwtCookie('jwt')}`,
                 },
@@ -32,7 +35,7 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                 setGuestInformation(response.data);
             })
             .catch((err) => {
-                alert(`게스트 정보를 불러오는데 실패하였습니다. : ${err}`);
+                console.log(`게스트 정보를 불러오는데 실패하였습니다. : ${err}`);
             });
     }, []);
     const handleExit = () => {
@@ -160,8 +163,8 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                             {guestInformation?.userGameHistory.length === 0 ? (
                                 <Typography>최근 게임 기록 없음</Typography>
                             ) : (
-                                guestInformation?.userGameHistory.map((item) => (
-                                    <Typography className={styles.RecentRecordComment} key={item.time}>
+                                guestInformation?.userGameHistory.map((item, idx) => (
+                                    <Typography className={styles.RecentRecordComment} key={idx}>
                                         {item.time}
                                     </Typography>
                                 ))
@@ -191,8 +194,8 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                                     {guestInformation?.achievements.length === 0 ? (
                                         <Typography>업적 없음</Typography>
                                     ) : (
-                                        guestInformation?.achievements.map((item) => (
-                                            <Typography className={styles.RecentRecordComment} key={item.time}>
+                                        guestInformation?.achievements.map((item, idx) => (
+                                            <Typography className={styles.RecentRecordComment} key={idx}>
                                                 {item.time}
                                             </Typography>
                                         ))

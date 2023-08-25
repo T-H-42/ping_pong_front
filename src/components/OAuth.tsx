@@ -22,7 +22,7 @@ const fetchOauth = async ({ code }) => {
 
 const oauthSuccess = (data, sockets) => {
     // TODO: cookie 등록 삭제
-    document.cookie = `jwt=${data.accessToken};  path=/`;
+    // document.cookie = `jwt=${data.accessToken};  path=/`;
     localStorage.setItem('username', data.username);
     
     if (data.two_factor_authentication_status === true)
