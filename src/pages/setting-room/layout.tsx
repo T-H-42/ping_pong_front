@@ -35,9 +35,9 @@ const SettingRoomLayout = () => {
     const modalRef = useRef();
 
     // 새로고침 이벤트는  beforeunload, popstate는 새로 고침
+
     useEffect(() => {
         window.history.pushState(null, '', window.location.href);
-    
         const confirmGoBack = (event : any) => {
             event.preventDefault();
            
@@ -46,7 +46,7 @@ const SettingRoomLayout = () => {
                         alert(`설정 방 나가기 실패 :  ${response.payload}`);
                         return
                     } 
-                    alert(`${response.username}님이 나갔습니다.2`);
+                    alert(`${response.username}님이 나갔습니다.`);
                 });
                 navigate('/main');
             }
@@ -67,16 +67,15 @@ const SettingRoomLayout = () => {
 
     useEffect(() => {
         const handleMyselfLeaveSettingRoom = (response : any) => { //자신 나가는 로직
-            console.log("너 여기서 돌지 ????????????????!!!!!!!!!!!!1")
             if (!response) {
                 return alert(`${response} 에러가 발생했습니다.`);
             }
-            gameSocket.emit('ft_leave_setting_room', (response: any) => {
-                if (!response.success){
-                    alert(`설정 방 나가기 실패 :  ${response.payload}`);
-                    return
-                } 
-            });
+            // gameSocket.emit('ft_leave_setting_room', (response: any) => {
+            //     if (!response.success){
+            //         alert(`설정 방 나가기 실패 :  ${response.payload}`);
+            //         return
+            //     } 
+            // });
             navigate('/');
         };
 

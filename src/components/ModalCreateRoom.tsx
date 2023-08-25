@@ -16,7 +16,7 @@ interface Response {
 }
 
 const ModalCreateRoom: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, message }) => {
-    const { chatSocket } = useContext(SocketContext);
+    const { chatSocket , gameSocket} = useContext(SocketContext);
     const navigate = useNavigate();
     const [roomName, setRoomName] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -49,6 +49,18 @@ const ModalCreateRoom: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, 
     const handleInputNumberChange = (event) => {
         setInputNumber(event.target.value);
     };
+     
+    const handleExit = () => {
+        console.log("생성 에밌!!!!!!!!!!!!!!!!!!!!!!!!");
+        
+        gameSocket.emit('ft_exit_match_queue', (response: any) => {
+                if (!response.success) {
+                    alert("매치 취소에 실패하였습니다 : ");
+                    return
+                }
+            });
+        navigate('/');
+    };
 
     const onCreateRoom = () => {
         // 공개방은 0, 비밀번호방1, 비공개방 2
@@ -66,6 +78,7 @@ const ModalCreateRoom: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, 
             limitUser: inputNumber,
         };
 
+        // handleExit()
         chatSocket.emit('create-room', data, (response: Response) => {
             console.log('create-room: ', response);
             if (response.success) {

@@ -53,3 +53,9 @@ export const isOwnerState = atom<boolean>({
     key: 'isOwnerState',
     default: false,
 });
+
+
+export const enemyState = atom<string>({
+    key: 'enemyState',
+    default: '',
+});
