@@ -252,4 +252,4 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
     );
 };
 
-export default Profile;
+export { fetchProfileData, Achievements, GameHistory, Profile };

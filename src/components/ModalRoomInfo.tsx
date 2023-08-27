@@ -7,7 +7,7 @@ import { usernameState } from '@src/api/atoms';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { roomFriendsState } from '../api/atoms';
 
-import Profile from './Profile';
+import {Profile} from './Profile';
 import ModalError from './ModalError';
 
 interface ModalExampleProps {

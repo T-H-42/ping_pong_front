@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import {useNavigate} from 'react-router-dom';
+import {NavLink, useNavigate} from 'react-router-dom';
 import { getJwtCookie } from '../../api/cookies';
 import axios from 'axios';
 import ChatList from './ChatList';
@@ -107,7 +107,9 @@ const Main = () => {
             <ModalRoomInvitationReceiver isOpen={openInvitation} onClose={handleClose} title={'채팅방 초대'} roomName={roomName} sender={sender} />            
             <GameStartButton />
             <LogOutButton />
-            <h1> {localStorage.getItem('username')}의 메인 페이지</h1>
+            <h1>
+            <NavLink to="/mypage">{localStorage.getItem('username')}</NavLink>
+            의 메인 페이지</h1>
             {chatSocket ? <ChatList /> : null}
             <div style={{ margin: '30px 0' }} />
             <FriendList dmName={dmName} setDMName={setDMName} />
