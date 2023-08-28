@@ -19,7 +19,7 @@ import { createPingpongSocket, createChatSocket, createGameSocket } from './api/
 import SettingRoomLayout from './pages/setting-room/layout';
 import GameRoomLayout from './pages/game-room/layout';
 import DummyOAuth from './components/DummyOAuth';
-import MyPage from './pages/profile/MyPage'
+import MyPage from './pages/mypage/MyPage'
 
 const queryClient = new QueryClient({
     defaultOptions: {
