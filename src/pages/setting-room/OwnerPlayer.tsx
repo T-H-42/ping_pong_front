@@ -19,11 +19,11 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
     const settingInfo = useRecoilValue(settingState);
 
     useEffect(() => {
-        // if (settingInfo.ownerName !== 0) {
+        if (settingInfo?.ownerName) {
             axios
                 .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
                     params: {
-                        userId: settingInfo.ownerName
+                        username : settingInfo.ownerName
                     },
                     withCredentials: true,
                     headers: {
@@ -31,12 +31,13 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                     },
                 })
                 .then((response) => {
+                    console.log(response);
                     setUserInformation(response.data);
                 })
                 .catch((err) => {
                     console.log(`방장 정보를 불러오는데 실패하였습니다. : ${err}`);
                 });
-        // }
+        }
     }, []);
     
     
@@ -63,7 +64,8 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
 
     return (
         <Box sx={{ width: '100%', height: '864px' }} display={'flex'} flexDirection={'column'} alignItems={'center'}>
-            <Box
+            {!userInformation && <h2>Loading</h2>}
+            {userInformation && <Box
                 sx={{
                     width: '100%',
                     height: '100%',
@@ -179,20 +181,21 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                             </Box> */}
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                        {/* {!(userInformation?.userGameHistory.length) ? (
+                        {!(userInformation?.userGameHistory.length) ? (
     <Typography>최근 게임 기록 없음</Typography>
   ) : (
     // userInformation?.userGameHistory.map((item, idx) => (
-    //   <Typography className={styles.RecentRecordComment} key={idx}>
-        <ProfileGameHistory username={userInformation.username} history={userInformation.userGameHistory} />
-    //   </Typography>
+    //     <Typography className={styles.RecentRecordComment} key={idx}>
+            <ProfileGameHistory username={userInformation.username} history={userInformation.userGameHistory} />
+        // </Typography>
+    // ))
+    
     )
-//   )}
-  } */}
+  }
 </Box>
 
-                    </Box>
-                </Box>
+        </Box>
+            </Box>
                 <Box className={styles.ArchvimentsContainer}>
                     <Box sx={{ width: '90%', height: '100%', margin: '0 auto' }}>
                         <Box>
@@ -211,15 +214,15 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                         </Box>
                         <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                                {/* {userInformation?.achievements.length === 0 ? (
+                                {!(userInformation?.achievements.length) ? (
                                     <Typography>업적 없음</Typography>
                                 ) : (
                                     userInformation?.achievements.map((item ,idx) => (
                                         <Typography className={styles.RecentRecordComment} key={idx}>
-                                            {item.time}
+                                            {item}
                                         </Typography>
                                     ))
-                                )} */}
+                                )}
                             </Box>
                         </Box>
                     </Box>
@@ -240,7 +243,7 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                         게임시작
                     </Button>
                 </Box>
-            </Box>
+            </Box>}
         </Box>
     );
 };

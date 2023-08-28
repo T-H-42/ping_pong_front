@@ -12,7 +12,23 @@ const GameResultContainer = ({ open, setOpen, gameResult }, modalRef) => {
         navigate('/');
     };
     return (
-        <Box ref={modalRef} tabIndex={-1}>
+        <Box sx={{   
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            padding: '24px',
+            transform: 'translate(-50%, -50%)',
+            width: '31.6vw',
+            height: '11.8vw',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            backgroundColor: 'white',
+            border: '2px solid #000',
+            borderRadius: '1.5em',
+            boxShadow: '0px 1px 8px 0px rgba(0, 0, 0, 0.16)',
+          }}
+       ref={modalRef} tabIndex={-1}>
             <Box style={{ width: '100%', textAlign: 'center' }}>
                 {gameResult ? '방장이' : '도전자가'} 승리하셨습니다!
             </Box>
