@@ -1,7 +1,6 @@
-import { Box, Button, Container } from '@mui/material';
-import React, { forwardRef, useEffect } from 'react';
+import { Box, Button } from '@mui/material';
+import React, { forwardRef } from 'react';
 import { useNavigate } from 'react-router';
-import styles from './gameRoom.module.css';
 import { isOwnerState } from '../../api/atoms';
 import { useSetRecoilState } from 'recoil';
 
@@ -13,7 +12,7 @@ const GameResultContainer = ({ open, setOpen, gameResult }, modalRef) => {
         navigate('/');
     };
     return (
-        <Box className={styles.container} ref={modalRef} tabIndex={-1}>
+        <Box ref={modalRef} tabIndex={-1}>
             <Box style={{ width: '100%', textAlign: 'center' }}>
                 {gameResult ? '방장이' : '도전자가'} 승리하셨습니다!
             </Box>
