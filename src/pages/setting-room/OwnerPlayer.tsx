@@ -20,11 +20,13 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
     // const queryParams = { settingInfo };
 
     console.log('쿼리 파람의 값은 방장', settingInfo.ownerName);
+    console.log(' 방장 넘버 타입 체크',typeof settingInfo.ownerName === 'number');
+
     useEffect(() => {
         axios
             .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
                 params: {
-                    username :  settingInfo.ownerName
+                    userId :  settingInfo.ownerName
                 },
                 withCredentials: true,
                 headers: {
