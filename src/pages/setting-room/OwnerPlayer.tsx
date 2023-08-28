@@ -17,14 +17,12 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
     const navigate = useNavigate();
     const [userInformation, setUserInformation] = useState<UserInfo | null>();
     const settingInfo = useRecoilValue(settingState);
-    // const queryParams = { settingInfo };
 
-    console.log('쿼리 파람의 값은 방장', settingInfo.ownerName);
     useEffect(() => {
         axios
             .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
                 params: {
-                    username :  settingInfo.ownerName
+                    userId: settingInfo.ownerName,
                 },
                 withCredentials: true,
                 headers: {
@@ -35,10 +33,9 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                 setUserInformation(response.data);
             })
             .catch((err) => {
-                console.log(`방장 정보를 불러오는데 실패하였습니다. : ${err}`);
+                alert(`방장 정보를 불러오는데 실패하였습니다. : ${err}`);
             });
     }, []);
-    // console.log('user if', userInformation);
 
     const initGameHandler = useCallback(() => {
         if (!guestReady) {
@@ -60,7 +57,7 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
     }, [onReady, guestReady]);
 
     return (
-        <Box sx={{ width: '680px', height: '864px' }} display={'flex'} flexDirection={'column'} alignItems={'center'}>
+        <Box className={styles.OwnerContainer} display={'flex'} flexDirection={'column'} alignItems={'center'}>
             <Box
                 sx={{
                     width: '100%',
@@ -210,7 +207,7 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                                 {userInformation?.achievements.length === 0 ? (
                                     <Typography>업적 없음</Typography>
                                 ) : (
-                                    userInformation?.achievements.map((item ,idx) => (
+                                    userInformation?.achievements.map((item, idx) => (
                                         <Typography className={styles.RecentRecordComment} key={idx}>
                                             {item.time}
                                         </Typography>
@@ -220,13 +217,13 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                         </Box>
                     </Box>
                 </Box>
-                <Box sx={{ height: '32px' }}>
+                <Box sx={{ width: '80%', height: '32px' }}>
                     <Button
                         variant="outlined"
                         onClick={initGameHandler}
                         disabled={!RisOwner}
                         style={{
-                            width: '395px',
+                            width: '100%',
                             padding: '16px ',
                             backgroundColor: guestReady ? '#3874CB' : 'rgba(255, 255, 255)', // 대기중일 때 색상 제거
                             color: guestReady ? '#ffffff' : '#1976d2',

@@ -6,7 +6,6 @@ import { useRecoilValue } from 'recoil';
 import { settingRoomNameState } from '../../api/atoms';
 import { useNavigate } from 'react-router-dom';
 import PlayerReadyStatus from './PlayerReadyStatus';
-import GoHomeButton from '../../components/GoHomeButton';
 import { Box, Button } from '@mui/material';
 import { isOwnerState } from '../../api/atoms';
 import { useSetRecoilState } from 'recoil';
@@ -132,13 +131,11 @@ const SettingRoomLayout = () => {
             <Box
                 sx={{
                     display: 'flex',
-                    width: '1360px',
-                    height: '40px',
-                    justifyContent: 'space-between',
-                    marginBottom: '32px',
+                    width: '70vw',
+                    height: '5vh',
+                    justifyContent: 'flex-end',
                 }}
             >
-                <GoHomeButton />
                 <Button variant="outlined" disabled={!RisOwner} onClick={handleClose}>
                     게임 설정
                 </Button>

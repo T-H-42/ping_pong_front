@@ -1,11 +1,11 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import axios from 'axios';
 import { getJwtCookie } from '../../api/cookies';
-import { QueryClient, useMutation, useQuery, useQueryClient } from 'react-query';
-import { fetchProfileData, Achievements, GameHistory } from '../../components/Profile'
-import { Button, Stack, Box, Typography, Modal, Switch, TextField, Input } from '@mui/material';
-import styles from '../../styles/main/main.module.css'
-import { query } from 'express';
+import { useMutation, useQuery } from 'react-query';
+import fetchProfileData from '../../components/fetchProfileData'
+import { ProfileHeader, ProfileGameHistory, ProfileAchievements } from '../../components/ProfileComponents'
+import { Button, Stack, Box, Typography, Switch, TextField} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const fetchChangeNickName = (nickname) => 
   axios.post(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/nickname`,
@@ -26,7 +26,7 @@ const fetchChangeAuthentication = (two_factor_authentication_status) =>
       Authorization: `Bearer ${getJwtCookie('jwt')}`,
       },
     }
-  )
+  );
 
 const fetchChangeImage = (formData) => 
   axios.post(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile/upload`,
@@ -39,25 +39,9 @@ const fetchChangeImage = (formData) =>
   }
   );
 
-const fetchUserInfo = async ({nickname, two_factor_authentication_status, image}) =>
-{
-  if (nickname !== localStorage.getItem('username'))
-  {
-    await fetchChangeNickName(nickname);
-  }
-  
-  await fetchChangeAuthentication(two_factor_authentication_status);
-
-  if (image)
-  {
-    const formData = new FormData();
-    formData.append('image', image);
-    await fetchChangeImage(formData);
-  }
-}
-
-const UserProfile = () => {
+const MyPage = () => {
   const username = localStorage.getItem('username');
+  const navigate = useNavigate();
   const { data: userInfo, remove } = useQuery(
     ['userInfo', username],
     () => fetchProfileData(username),
@@ -108,7 +92,7 @@ const UserProfile = () => {
     setNewUserInfo({...newUserInfo, image: event.target.files[0]});
   };
 
-  const handleClick = () => {
+  const handleChangeClick = () => {
     if (username !== newUserInfo.nickname)
       mutateUserName(newUserInfo.nickname);
     if (newUserInfo.image)
@@ -121,32 +105,16 @@ const UserProfile = () => {
       mutateTwoFactorAuthenticationStatus(newUserInfo.two_factor_authentication_status);
   }
 
+  const hadleCancelClick = () => navigate('/main')
+
   return (
     <>
-      <Box
-          component="img"
-          className={styles.sample}
-          src={userInfo.image_url ? `http://${process.env.REACT_APP_IP_ADDRESS}:4000/${userInfo.image_url}` : "/images/profile.jpg"}
-        ></Box>
-        <Typography variant="h3">{userInfo.username}</Typography>
-        {/* <Typography variant='body1'>등급 점수 : {userInfo.ladder_lv}</Typography>
-
-      <Box
-        sx={{ width: 300, height: 300, p: 2, border: '1px solid black' }}
-      >
-        <Typography variant="h6">전적</Typography>
-        <GameHistory
-        username={username}
-          history={userInfo.userGameHistory}
-        />
-      </Box>
-
-      <Box
-        sx={{ width: 300, height: 100, p: 2, border: '1px solid black' }}
-      >
-        <Typography variant="h6">업적</Typography>
-        <Achievements achievements={userInfo.achievements} />
-      </Box> */}
+      <ProfileHeader imageUrl={ userInfo.image_url} userName={ username } ladderLv={userInfo.ladder_lv }/>
+      <ProfileGameHistory
+      username={username}
+        history={userInfo.userGameHistory}
+      />
+      <ProfileAchievements achievements={userInfo.achievements} />
 
       <Box>
         <Button component="label">
@@ -161,19 +129,18 @@ const UserProfile = () => {
       </Box>
 
       <Box>
-        <p>2차 인증 설정</p>
+        <Typography>2차 인증 설정</Typography>
         <Switch
           checked={newUserInfo.two_factor_authentication_status}
           onChange={handleTwoFactorAuthenticationStatusChange}
           inputProps={{ 'aria-label': 'controlled' }}
-          // disabled={isLoading}
           />
       </Box>
 
-      <Button variant='contained' onClick={handleClick}>변경</Button>
-      <Button variant='contained'>취소</Button>
+      <Button variant='contained' onClick={handleChangeClick}>변경</Button>
+      <Button variant='contained' onClick={hadleCancelClick}>취소</Button>
     </>
   )
 }
 
-export default UserProfile;
+export default MyPage;
