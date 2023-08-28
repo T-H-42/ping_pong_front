@@ -22,18 +22,17 @@ const Layout = () => {
 
         const confirmGoBack = (event) => {
             event.preventDefault();
-            if(RisOwner)
-            {
-                RsetIsOwner(false)
+            if (RisOwner) {
+                RsetIsOwner(false);
             }
-                gameSocket.emit('ft_leave_setting_room', (response: any) => {
-                    if (!response.success) {
-                        alert(`설정 방 나가기 실패 :  ${response.payload}`);
-                        return
-                    }
-                    alert(`${response.username}님이 나갔습니다.`);
-                });
-                navigate('/main');
+            gameSocket.emit('ft_leave_setting_room', (response: any) => {
+                if (!response.success) {
+                    alert(`설정 방 나가기 실패 :  ${response.payload}`);
+                    return;
+                }
+                alert(`${response.username}님이 나갔습니다.`);
+            });
+            navigate('/main');
         };
         window.addEventListener('popstate', confirmGoBack);
 
@@ -43,7 +42,8 @@ const Layout = () => {
     }, []);
 
     useEffect(() => {
-        const handleMyselfLeaveSettingRoom = (response : any) => { //자신 나가는 로직
+        const handleMyselfLeaveSettingRoom = (response: any) => {
+            //자신 나가는 로직
             if (!response) {
                 return alert(`${response} 에러가 발생했습니다.`);
             }
@@ -57,9 +57,8 @@ const Layout = () => {
             if (!response) {
                 return alert(`${response} 에러가 발생했습니다.`);
             }
-            if(RisOwner)
-            {
-                RsetIsOwner(false)
+            if (RisOwner) {
+                RsetIsOwner(false);
             }
             alert(`${response.username}님이 나갔습니다.`);
             navigate('/');
@@ -75,8 +74,8 @@ const Layout = () => {
 
     return (
         <>
-            <PaddleManager  open={open} />
-            <PingPongContainer open={open} setOpen={setOpen}/>
+            <PaddleManager open={open} />
+            <PingPongContainer open={open} setOpen={setOpen} />
         </>
     );
 };
