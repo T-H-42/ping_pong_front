@@ -97,19 +97,12 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                                 alignItems: 'center',
                             }}
                         >
-                            {userInformation?.image_url ? (
-                                <img
-                                    src={userInformation.image_url}
-                                    alt="user_image"
-                                    style={{ borderRadius: '30%', width: '80px', height: '119.774px' }}
-                                />
-                            ) : (
-                                <img
-                                    src="/images/profile.jpg"
-                                    alt="user_image"
-                                    style={{ borderRadius: '30%', width: '80px', height: '119.774px' }}
-                                />
-                            )}
+                            <img
+                                src={userInformation?.image_url ? `http://${process.env.REACT_APP_IP_ADDRESS}:4000/${userInformation.image_url}` : '/images/profile.jpg'}
+                                alt="user_image"
+                                style={{ borderRadius: '30%', width: '80px', height: '119.774px' }}
+                            />
+                            
 
                             <Typography
                                 sx={{
