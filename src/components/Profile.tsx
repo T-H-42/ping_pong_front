@@ -1,74 +1,12 @@
 import React, { useState, useContext } from 'react';
-import axios from 'axios';
-import { Button, Stack, Box, Typography, Modal } from '@mui/material';
+import { Button, Stack, Modal } from '@mui/material';
 import { useQuery } from 'react-query';
-import { getJwtCookie } from '../api/cookies';
 import { SocketContext } from '../api/SocketContext';
-import styles from '../styles/main/main.module.css';
-import stylesP from '../styles/profile.module.css'
 
 import ModalError from './ModalError';
 
-const fetchProfileData = async (userName) => {
-    const res = await axios.get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
-        params: {
-            username: `${userName}`,
-        },
-        headers: {
-            Authorization: `Bearer ${getJwtCookie('jwt')}`,
-        },
-      },
-    ).catch((res) => {
-      console.log(res);
-      return res;
-    })
-  return res.data;
-};
-
-const Achievements = ({ achievements }) => {
-    return achievements.map((achievement) => <Typography key={achievement}>{achievement}</Typography>);
-};
-
-const GameHistory = ({ username, history }) => {
-  return (
-    <div>
-      <table cellPadding={10} cellSpacing={10} className={stylesP.centeredTable}>
-    <tr>
-      <td>결과</td>
-      <td>winner</td>
-      {/* <td>loser</td> */}
-      <td>플레이 날짜</td>
-    </tr>
-    {history.map((data) => {
-      const date = new Date(data.time);
-      const gameDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-      return (
-        <tr key={ gameDate }>
-          <td>
-          {username === data.winuser ? (
-            ' WIN '
-            ) : (
-              ' LOOSE '
-              )}
-          </td>
-          <td>
-          {data.winuser}
-          </td>
-          {/* <td>
-          {data.loseuser}
-          </td> */}
-          <td>
-        <Typography variant="body1">
-          {gameDate}
-        </Typography>
-          </td>
-
-      </tr>
-    );
-  })}
-  </table>
-  </div>)
-};
+import {ProfileHeader, ProfileGameHistory, ProfileAchievements} from "./ProfileComponents";
+import fetchProfileData from "./fetchProfileData"
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -193,14 +131,7 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
         <Modal open={isOpen} onClose={onClose} sx={{ overflow: 'auto' }}>
             <Stack spacing={5} direction="column" alignItems="center" sx={{ ...style, overflow: 'auto' }}>
                 <ModalError isOpen={openError} onClose={handleClose} title={'에러'} message={message} />
-                <Box
-                    component="img"
-                    className={styles.sample}
-                    src={userInfo.image_url ? `http://${process.env.REACT_APP_IP_ADDRESS}:4000/${userInfo.image_url}` : "/images/profile.jpg"}
-                ></Box>
-
-                <Typography variant="h3">{userInfo.username}</Typography>
-
+				<ProfileHeader imageUrl={ userInfo.image_url} userName={ username } ladderLv={userInfo.ladder_lv }></ProfileHeader>
                 <Stack direction="column" spacing={6}>
                     <Stack direction="row" spacing={5}>
                         <Button variant="contained" onClick={() => handleAddFriendClick(username)}>
@@ -212,15 +143,8 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
                     </Stack>
 
                     <Stack spacing={2}>
-                        <Box sx={{ width: 300, height: 300, p: 2, border: '1px solid black' }}>
-                            <Typography variant="h6">전적</Typography>
-                            <GameHistory username={username} history={userInfo.userGameHistory} />
-                        </Box>
-
-                        <Box sx={{ width: 300, height: 100, p: 2, border: '1px solid black' }}>
-                            <Typography variant="h6">업적</Typography>
-                            <Achievements achievements={userInfo.achievements} />
-                        </Box>
+						<ProfileGameHistory username={username} history={userInfo.userGameHistory} />
+						<ProfileAchievements achievements={userInfo.achievements} />
                     </Stack>
 
                     <Stack direction="column" spacing={1} alignItems="flex-start">
@@ -252,4 +176,4 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
     );
 };
 
-export { fetchProfileData, Achievements, GameHistory, Profile };
+export { fetchProfileData, Profile };
