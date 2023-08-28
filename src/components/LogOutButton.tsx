@@ -16,6 +16,7 @@ const LogOutButton = () => {
         navigate('/');
     };
     return <Button variant='contained' onClick={logoutHandler}>로그아웃</Button>;
+    
 };
 
 export default LogOutButton;

@@ -14,7 +14,18 @@ const ProfileAchievements = ({ achievements }) => {
 
 const ProfileGameHistory = ({ username, history }) => {
   return (
-    <Box sx={{ width: 300, height: 300, p: 2, border: '1px solid black' }}>
+    <Box
+    sx={{
+        width: '80%',
+        height: '100%',
+        // padding: '16px 24px',
+        gap: '16px',
+        margin: '0 auto',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+    }}
+>
       <Typography variant="h6">전적</Typography>
 
       <Table cellPadding={10} cellSpacing={10} className={stylesP.centeredTable}>

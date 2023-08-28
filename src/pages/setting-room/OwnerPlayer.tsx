@@ -9,7 +9,7 @@ import styles from '../../styles/setting-room/setting-room.module.css';
 import { getJwtCookie } from '../../api/cookies';
 import axios from 'axios';
 import UserInfo from '../../types/UserInfo';
-
+import {ProfileGameHistory} from '../../components/ProfileComponents'
 const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
     const { gameSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
@@ -19,23 +19,28 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
     const settingInfo = useRecoilValue(settingState);
 
     useEffect(() => {
-        axios
-            .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
-                params: {
-                    userId: settingInfo.ownerName,
-                },
-                withCredentials: true,
-                headers: {
-                    Authorization: `Bearer ${getJwtCookie('jwt')}`,
-                },
-            })
-            .then((response) => {
-                setUserInformation(response.data);
-            })
-            .catch((err) => {
-                alert(`방장 정보를 불러오는데 실패하였습니다. : ${err}`);
-            });
+        // if (settingInfo.ownerName !== 0) {
+            axios
+                .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
+                    params: {
+                        userId: settingInfo.ownerName
+                    },
+                    withCredentials: true,
+                    headers: {
+                        Authorization: `Bearer ${getJwtCookie('jwt')}`,
+                    },
+                })
+                .then((response) => {
+                    setUserInformation(response.data);
+                })
+                .catch((err) => {
+                    console.log(`방장 정보를 불러오는데 실패하였습니다. : ${err}`);
+                });
+        // }
     }, []);
+    
+    
+    // console.log('user if', userInformation);
 
     const initGameHandler = useCallback(() => {
         if (!guestReady) {
@@ -57,7 +62,7 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
     }, [onReady, guestReady]);
 
     return (
-        <Box className={styles.OwnerContainer} display={'flex'} flexDirection={'column'} alignItems={'center'}>
+        <Box sx={{ width: '100%', height: '864px' }} display={'flex'} flexDirection={'column'} alignItems={'center'}>
             <Box
                 sx={{
                     width: '100%',
@@ -146,7 +151,7 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                         }}
                     >
                         <Box>
-                            <Box
+                            {/* <Box
                                 sx={{
                                     color: 'var(--text-primary, #000)',
                                     fontFamily: 'Pretendard',
@@ -157,8 +162,8 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                                 }}
                             >
                                 전적
-                            </Box>
-                            <Box>
+                            </Box> */}
+                            {/* <Box>
                                 <Typography
                                     sx={{
                                         color: 'var(--text-primary, #000)',
@@ -171,19 +176,21 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                                 >
                                     총 50판 20승 30패 승률 25%
                                 </Typography>
-                            </Box>
+                            </Box> */}
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                            {userInformation?.userGameHistory.length === 0 ? (
-                                <Typography>최근 게임 기록 없음</Typography>
-                            ) : (
-                                userInformation?.userGameHistory.map((item, idx) => (
-                                    <Typography className={styles.RecentRecordComment} key={idx}>
-                                        {item.time}
-                                    </Typography>
-                                ))
-                            )}
-                        </Box>
+                        {/* {!(userInformation?.userGameHistory.length) ? (
+    <Typography>최근 게임 기록 없음</Typography>
+  ) : (
+    // userInformation?.userGameHistory.map((item, idx) => (
+    //   <Typography className={styles.RecentRecordComment} key={idx}>
+        <ProfileGameHistory username={userInformation.username} history={userInformation.userGameHistory} />
+    //   </Typography>
+    )
+//   )}
+  } */}
+</Box>
+
                     </Box>
                 </Box>
                 <Box className={styles.ArchvimentsContainer}>
@@ -204,26 +211,26 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                         </Box>
                         <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                                {userInformation?.achievements.length === 0 ? (
+                                {/* {userInformation?.achievements.length === 0 ? (
                                     <Typography>업적 없음</Typography>
                                 ) : (
-                                    userInformation?.achievements.map((item, idx) => (
+                                    userInformation?.achievements.map((item ,idx) => (
                                         <Typography className={styles.RecentRecordComment} key={idx}>
                                             {item.time}
                                         </Typography>
                                     ))
-                                )}
+                                )} */}
                             </Box>
                         </Box>
                     </Box>
                 </Box>
-                <Box sx={{ width: '80%', height: '32px' }}>
+                <Box sx={{ height: '32px' }}>
                     <Button
                         variant="outlined"
                         onClick={initGameHandler}
                         disabled={!RisOwner}
                         style={{
-                            width: '100%',
+                            width: '395px',
                             padding: '16px ',
                             backgroundColor: guestReady ? '#3874CB' : 'rgba(255, 255, 255)', // 대기중일 때 색상 제거
                             color: guestReady ? '#ffffff' : '#1976d2',
