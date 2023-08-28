@@ -55,14 +55,14 @@ export const isOwnerState = atom<boolean>({
 });
 
 export const settingState = atom<{
-    guestName: string;
-    ownerName: string; // Add properties like ownerName
+    guestName: number;
+    ownerName: number; // Add properties like ownerName
     // Add other properties as needed
   }>({
     key: 'settingState',
     default: {
-      ownerName: '', 
-      guestName : '',
+      ownerName: 0, 
+      guestName : 0,
       // Provide default values for properties
       // Provide default values for other properties as needed
     },
