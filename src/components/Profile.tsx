@@ -176,4 +176,4 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
     );
 };
 
-export { fetchProfileData, Profile };
+export { Profile };
