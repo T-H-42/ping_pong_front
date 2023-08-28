@@ -57,20 +57,17 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                     alignItems: 'center',
                 }}
             >
-                <Box
-                    sx={{
-                        width: '345px',
-                        height: '251px',
-                        padding: '16px 24px',
-                        gap: '16px',
-                        borderRadius: '24px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        backgroundColor: '#fff',
-                        boxShadow: '0px 1px 8px 0px rgba(0, 0, 0, 0.10)',
-                    }}
-                >
-                    <Box>
+                <Box className={styles.ProfileContainer}>
+                    <Box
+                        sx={{
+                            width: '90%',
+                            height: '85%',
+                            display: 'flex',
+                            margin: '0 auto',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                        }}
+                    >
                         <Box
                             sx={{
                                 display: 'flex',
@@ -81,11 +78,19 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                                 alignItems: 'center',
                             }}
                         >
-                            <img
-                                src="/images/profile.jpg"
-                                alt="user_image"
-                                style={{ borderRadius: '30%', width: '80px', height: '119.774px' }}
-                            />
+                            {guestInformation?.image_url ? (
+                                <img
+                                    src={guestInformation.image_url}
+                                    alt="user_image"
+                                    style={{ borderRadius: '30%', width: '80px', height: '119.774px' }}
+                                />
+                            ) : (
+                                <img
+                                    src="/images/profile.jpg"
+                                    alt="user_image"
+                                    style={{ borderRadius: '30%', width: '80px', height: '119.774px' }}
+                                />
+                            )}
                             <Typography
                                 sx={{
                                     color: 'var(--text-primary, #000)',
@@ -201,13 +206,13 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                         </Box>
                     </Box>
                 </Box>
-                <Box className={styles.ReadyContainer}>
+                <Box sx={{ width: '80%', height: '32px' }}>
                     <Button
                         variant="outlined"
                         onClick={onReadyToggle}
                         disabled={RisOwner}
                         style={{
-                            width: '395px',
+                            width: '100%',
                             padding: '16px ',
                             backgroundColor: onReady ? '#9BD3F2' : '#fff', // 대기중일 때 색상 제거
                             color: onReady ? '#ffffff' : '#9BD3F2',
@@ -216,9 +221,11 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                     >
                         준비
                     </Button>
-                    <Link sx={{ marginTop: '16px' }} component="button" variant="body2" onClick={handleExit}>
-                        게임 나가기
-                    </Link>
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <Link sx={{}} component="button" variant="body2" onClick={handleExit}>
+                            게임 나가기
+                        </Link>
+                    </Box>
                 </Box>
             </Box>
         </Box>

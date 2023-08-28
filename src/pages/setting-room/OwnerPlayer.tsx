@@ -57,7 +57,7 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
     }, [onReady, guestReady]);
 
     return (
-        <Box sx={{ width: '680px', height: '864px' }} display={'flex'} flexDirection={'column'} alignItems={'center'}>
+        <Box className={styles.OwnerContainer} display={'flex'} flexDirection={'column'} alignItems={'center'}>
             <Box
                 sx={{
                     width: '100%',
@@ -217,13 +217,13 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                         </Box>
                     </Box>
                 </Box>
-                <Box sx={{ height: '32px' }}>
+                <Box sx={{ width: '80%', height: '32px' }}>
                     <Button
                         variant="outlined"
                         onClick={initGameHandler}
                         disabled={!RisOwner}
                         style={{
-                            width: '395px',
+                            width: '100%',
                             padding: '16px ',
                             backgroundColor: guestReady ? '#3874CB' : 'rgba(255, 255, 255)', // 대기중일 때 색상 제거
                             color: guestReady ? '#ffffff' : '#1976d2',

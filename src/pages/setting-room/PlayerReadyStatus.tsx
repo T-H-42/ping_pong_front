@@ -60,8 +60,8 @@ const PlayerReadyStatus = ({ onReady, setOnReady, settingInformation }) => {
     return (
         <Box
             style={{
-                width: '1360px',
-                height: '864px',
+                width: '70vw',
+                height: '95vh',
                 display: 'flex',
                 backgroundColor: 'rgba(242, 242, 242, 0.5)',
             }}
