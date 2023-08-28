@@ -21,7 +21,7 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
         axios
             .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
                 params: {
-                    username: settingInfo.guestName,
+                    userId: settingInfo.guestName,
                 },
                 headers: {
                     Authorization: `Bearer ${getJwtCookie('jwt')}`,

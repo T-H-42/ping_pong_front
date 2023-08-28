@@ -19,7 +19,7 @@ import { createPingpongSocket, createChatSocket, createGameSocket } from './api/
 import SettingRoomLayout from './pages/setting-room/layout';
 import GameRoomLayout from './pages/game-room/layout';
 import DummyOAuth from './components/DummyOAuth';
-import UserProfile from './pages/profile/UserProfile'
+import MyPage from './pages/profile/MyPage'
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -82,7 +82,7 @@ function App() {
                                         <Route path="/dm/:dmName" element={<DMRoom />} />
                                         <Route path="/setting-room/:roomName" element={<SettingRoomLayout />} />
                                         <Route path="/game-room/:roomName" element={<GameRoomLayout />} />
-                                        <Route path="/myPage" element={<UserProfile />} />
+                                        <Route path="/myPage" element={<MyPage />} />
 
                                         {/* </Route> */}
                                         <Route path="*" element={<NotFound />} />
