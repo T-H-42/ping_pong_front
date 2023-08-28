@@ -84,19 +84,11 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                                 alignItems: 'center',
                             }}
                         >
-                            {guestInformation?.image_url ? (
-                                <img
-                                    src={guestInformation.image_url}
-                                    alt="user_image"
-                                    style={{ borderRadius: '30%', width: '80px', height: '119.774px' }}
-                                />
-                            ) : (
-                                <img
-                                    src="/images/profile.jpg"
-                                    alt="user_image"
-                                    style={{ borderRadius: '30%', width: '80px', height: '119.774px' }}
-                                />
-                            )}
+                            <img
+                                src={guestInformation?.image_url ? `http://${process.env.REACT_APP_IP_ADDRESS}:4000/${guestInformation.image_url}` : '/images/profile.jpg'}
+                                alt="user_image"
+                                style={{ borderRadius: '30%', width: '80px', height: '119.774px' }}
+                            />
                             <Typography
                                 sx={{
                                     color: 'var(--text-primary, #000)',
