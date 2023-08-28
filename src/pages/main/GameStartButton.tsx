@@ -45,7 +45,7 @@ const GameStartButton = () => {
             console.log('매치 성공 후 받은 res ', response);
 
             RsetSettingRoomName(response.roomName);
-            RsettingName(response.userIds);
+            RsettingName(response.usernames);
             if (response.isOwner) {
                 RsetIsOwner(true);
             }

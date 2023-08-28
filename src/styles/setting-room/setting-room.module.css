@@ -28,6 +28,7 @@
   width: 80%;
   height: 164px;
   /* padding: 16px 24px; */
+  overflow: auto;
   gap: 16px;
   display: flex;
   align-items: center;

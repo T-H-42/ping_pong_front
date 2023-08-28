@@ -30,7 +30,7 @@ const Layout = () => {
                     alert(`설정 방 나가기 실패 :  ${response.payload}`);
                     return;
                 }
-                alert(`${response.username}님이 나갔습니다.`);
+                alert(`상대방이 나갔습니다.`);
             });
             navigate('/main');
         };
@@ -54,14 +54,18 @@ const Layout = () => {
             navigate('/main');
         };
         const handleEnemyLeaveGameRoom = (response) => {
+            console.log("호로로롤!!!!@#!@#!@#!@#!#!@#!@");
+            
             if (!response) {
                 return alert(`${response} 에러가 발생했습니다.`);
             }
             if (RisOwner) {
                 RsetIsOwner(false);
             }
-            alert(`${response.username}님이 나갔습니다.`);
-            navigate('/');
+            alert(`상대방이 나갔습니다.`);
+            // setTimeout(() => {
+                navigate('/');
+            // }, 1000);
         };
         gameSocket.on('ft_tomain', handleMyselfLeaveSettingRoom);
         gameSocket.on('ft_enemy_leave_room', handleEnemyLeaveGameRoom);

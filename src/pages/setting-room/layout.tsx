@@ -4,7 +4,7 @@ import GameSettingContainer from './GameSettingContainer';
 import { SocketContext } from '../../api/SocketContext';
 import { useRecoilValue } from 'recoil';
 import { settingRoomNameState } from '../../api/atoms';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import PlayerReadyStatus from './PlayerReadyStatus';
 import { Box, Button } from '@mui/material';
 import { isOwnerState } from '../../api/atoms';
@@ -45,7 +45,7 @@ const SettingRoomLayout = () => {
                     alert(`설정 방 나가기 실패 :  ${response.payload}`);
                     return;
                 }
-                alert(`${response.username}님이 나갔습니다.`);
+                alert(`상대방이 나갔습니다.`);
             });
             navigate('/main');
         };
@@ -80,13 +80,15 @@ const SettingRoomLayout = () => {
         };
 
         const handleEnemyLeaveSettingRoom = (response: any) => {
+            // console.log("나갔습니다!@#!@#!@$!$!$@!@$@!$!@$!@$!@$!@$!@$@!$!@$!@$!$@!$");
+            
             if (!response) {
                 return alert(`${response} 에러가 발생했습니다.`);
             }
             if (RisOwner) {
                 RsetIsOwner(false);
             }
-            alert(`${response.username}님이 나갔습니다.`);
+            alert(`상대방이 나갔습니다.`);
             navigate('/');
         };
 
@@ -128,7 +130,7 @@ const SettingRoomLayout = () => {
 
     return (
         <>
-            <Box
+        <Box
                 sx={{
                     display: 'flex',
                     width: '70vw',

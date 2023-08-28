@@ -2,13 +2,13 @@ import { Link, Box, Button, Typography } from '@mui/material';
 import { isOwnerState, settingState } from '../../api/atoms';
 import React, { useContext, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
-
 import { SocketContext } from '../..//api/SocketContext';
 import { useNavigate } from 'react-router';
 import styles from '../../styles/setting-room/setting-room.module.css';
 import axios from 'axios';
 import { getJwtCookie } from '../../api/cookies';
 import UserInfo from '../../types/UserInfo';
+import {ProfileGameHistory} from '../../components/ProfileComponents'
 
 const GuestPlayer = ({ onReady, onReadyToggle }) => {
     const RisOwner = useRecoilValue(isOwnerState);
@@ -18,6 +18,8 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
     const settingInfo = useRecoilValue(settingState);
 
     useEffect(() => {
+        // if (settingInfo.ownerName !== 0) {
+
         axios
             .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
                 params: {
@@ -33,7 +35,8 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
             .catch((err) => {
                 alert(`게스트 정보를 불러오는데 실패하였습니다. : ${err}`);
             });
-    }, []);
+    // }
+}, []);
     const handleExit = () => {
         gameSocket.emit('ft_leave_setting_room', (response: any) => {
             if (!response.success) {
@@ -43,7 +46,8 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
         });
         navigate('/');
     };
-
+    console.log("체크해 값", guestInformation);
+    
     return (
         <Box className={styles.GuestContainer}>
             <Box
@@ -78,7 +82,7 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                                 alignItems: 'center',
                             }}
                         >
-                            {guestInformation?.image_url ? (
+                            {/* {guestInformation?.image_url ? (
                                 <img
                                     src={guestInformation.image_url}
                                     alt="user_image"
@@ -90,7 +94,7 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                                     alt="user_image"
                                     style={{ borderRadius: '30%', width: '80px', height: '119.774px' }}
                                 />
-                            )}
+                            )} */}
                             <Typography
                                 sx={{
                                     color: 'var(--text-primary, #000)',
@@ -102,7 +106,7 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                                     marginTop: '16px',
                                 }}
                             >
-                                {guestInformation ? guestInformation.username : '정보 없음'}
+                                {/* {guestInformation ? guestInformation.username : '정보 없음'} */}
                             </Typography>
                         </Box>
                         <Typography
@@ -120,7 +124,7 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                     </Box>
                 </Box>
                 <Box className={styles.RecordContainer}>
-                    <Box
+                    {/* <Box
                         sx={{
                             width: '100%',
                             height: '100%',
@@ -131,9 +135,9 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                             flexDirection: 'column',
                             justifyContent: 'space-around',
                         }}
-                    >
+                    > */}
                         <Box>
-                            <Box
+                            {/* <Box
                                 sx={{
                                     color: 'var(--text-primary, #000)',
                                     fontFamily: 'Pretendard',
@@ -144,8 +148,8 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                                 }}
                             >
                                 전적
-                            </Box>
-                            <Box>
+                            </Box> */}
+                            {/* <Box>
                                 <Typography
                                     sx={{
                                         color: 'var(--text-primary, #000)',
@@ -158,20 +162,23 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                                 >
                                     총 50판 20승 30패 승률 25%
                                 </Typography>
-                            </Box>
+                            </Box> */}
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                            {guestInformation?.userGameHistory.length === 0 ? (
-                                <Typography>최근 게임 기록 없음</Typography>
-                            ) : (
-                                guestInformation?.userGameHistory.map((item, idx) => (
-                                    <Typography className={styles.RecentRecordComment} key={idx}>
-                                        {item.time}
-                                    </Typography>
-                                ))
-                            )}
+                            {!(guestInformation?.userGameHistory.length) ? (
+                               <Typography sx={{display : 'flex', justifyContent:'center', textAlign : 'center'}}>최근 게임 기록 없음</Typography>
+                             ) : (
+    // guestInformation?.userGameHistory.map((item, idx) => (
+      <Typography className={styles.RecentRecordComment}>
+                               {/* <ProfileGameHistory username={guestInformation.username} history={guestInformation.userGameHistory} /> */}
+                                ?
+      </Typography> 
+                                 )
+//   )}
+}
                         </Box>
-                    </Box>
+
+                    {/* </Box> */}
                 </Box>
                 <Box className={styles.ArchvimentsContainer}>
                     <Box sx={{ width: '90%', height: '100%', margin: '0 auto' }}>
@@ -192,7 +199,7 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                         <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                                    {guestInformation?.achievements.length === 0 ? (
+                                    {(guestInformation?.achievements.length) ? (
                                         <Typography>업적 없음</Typography>
                                     ) : (
                                         guestInformation?.achievements.map((item, idx) => (
