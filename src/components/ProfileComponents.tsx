@@ -30,7 +30,7 @@ const ProfileGameHistory = ({ username, history }) => {
           const date = new Date(data.time);
           const gameDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
           return (
-            <TableRow key={ date.toLocaleString() }>
+            <TableRow key={ date.toISOString() }>
               <TableCell>
                 { username === data.winuser ? (' WIN ') : (' LOOSE ') }
               </TableCell>
