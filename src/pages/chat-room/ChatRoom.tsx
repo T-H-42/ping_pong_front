@@ -115,7 +115,7 @@ const ChatRoom: React.FC = () => {
         });
 
         const messageHandler = (chat) => {
-            console.log('ft_message: ', chat);
+            console.log('ft_message on: ', chat);
             setChats((prevChats) => [...prevChats, chat]);
         };
 
@@ -125,7 +125,6 @@ const ChatRoom: React.FC = () => {
             console.log('ft_kick on: ', res);
             navigate('/main');
         });
-
         chatSocket.on('ft_addfriend', (response: any) => {
             console.log('ft_addfriend on: ', response);
             setSender(response.sender);
