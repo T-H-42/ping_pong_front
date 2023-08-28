@@ -17,47 +17,6 @@ const GoHomeButton = () => {
                     />
                 </svg>
             </Button>
-            <Box>
-                <Typography
-                    sx={{
-                        display: 'block',
-                        color: 'var(--text-primary, #000)',
-                        fontFamily: 'Passion One',
-                        fontSize: '18.312px',
-                        fontStyle: 'normal',
-                        fontWeight: 700,
-                        lineHeight: '19.329px' /* 105.556% */,
-                    }}
-                >
-                    LET'S
-                </Typography>
-                <Typography
-                    sx={{
-                        display: 'inline',
-                        color: 'var(--primary, #3874CB)',
-                        fontFamily: 'Passion One',
-                        fontSize: '18.312px',
-                        fontStyle: 'normal',
-                        fontWeight: 700,
-                        lineHeight: '19.329px',
-                    }}
-                >
-                    PING
-                </Typography>
-                <Typography
-                    sx={{
-                        display: 'inline',
-                        color: 'var(--text-primary, #1EACE9)',
-                        fontFamily: 'Passion One',
-                        fontSize: '18.312px',
-                        fontStyle: 'normal',
-                        fontWeight: 700,
-                        lineHeight: '19.329px',
-                    }}
-                >
-                    PONG
-                </Typography>
-            </Box>
         </Box>
     );
 };

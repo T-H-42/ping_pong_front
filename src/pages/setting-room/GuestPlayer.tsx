@@ -16,16 +16,12 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
     const navigate = useNavigate();
     const [guestInformation, setGuestInformation] = useState<UserInfo | null>(null);
     const settingInfo = useRecoilValue(settingState);
-    // const queryParams = { settingInfo };
-    // console.log('쿼리 파람의 값은 게스트111', settingInfo);
-
-    console.log('쿼리 파람의 값은 게스트222', settingInfo.guestName);
 
     useEffect(() => {
         axios
             .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
                 params: {
-                    username :  settingInfo.guestName
+                    username: settingInfo.guestName,
                 },
                 headers: {
                     Authorization: `Bearer ${getJwtCookie('jwt')}`,
@@ -35,7 +31,7 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                 setGuestInformation(response.data);
             })
             .catch((err) => {
-                console.log(`게스트 정보를 불러오는데 실패하였습니다. : ${err}`);
+                alert(`게스트 정보를 불러오는데 실패하였습니다. : ${err}`);
             });
     }, []);
     const handleExit = () => {

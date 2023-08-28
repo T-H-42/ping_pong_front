@@ -40,7 +40,7 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
         alignItems: 'center',
         gap: '24px',
     };
-    
+
     const { gameSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     // const [settingInformation, setSettingInformaiton] = useState<ISettingInformation>({
@@ -97,14 +97,10 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
             speedMode: settingInformation.speedMode,
             roomName: RsettingRoomName,
         });
-        console.log(settingInformation);
         gameSocket.emit('ft_game_setting', settingInformation, (response: any) => {
-            if (!response.success) 
-                alert(response.payload);
-                console.log('게임 설정 요청', response);
-                return
+            if (!response.success) alert(response.payload);
+            return;
         });
-        console.log('게임 설정 로그');
 
         setModalStatus(true);
         handleClose();
@@ -112,9 +108,7 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
 
     return (
         <Box sx={style} tabIndex={-1} ref={modalRef}>
-
             <Box sx={settingBox}>
-
                 <Box sx={{ ...settingBox, display: 'flex' }}>
                     <Typography
                         id="modal-modal-title"
@@ -146,24 +140,22 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
                         </RadioGroup>
                     </FormControl>
                 </Box>
-
             </Box>
-            
+
             <Box sx={settingBox}>
-                
                 <Box sx={{ ...settingBox, display: 'flex' }}>
                     <Typography
-                    id="modal-modal-title"
-                    style={{
-                        color: 'var(--text-primary, #000)',
-                        fontFamily: 'Pretendard',
-                        fontSize: '16px',
-                        fontStyle: 'normal',
-                        fontWeight: '600',
-                        lineHeight: '24px',
-                    }}
+                        id="modal-modal-title"
+                        style={{
+                            color: 'var(--text-primary, #000)',
+                            fontFamily: 'Pretendard',
+                            fontSize: '16px',
+                            fontStyle: 'normal',
+                            fontWeight: '600',
+                            lineHeight: '24px',
+                        }}
                     >
-                    게임모드 설정
+                        게임모드 설정
                     </Typography>
                 </Box>
 
@@ -181,7 +173,6 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
                         </RadioGroup>
                     </FormControl>
                 </Box>
-
             </Box>
 
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
