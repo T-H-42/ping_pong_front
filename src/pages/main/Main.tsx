@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import {useNavigate} from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { getJwtCookie } from '../../api/cookies';
 import axios from 'axios';
 import ChatList from './ChatList';
@@ -10,14 +10,13 @@ import { IFriendsState, usernameState, friendsState } from '../../api/atoms';
 import { SocketContext } from '../../api/SocketContext';
 import GameStartButton from './GameStartButton';
 import { isOwnerState, settingRoomNameState } from '../../api/atoms';
-
 import ModalRoomInvitationReceiver from '../../components/ModalRoomInvitationReceiver';
 
 const Main = () => {
     const RisOwner = useRecoilValue(isOwnerState);
 
     console.log('!!!!!메인 컴포넌트 이즈 오너!!!!!!!!', RisOwner);
-    const { pingpongSocket, chatSocket } = useContext(SocketContext);
+    const { pingpongSocket, chatSocket, gameSocket } = useContext(SocketContext);
     // const [friends, setFriends] = useRecoilState<IFriendsState[]>(friendsState);
     const [friends, setFriends] = useState([]);
     const [dmName, setDMName] = useState<any>();
@@ -51,6 +50,17 @@ const Main = () => {
             setSender(res.sender);
             setOpenInvitation(true);
         });
+
+        return (() => {
+            console.log("나간다!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+            gameSocket.emit('ft_exit_match_queue', (response: any) => {
+                if (!response.success) {
+                    alert("매치 취소에 실패하였습니다 : ");
+                    return
+                }
+            });
+        })
     }, []);
 
     useEffect(() => {
@@ -94,10 +104,12 @@ const Main = () => {
 
     return (
         <div style={{ textAlign: 'center' }}>
-            <ModalRoomInvitationReceiver isOpen={openInvitation} onClose={handleClose} title={'채팅방 초대'} roomName={roomName} sender={sender} />            
+            <ModalRoomInvitationReceiver isOpen={openInvitation} onClose={handleClose} title={'채팅방 초대'} roomName={roomName} sender={sender} />
             <GameStartButton />
             <LogOutButton />
-            <h1> {localStorage.getItem('username')}의 메인 페이지</h1>
+            <h1>
+                <NavLink to="/myPage">{localStorage.getItem('username')}</NavLink>
+                의 메인 페이지</h1>
             {chatSocket ? <ChatList /> : null}
             <div style={{ margin: '30px 0' }} />
             <FriendList dmName={dmName} setDMName={setDMName} />

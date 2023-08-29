@@ -25,17 +25,27 @@ const ChatList = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [password, setPassword] = useState<string>('');
     const [rooms, setRooms] = useState<Response[]>([]);
-    const { chatSocket } = useContext(SocketContext);
+    const { chatSocket, gameSocket} = useContext(SocketContext);
     const roomName = localStorage.getItem('room-name');
 
     const [openError, setOpenError] = useState(false);
     const [message, setMessage] = useState('');
-
+    const handleExit = () => {
+        gameSocket.emit('ft_exit_match_queue', (response: any) => {
+                if (!response.success) {
+                    alert("매치 취소에 실패하였습니다 : ");
+                    return
+                }
+            });
+        navigate('/');
+    };
+    
     const onJoinRoom = useCallback((roomName: string) => () => {
         chatSocket.emit('join-room', { roomName, password }, (response: any) => {
             console.log(response);
             if (response.success) {
                 localStorage.setItem('room-name', roomName);
+                handleExit();
                 navigate(`/room/${roomName}`);
             } else {
                 setOpenError(true);

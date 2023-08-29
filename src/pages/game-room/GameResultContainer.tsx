@@ -1,29 +1,37 @@
-import { Box, Button, Container } from '@mui/material';
-import React, { forwardRef , useEffect} from 'react';
+import { Box, Button } from '@mui/material';
+import React, { forwardRef } from 'react';
 import { useNavigate } from 'react-router';
-import styles from './gameRoom.module.css';
-import {  isOwnerState } from '../../api/atoms';
+import { isOwnerState } from '../../api/atoms';
 import { useSetRecoilState } from 'recoil';
 
 const GameResultContainer = ({ open, setOpen, gameResult }, modalRef) => {
     const navigate = useNavigate();
     const RsetIsOwner = useSetRecoilState<boolean>(isOwnerState);
 
-    const goBackMain = () =>{
-        // RsetIsOwner(false); // 얘 때문에 그런 거 같은데 고민해보기
-        navigate('/')
-    }
+    const goBackMain = () => {
+        navigate('/');
+    };
     return (
-        <Box className={styles.container} ref={modalRef} tabIndex={-1}>
-            <Box>
-                <Button
-                    onClick={() => setOpen(false)}
-                    style={{ position: 'absolute', top: '24px', right: '24px', textAlign: 'right' }}
-                >
-                    X
-                </Button>
+        <Box sx={{   
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            padding: '24px',
+            transform: 'translate(-50%, -50%)',
+            width: '31.6vw',
+            height: '11.8vw',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            backgroundColor: 'white',
+            border: '2px solid #000',
+            borderRadius: '1.5em',
+            boxShadow: '0px 1px 8px 0px rgba(0, 0, 0, 0.16)',
+          }}
+       ref={modalRef} tabIndex={-1}>
+            <Box style={{ width: '100%', textAlign: 'center' }}>
+                {gameResult ? '방장이' : '도전자가'} 승리하셨습니다!
             </Box>
-            <Box style={{ width: '100%', textAlign: 'center' }}>{gameResult ?  "방장이": "도전자가" } 승리하셨습니다!</Box>
             <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
                 <Button
                     style={{

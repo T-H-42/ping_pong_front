@@ -13,9 +13,11 @@ const LogOutButton = () => {
         chatSocket.disconnect();
         gameSocket.disconnect();
         removeJwtCookie('jwt');
+        localStorage.removeItem('username');
         navigate('/');
     };
     return <Button variant='contained' onClick={logoutHandler}>로그아웃</Button>;
+    
 };
 
 export default LogOutButton;

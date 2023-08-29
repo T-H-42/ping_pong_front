@@ -19,6 +19,7 @@ import { createPingpongSocket, createChatSocket, createGameSocket } from './api/
 import SettingRoomLayout from './pages/setting-room/layout';
 import GameRoomLayout from './pages/game-room/layout';
 import DummyOAuth from './components/DummyOAuth';
+import MyPage from './pages/mypage/MyPage'
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -51,6 +52,7 @@ function App() {
         console.log('채팅 소켓 감지기', chatSocket);
         console.log('핑퐁 소켓 감지기', pingpongSocket);
     }, [gameSocket, pingpongSocket, chatSocket]);
+    
     return (
         <RecoilRoot>
             <ThemeProvider theme={theme}>
@@ -81,6 +83,7 @@ function App() {
                                         <Route path="/dm/:dmName" element={<DMRoom />} />
                                         <Route path="/setting-room/:roomName" element={<SettingRoomLayout />} />
                                         <Route path="/game-room/:roomName" element={<GameRoomLayout />} />
+                                        <Route path="/myPage" element={<MyPage />} />
 
                                         {/* </Route> */}
                                         <Route path="*" element={<NotFound />} />

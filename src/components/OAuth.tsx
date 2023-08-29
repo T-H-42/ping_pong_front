@@ -9,17 +9,19 @@ import { Socket } from 'socket.io-client';
 
 const fetchOauth = async ({ code }) => {
     const response = await axios.post(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/signin`,
-    { code },
-    {
-        headers: { 'Content-Type': 'application/json' },
-        withCredentials: true,
-    },);
+        { code },
+        {
+            // headers: { 'Content-Type': 'application/json' },
+            withCredentials: true,
+            headers: {
+                        Authorization: `Bearer ${getJwtCookie('jwt')}`,
+                },
+        },
+    );
     return (response);
 }
 
 const oauthSuccess = (data, sockets) => {
-    // TODO: cookie 등록 삭제
-    document.cookie = `jwt=${data.accessToken};  path=/`;
     localStorage.setItem('username', data.username);
     
     if (data.two_factor_authentication_status === true)
@@ -45,9 +47,9 @@ const OAuth = () => {
     const navigate = useNavigate();
     const {data, mutate} = useMutation(fetchOauth, {
         onSuccess: (response) => {
-        if (oauthSuccess(response.data, sockets) === false)
-            return navigate('/two-factor-auth', {replace: true});
-        return navigate('/main', {replace: true});
+            if (oauthSuccess(response.data, sockets) === false)
+                return navigate('/two-factor-auth', {replace: true});
+            return navigate('/main', {replace: true});
         }
         ,onError: (error) => {
             navigate('/', {replace: true});

@@ -6,6 +6,19 @@ import { dmNameState } from '../../api/atoms';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { SocketContext } from '../../api/SocketContext';
 
+import {
+    Button,
+    Modal,
+    Box,
+    Typography,
+    TextField,
+    Switch,
+    FormControlLabel,
+    Alert,
+    AppBar,
+    Stack,
+} from '@mui/material';
+
 const DMRoom = () => {
     const { chatSocket } = useContext(SocketContext);
     const [chats, setChats] = useState([]);
@@ -28,8 +41,10 @@ const DMRoom = () => {
 
     useEffect(() => {
         setMessage('');
-
-        chatSocket.emit('ft_get_dm_log', { roomName: index }, (chat) => {
+        const data = {
+            roomName: index
+        }; // { roomName: index }
+        chatSocket.emit('ft_get_dm_log', data, (chat) => {
             console.log('ft_get_dm_log: ', chat);
             setChats(chat);
         });
@@ -53,9 +68,11 @@ const DMRoom = () => {
         //     console.log('message off');
         //     chatSocket.off('ft_dm', messageHandler);
         // };
+
+        // //// nhwang index->data (상단으로 옮겼습니다. ft_get_dm_log에서도 같은 형국이라)
         return () => {
-            chatSocket.emit('leave-dm', index, () => {
-                console.log('leave-dm: ', index);
+            chatSocket.emit('leave-dm', data, () => {
+                console.log('leave-dm: ', data);
             });
         };
     }, []);
@@ -69,33 +86,33 @@ const DMRoom = () => {
             e.preventDefault();
 
             if (message === '') return alert('메시지를 입력해 주세요.');
-
-            await chatSocket.emit('ft_dm', { roomName: index, message, receiver }, (chat) => {
+            /// nhwang { roomName: index, message, receiver } -> data
+            const data = {
+                roomName: index,
+                message,
+                receiver,
+            };
+            ///
+            await chatSocket.emit('ft_dm', data, (chat) => {
                 setChats((prevChats) => [...prevChats, chat]);
                 setMessage('');
             });
         },
-        [index, message],
+        [index, message], ////이 부분은 안 건드렸어요 nhwang (data로 변경하는 부분에서 건드리지 않음.)
     );
 
     const onLeaveRoom = useCallback(() => {
         // chatSocket.emit('leave-dm', index, () => {
-            navigate('/main');
+        navigate('/main');
         // });
     }, [navigate]);
 
     return (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '100vh',
-            }}
-        >
-            <h2>{receiver}님과의 DM</h2>
-            <div ref={chatContainerEl}>
+        <Box sx={{ flexGrow: 1 }}>
+            <AppBar position="static">
+                <h2>{receiver}님과의 DM</h2>
+            </AppBar>
+            <div ref={chatContainerEl} style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 200px)' }}>
                 {chats.map((chat, index) => (
                     <div key={index}>
                         <span style={{ fontWeight: 'bold', color: 'green' }}>{chat.username} : </span>
@@ -104,18 +121,17 @@ const DMRoom = () => {
                     </div>
                 ))}
             </div>
-            <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <form onSubmit={onSendMessage}>
                     <input type="text" onChange={onChange} value={message} />
                     <button>Send</button>
                 </form>
-                <div>
-                    <button onClick={onLeaveRoom} style={{ position: 'absolute', right: '12px', bottom: '35vh' }}>
-                        나가기
-                    </button>
-                </div>
+
+                <button onClick={onLeaveRoom} style={{ marginLeft: '10px' }}>
+                    나가기
+                </button>
             </div>
-        </div>
+        </Box>
     );
 };
 

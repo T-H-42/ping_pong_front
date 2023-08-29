@@ -35,8 +35,7 @@ type canvasSize = {
     width: number;
     height: number;
 };
-const PingPongContainer = ({open, setOpen}) => {
-    console.log('레이아웃 업데이트');
+const PingPongContainer = ({ open, setOpen }) => {
     const [gameResult, setGameResult] = useState(false);
     // const [open, setOpen] = useState(false);
 
@@ -53,7 +52,7 @@ const PingPongContainer = ({open, setOpen}) => {
         setOpen(true);
     };
 
-    useEffect(() =>{
+    useEffect(() => {
         const positionUpdateHandler = (response) => {
             const gameElement = {
                 leftPaddle: response.GameElement.leftPaddle,
@@ -64,15 +63,14 @@ const PingPongContainer = ({open, setOpen}) => {
             // Back에서 받아온 객체 정보를 화면에 랜더링하는 함수
             PingPong(canvasRef, gameElement); //위에서 받아온 canvasRef와 gameElement를 인자로 받아 변경된 캔버스의 값에 따라 그려준다.
         };
-        
+
         const checkGameOver = (response) => {
             if (!response) return alert(`${response} : 에러가 발생했습니다.`);
             setOpen(true);
-            console.log('게임 결과로 넘어온', response);
-            
+
             response.isOwnerWin ? setGameResult(true) : setGameResult(false);
         };
-        
+
         const checkErrorOver = (response) => {
             if (!response) return alert(`${response} : 에러가 발생했습니다.`); //1 세팅룸 2 게임룰
             setOpen(true);
@@ -82,13 +80,13 @@ const PingPongContainer = ({open, setOpen}) => {
         gameSocket.on('ft_finish_game', checkGameOver); // 게임 종료 이벤트
         gameSocket.on('ft_position_update', positionUpdateHandler); // 게임 좌표 업데이트 해주는 이벤트
         gameSocket.on('ft_enemy_leave_room', checkErrorOver);
-        
-        return (() => {
+
+        return () => {
             gameSocket.off('ft_finish_game', checkGameOver); // 게임 종료 이벤트
             gameSocket.off('ft_position_update', positionUpdateHandler); // 게임 좌표 업데이트 해주는 이벤트
             gameSocket.off('ft_enemy_leave_room', checkErrorOver);
-        })
-    }, [gameSocket])
+        };
+    }, [gameSocket]);
 
     const reRenderCanvasSize = (width, height) => {
         const what = width * 2 > height * 3 ? true : false;

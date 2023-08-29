@@ -4,9 +4,8 @@ import GameSettingContainer from './GameSettingContainer';
 import { SocketContext } from '../../api/SocketContext';
 import { useRecoilValue } from 'recoil';
 import { settingRoomNameState } from '../../api/atoms';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import PlayerReadyStatus from './PlayerReadyStatus';
-import GoHomeButton from '../../components/GoHomeButton';
 import { Box, Button } from '@mui/material';
 import { isOwnerState } from '../../api/atoms';
 import { useSetRecoilState } from 'recoil';
@@ -35,22 +34,22 @@ const SettingRoomLayout = () => {
     const modalRef = useRef();
 
     // 새로고침 이벤트는  beforeunload, popstate는 새로 고침
+
     useEffect(() => {
         window.history.pushState(null, '', window.location.href);
-    
-        const confirmGoBack = (event : any) => {
+        const confirmGoBack = (event: any) => {
             event.preventDefault();
-           
-                gameSocket.emit('ft_leave_setting_room', (response: any) => {
-                    if (!response.success){
-                        alert(`설정 방 나가기 실패 :  ${response.payload}`);
-                        return
-                    } 
-                    alert(`${response.username}님이 나갔습니다.2`);
-                });
-                navigate('/main');
-            }
-  
+
+            gameSocket.emit('ft_leave_setting_room', (response: any) => {
+                if (!response.success) {
+                    alert(`설정 방 나가기 실패 :  ${response.payload}`);
+                    return;
+                }
+                alert(`상대방이 나갔습니다.`);
+            });
+            navigate('/main');
+        };
+
         window.addEventListener('popstate', confirmGoBack);
 
         return () => {
@@ -66,29 +65,30 @@ const SettingRoomLayout = () => {
     };
 
     useEffect(() => {
-        const handleMyselfLeaveSettingRoom = (response : any) => { //자신 나가는 로직
-            console.log("너 여기서 돌지 ????????????????!!!!!!!!!!!!1")
+        const handleMyselfLeaveSettingRoom = (response: any) => {
+            //자신 나가는 로직
             if (!response) {
                 return alert(`${response} 에러가 발생했습니다.`);
             }
-            gameSocket.emit('ft_leave_setting_room', (response: any) => {
-                if (!response.success){
-                    alert(`설정 방 나가기 실패 :  ${response.payload}`);
-                    return
-                } 
-            });
+            // gameSocket.emit('ft_leave_setting_room', (response: any) => {
+            //     if (!response.success){
+            //         alert(`설정 방 나가기 실패 :  ${response.payload}`);
+            //         return
+            //     }
+            // });
             navigate('/');
         };
 
-        const handleEnemyLeaveSettingRoom = (response : any) => {
+        const handleEnemyLeaveSettingRoom = (response: any) => {
+            // console.log("나갔습니다!@#!@#!@$!$!$@!@$@!$!@$!@$!@$!@$!@$@!$!@$!@$!$@!$");
+            
             if (!response) {
                 return alert(`${response} 에러가 발생했습니다.`);
             }
-            if(RisOwner)
-            {
-                RsetIsOwner(false)
+            if (RisOwner) {
+                RsetIsOwner(false);
             }
-            alert(`${response.username}님이 나갔습니다.`);
+            alert(`상대방이 나갔습니다.`);
             navigate('/');
         };
 
@@ -98,7 +98,6 @@ const SettingRoomLayout = () => {
         return () => {
             gameSocket.off('ft_tomain', handleMyselfLeaveSettingRoom);
             gameSocket.off('ft_enemy_leave_room', handleEnemyLeaveSettingRoom);
-
         };
     }, [gameSocket, navigate]);
 
@@ -118,7 +117,7 @@ const SettingRoomLayout = () => {
         const handleInitSuccess = (response: any) => {
             if (!response.success) {
                 alert(response.payload);
-                return 
+                return;
             }
             navigate(`/game-room/${RsettingRoomName}`);
         };
@@ -131,16 +130,14 @@ const SettingRoomLayout = () => {
 
     return (
         <>
-            <Box
+        <Box
                 sx={{
                     display: 'flex',
-                    width: '1360px',
-                    height: '40px',
-                    justifyContent: 'space-between',
-                    marginBottom: '32px',
+                    width: '70vw',
+                    height: '5vh',
+                    justifyContent: 'flex-end',
                 }}
             >
-                <GoHomeButton />
                 <Button variant="outlined" disabled={!RisOwner} onClick={handleClose}>
                     게임 설정
                 </Button>
