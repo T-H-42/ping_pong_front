@@ -73,15 +73,24 @@ const MyPage = () => {
         Authorization: `Bearer ${getJwtCookie('jwt')}`,
       }
     },
-  ).then((res) => {
-    console.log('/user/nickname 요청 성공: ', res);
-    chatSocket.emit('ft_changenickname', (res: any) => {
-      console.log('ft_changenickname emit: ', res);
-    });
-  })
-    .catch((err) => {
-      console.log(`/user/nickname 요청 실패: ${err}`);
-    });
+  )
+  // .then((res) => {
+  //   console.log('/user/nickname 요청 성공: ', res);
+  //   chatSocket.emit('ft_changenickname', (res: any) => {
+  //     console.log('ft_changenickname emit: ', res);
+  //   });
+  // })
+    // .catch((err) => {
+    //   console.log(`/user/nickname 요청 실패: ${err}`);
+    //   console.log(err);
+    //   if(err?.response?.status === 400){
+    //     alert("닉네임 수정에 실패하였습니다.")
+    //     navigate('/')
+    //   }else if(err?.response?.status === 500)
+    //     alert("잘못된 접근입니다.")
+    //     navigate('/')
+    // }
+    // );
 
   const username = localStorage.getItem('username');
   const { data: userInfo, remove } = useQuery(
@@ -91,20 +100,30 @@ const MyPage = () => {
   );
   const [newUserInfo, setNewUserInfo] = useState(
     {
-      nickname: userInfo.username,
-      two_factor_authentication_status: userInfo.two_factor_authentication_status,
+      nickname: userInfo?.username,
+      two_factor_authentication_status: userInfo?.two_factor_authentication_status,
       image: ""
     }
   );
 
   const { mutate: mutateUserName } = useMutation(fetchChangeNickName, {
-    onSuccess: () => {
+    onSuccess: (res : any) => {
       remove();
       localStorage.setItem('username', newUserInfo.nickname);
+      console.log('/user/nickname 요청 성공: ', res);
+    chatSocket.emit('ft_changenickname', (res: any) => {
+      console.log('ft_changenickname emit: ', res);
+    });
     },
-    onError: () => {
+    onError: (err : any) => {
       setNewUserInfo({ ...newUserInfo, nickname: userInfo.username });
-      alert('닉네임을 변경할 수 없습니다');
+      if(err?.response?.status === 400){
+        alert("닉네임 수정에 실패하였습니다.")
+        navigate('/')
+      }else if(err?.response?.status === 500)
+        alert("잘못된 접근입니다.")
+        navigate('/')
+      // alert('닉네임을 변경할 수 없습니다');
     }
   }
   );
@@ -127,9 +146,11 @@ const MyPage = () => {
   const handleInputNameChange = (event) => {
     setNewUserInfo({ ...newUserInfo, nickname: event.target.value });
   };
+
   const handleTwoFactorAuthenticationStatusChange = (event) => {
     setNewUserInfo({ ...newUserInfo, two_factor_authentication_status: event.target.checked });
   };
+
   const handleImageChange = (event) => {
     setNewUserInfo({ ...newUserInfo, image: event.target.files[0] });
   };
