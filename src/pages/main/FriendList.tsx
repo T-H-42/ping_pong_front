@@ -3,15 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { IFriendsState, friendsState, dmNameState } from '../../api/atoms';
 import { SocketContext } from '../../api/SocketContext';
-import { removeJwtCookie } from '../../api/cookies';
 
 import ModalError from '../../components/ModalError';
-import ModalTokenError from '../../components/ModalTokenError';
 import { Button } from '@mui/material';
+import ModalTokenError from '../../components/ModalTokenError';
+import { removeJwtCookie } from '../../api/cookies';
 
 const FriendList = ({ dmName, setDMName }) => {
+    const [openTokenError, setOpenTokenError] = useState(false);
     console.log('프렌드리스트 컴포넌트');
-
+    
     const navigate = useNavigate();
     const { pingpongSocket, chatSocket, gameSocket } = useContext(SocketContext); ///gameSocket 추가 ,nhwang
 
@@ -22,7 +23,6 @@ const FriendList = ({ dmName, setDMName }) => {
     const [friends, setFriends] = useState([]);
 
     const [openError, setOpenError] = useState(false);
-    const [openTokenError, setOpenTokenError] = useState(false);
     const [message, setMessage] = useState('');
 
     useEffect(() => {
@@ -48,6 +48,16 @@ const FriendList = ({ dmName, setDMName }) => {
             console.log('ft_trigger gamesocket on: ', res);
             chatSocket.emit('ft_getfriendlist', (res: any) => { 
                 console.log('ft_getfriendlist emit: ', res);
+                if (res.checktoken===false) {
+                    console.log('ft_getfriendlist - scope-test from triger');
+                    pingpongSocket.disconnect();
+                    chatSocket.disconnect();
+                    gameSocket.disconnect();
+                    removeJwtCookie('jwt');
+                    localStorage.clear();
+                    setOpenTokenError(true);
+                    return ;
+                }
                 setFriends(res);
             });
         });
@@ -71,6 +81,16 @@ const FriendList = ({ dmName, setDMName }) => {
             console.log('ft_dmAlert on: ', res);
             chatSocket.emit('ft_getfriendlist', (res: any) => {
                 console.log('ft_getfriendlist emit: ', res);
+                if (res.checktoken===false) {
+                    console.log('ft_getfriendlist - scope-test from triger');
+                    pingpongSocket.disconnect();
+                    chatSocket.disconnect();
+                    gameSocket.disconnect();
+                    removeJwtCookie('jwt');
+                    localStorage.clear();
+                    setOpenTokenError(true);
+                    return ;
+                }
                 setFriends(res);
                 setNewDM(true);
                 setSender(res.username);
@@ -115,8 +135,6 @@ const FriendList = ({ dmName, setDMName }) => {
                 removeJwtCookie('jwt');
                 localStorage.clear();
                 setOpenTokenError(true);
-                // alert('Token');
-                // navigate('/');
                 return ;
             }
             

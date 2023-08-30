@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Modal, Box, Typography, TextField, Switch, FormControlLabel, Alert } from '@mui/material';
 import { SocketContext } from '../api/SocketContext';
 import  { removeJwtCookie}  from '../api/cookies';
+import ModalTokenError from '../components/ModalTokenError';
+
 
 interface ModalExampleProps {
     isOpen: boolean;
@@ -17,6 +19,8 @@ interface Response {
 }
 
 const ModalCreateRoom: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, message }) => {
+    const [openTokenError, setOpenTokenError] = useState(false);
+
     const { chatSocket , gameSocket, pingpongSocket} = useContext(SocketContext);
     const navigate = useNavigate();
     const [roomName, setRoomName] = useState<string>('');
@@ -89,8 +93,18 @@ const ModalCreateRoom: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, 
         };
 
         // handleExit()
-        chatSocket.emit('create-room', data, (response: Response) => {
+        chatSocket.emit('create-room', data, (response: any) => {
             console.log('create-room: ', response);
+            if (response.checktoken===false) {
+                console.log('ft_getfriendlist - scope-test from triger');
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                setOpenTokenError(true);
+                return ;
+            }
             if (response.success) {
                 setShowAlert(false);
                 localStorage.setItem('room-name', response.faillog);
@@ -102,14 +116,20 @@ const ModalCreateRoom: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, 
         });
         setPassword('');
     };
+    const handleClose = () => {
+        setOpenTokenError(false);
+    };
 
     return (
+        <>
+        <ModalTokenError isOpen={openTokenError} onClose={handleClose} title={'토큰 에러'} message={"토큰이 만료되었습니다. 재로그인해주세요"} />
         <Modal
             open={isOpen}
             onClose={onClose}
             aria-labelledby="modal-title"
             aria-describedby="modal-description"
         >
+        
             <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, height: 500, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
                 {showAlert && <Alert severity="error">{errorMessage}</Alert>}
                 <Typography id="modal-title" variant="h6" component="h2">
@@ -162,6 +182,7 @@ const ModalCreateRoom: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, 
                 </Box>
             </Box>
         </Modal>
+        </>
     );
 };
 
