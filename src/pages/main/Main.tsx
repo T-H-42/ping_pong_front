@@ -14,8 +14,7 @@ import ModalRoomInvitationReceiver from '../../components/ModalRoomInvitationRec
 
 const Main = () => {
     const RisOwner = useRecoilValue(isOwnerState);
-
-    console.log('!!!!!메인 컴포넌트 이즈 오너!!!!!!!!', RisOwner);
+    
     const { pingpongSocket, chatSocket, gameSocket } = useContext(SocketContext);
     // const [friends, setFriends] = useRecoilState<IFriendsState[]>(friendsState);
     const [friends, setFriends] = useState([]);
@@ -52,8 +51,6 @@ const Main = () => {
         });
 
         return (() => {
-            console.log("나간다!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
             gameSocket.emit('ft_exit_match_queue', (response: any) => {
                 if (!response.success) {
                     alert("매치 취소에 실패하였습니다 : ");

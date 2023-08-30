@@ -3,15 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { IFriendsState, friendsState, dmNameState } from '../../api/atoms';
 import { SocketContext } from '../../api/SocketContext';
+import { removeJwtCookie } from '../../api/cookies';
 
 import ModalError from '../../components/ModalError';
+import ModalTokenError from '../../components/ModalTokenError';
 import { Button } from '@mui/material';
 
 const FriendList = ({ dmName, setDMName }) => {
     console.log('프렌드리스트 컴포넌트');
 
     const navigate = useNavigate();
-    const { chatSocket, gameSocket } = useContext(SocketContext); ///gameSocket 추가 ,nhwang
+    const { pingpongSocket, chatSocket, gameSocket } = useContext(SocketContext); ///gameSocket 추가 ,nhwang
 
     const [newDM, setNewDM] = useState(false);
     const [sender, setSender] = useState('');
@@ -20,6 +22,7 @@ const FriendList = ({ dmName, setDMName }) => {
     const [friends, setFriends] = useState([]);
 
     const [openError, setOpenError] = useState(false);
+    const [openTokenError, setOpenTokenError] = useState(false);
     const [message, setMessage] = useState('');
 
 
@@ -57,7 +60,7 @@ const FriendList = ({ dmName, setDMName }) => {
         });
 
         const messageHandler = (res: any) => {
-            console.log('ft_dm on: ', res);
+            console.log('ft_dmAlert on: ', res);
             chatSocket.emit('ft_getfriendlist', (res: any) => {
                 console.log('ft_getfriendlist emit: ', res);
                 setFriends(res);
@@ -65,8 +68,7 @@ const FriendList = ({ dmName, setDMName }) => {
                 setSender(res.username);
             });
         };
-        chatSocket.on('ft_dm', messageHandler);
-
+        chatSocket.on('ft_dmAlert', messageHandler);//ft_dm -> ft_dmAlert -nhwang
 
         /*
         chatSocket.emit('ft_getfriendlist', (res: any) => {
@@ -95,8 +97,19 @@ const FriendList = ({ dmName, setDMName }) => {
         const data = {
             username,
         };////nhwang
+        
         chatSocket.emit('join-dm', data, (response: any) => { //// nhwang
             console.log('join-dm: ', response);
+            if (!response.checktoken) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                setOpenTokenError(true);
+                return ;
+            }
+            
             if (response.success) {
                 localStorage.setItem('dm-username', username);
                 localStorage.setItem('dm-index', response.index);
@@ -127,9 +140,15 @@ const FriendList = ({ dmName, setDMName }) => {
         setOpenError(false);
     };
 
+    const handleReLoginClose = () => {
+        setOpenTokenError(false);
+        navigate('/');
+    };
+
     return (
         <div style={{ border: '1px solid #000', padding: '10px' }}>
             <ModalError isOpen={openError} onClose={handleClose} title={'입장 불가'} message={message} />
+            <ModalTokenError isOpen={openError} onClose={handleClose} title={'토큰 에러'} message={"토큰이 만료되었습니다. 재로그인해주세요"} />
             <h2>친구 목록</h2>
             <ul style={{ textAlign: 'left' }}>
                 {friends ? friends.map((friend: any) => (
