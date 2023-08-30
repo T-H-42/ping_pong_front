@@ -56,7 +56,7 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
     };
 
     const handleAddFriendClick = (e) => {
-        chatSocket.emit('ft_addfriend', { receiver: e }, (response: any) => {
+        chatSocket.emit('ft_addfriend', { receiver: e, roomName: roomName }, (response: any) => { //nhwang roomName추가하였슴다
             console.log('ft_addfriend emit: ', response);
             if (!response.success) {
                 setOpenError(true);
