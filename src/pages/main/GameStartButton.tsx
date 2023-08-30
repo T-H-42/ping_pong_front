@@ -4,10 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { settingRoomNameState, isOwnerState, settingState } from '../../api/atoms';
 import { Button } from '@mui/material';
+import  { removeJwtCookie}  from '../../api/cookies';
 
 const GameStartButton = () => {
     const [initialGameState, setInitGameState] = useState(false);
-    const { gameSocket } = useContext(SocketContext);
+    const { gameSocket, pingpongSocket, chatSocket } = useContext(SocketContext);
     const navigate = useNavigate();
     const RsetSettingRoomName = useSetRecoilState<string>(settingRoomNameState);
     const RsetIsOwner = useSetRecoilState<boolean>(isOwnerState);
@@ -19,6 +20,15 @@ const GameStartButton = () => {
 
             setInitGameState((prev) => !prev);
             gameSocket.emit('ft_exit_match_queue', (response: any) => {
+                if (!response.checktoken) {
+                    pingpongSocket.disconnect();
+                    chatSocket.disconnect();
+                    gameSocket.disconnect();
+                    removeJwtCookie('jwt');
+                    localStorage.clear();
+                    // setOpenTokenError(true);
+                    return ;
+                }
                 if (!response.success) {
                     alert('매치 취소에 실패하였습니다 : ');
                     return;
@@ -28,6 +38,15 @@ const GameStartButton = () => {
             console.log('매치 잡기');
             setInitGameState((prev) => !prev);
             gameSocket.emit('ft_enter_match_queue', (response: any) => {
+                if (!response.checktoken) {
+                    pingpongSocket.disconnect();
+                    chatSocket.disconnect();
+                    gameSocket.disconnect();
+                    removeJwtCookie('jwt');
+                    localStorage.clear();
+                    // setOpenTokenError(true);
+                    return ;
+                }
                 if (!response.success) {
                     alert(`매칭에 실패하였습니다. ${response}`);
                     return;

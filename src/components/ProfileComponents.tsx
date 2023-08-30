@@ -24,6 +24,8 @@ const ProfileGameHistory = ({ username, history }) => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-around',
+        border: '1px solid black',
+        overflow: 'auto', 
     }}
 >
       <Typography variant="h6">전적</Typography>

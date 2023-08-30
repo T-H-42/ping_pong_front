@@ -7,6 +7,7 @@ import { ProfileHeader, ProfileGameHistory, ProfileAchievements } from '../../co
 import { Button, Stack, Box, Typography, Switch, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { SocketContext } from '../../api/SocketContext';
+import { ErrorBoundary } from 'react-error-boundary';
 
 // const fetchChangeNickName = (nickname) =>
 //   axios.post(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/nickname`,
@@ -118,11 +119,15 @@ const MyPage = () => {
     onError: (err : any) => {
       setNewUserInfo({ ...newUserInfo, nickname: userInfo.username });
       if(err?.response?.status === 400){
-        alert("닉네임 수정에 실패하였습니다.")
-        navigate('/')
-      }else if(err?.response?.status === 500)
+        alert(err.response.data.message);
+      }else if(err?.response?.status === 500){
         alert("잘못된 접근입니다.")
         navigate('/')
+      }
+      else if(err?.response?.status === 401)
+      {
+        navigate('/')
+      }
       // alert('닉네임을 변경할 수 없습니다');
     }
   }
@@ -219,4 +224,18 @@ const MyPage = () => {
   )
 }
 
-export default MyPage;
+
+
+
+// 예시 에러 바운더리
+
+
+const MyPageWithErrorBoundary = () => {
+  return (
+    <ErrorBoundary fallback={<div>MyPage 컴포넌트에서 오류 발생</div>}>
+      <MyPage />
+    </ErrorBoundary>
+  );
+};
+
+export {MyPageWithErrorBoundary, MyPage} ;

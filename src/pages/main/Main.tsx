@@ -11,6 +11,7 @@ import { SocketContext } from '../../api/SocketContext';
 import GameStartButton from './GameStartButton';
 import { isOwnerState, settingRoomNameState } from '../../api/atoms';
 import ModalRoomInvitationReceiver from '../../components/ModalRoomInvitationReceiver';
+import  { removeJwtCookie}  from '../../api/cookies';
 
 const Main = () => {
     const RisOwner = useRecoilValue(isOwnerState);
@@ -72,6 +73,16 @@ const Main = () => {
 
         pingpongSocket.on('ft_connect', (respnose: any) => {
             console.log('ft_connect 입니다.', respnose);
+            if (!respnose.checktoken) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                // setOpenTokenError(true);
+                return ;
+            }
+
             const updatedFriends: any = friends.map((friend: any) => {
                 if (friend.username === respnose.status) {
                     return { ...friend, status: 1 };

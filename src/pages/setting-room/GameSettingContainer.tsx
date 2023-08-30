@@ -6,6 +6,7 @@ import { SocketContext } from '../../api/SocketContext';
 import { useRecoilValue } from 'recoil';
 import { settingRoomNameState } from '../../api/atoms';
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Slider } from '@mui/material';
+import  { removeJwtCookie}  from '../../api/cookies';
 
 const GameSettingContainer = ({ open, handleClose, settingInformation, setSettingInformaiton }, modalRef) => {
     const [modalStatus, setModalStatus] = useState(false);
@@ -41,7 +42,7 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
         gap: '24px',
     };
 
-    const { gameSocket } = useContext(SocketContext);
+    const { gameSocket, chatSocket, pingpongSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     // const [settingInformation, setSettingInformaiton] = useState<ISettingInformation>({
     //     score: 5,
@@ -98,6 +99,15 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
             roomName: RsettingRoomName,
         });
         gameSocket.emit('ft_game_setting', settingInformation, (response: any) => {
+            if (!response.checktoken) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                // setOpenTokenError(true);
+                return ;
+            }
             if (!response.success) alert(response.payload);
             return;
         });
