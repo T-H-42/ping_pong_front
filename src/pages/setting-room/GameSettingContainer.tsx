@@ -99,7 +99,7 @@ const GameSettingContainer = ({ open, handleClose, settingInformation, setSettin
             roomName: RsettingRoomName,
         });
         gameSocket.emit('ft_game_setting', settingInformation, (response: any) => {
-            if (!response.checktoken) {
+            if (response.checktoken===false) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
                 gameSocket.disconnect();

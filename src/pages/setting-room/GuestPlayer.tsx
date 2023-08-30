@@ -41,7 +41,7 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
 }, []);
     const handleExit = () => {
         gameSocket.emit('ft_leave_setting_room', (response: any) => {
-            if (!response.checktoken) {
+            if (response.checktoken===false) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
                 gameSocket.disconnect();

@@ -19,7 +19,7 @@ const PlayerReadyStatus = ({ onReady, setOnReady, settingInformation }) => {
 
         // if (!onReady) {
         gameSocket.emit('ft_game_ready', RsettingRoomName, guestReady, (response: any) => {
-            if (!response.checktoken) {
+            if (response.checktoken===false) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
                 gameSocket.disconnect();
