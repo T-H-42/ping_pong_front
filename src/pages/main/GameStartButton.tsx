@@ -20,7 +20,7 @@ const GameStartButton = () => {
 
             setInitGameState((prev) => !prev);
             gameSocket.emit('ft_exit_match_queue', (response: any) => {
-                if (!response.checktoken) {
+                if (response.checktoken===false) {
                     pingpongSocket.disconnect();
                     chatSocket.disconnect();
                     gameSocket.disconnect();
@@ -38,7 +38,7 @@ const GameStartButton = () => {
             console.log('매치 잡기');
             setInitGameState((prev) => !prev);
             gameSocket.emit('ft_enter_match_queue', (response: any) => {
-                if (!response.checktoken) {
+                if (response.checktoken===false) {
                     pingpongSocket.disconnect();
                     chatSocket.disconnect();
                     gameSocket.disconnect();

@@ -42,6 +42,16 @@ const FriendList = ({ dmName, setDMName }) => {
             console.log('ft_trigger chatsocket on: ', res);
             chatSocket.emit('ft_getfriendlist', (res: any) => {
                 console.log('ft_getfriendlist emit: ', res);
+                if (res.checktoken===false) {
+                    console.log('ft_getfriendlist - scope-test');
+                    pingpongSocket.disconnect();
+                    chatSocket.disconnect();
+                    gameSocket.disconnect();
+                    removeJwtCookie('jwt');
+                    localStorage.clear();
+                    setOpenTokenError(true);
+                    return ;
+                }
                 setFriends(res);
             });
         });
@@ -100,13 +110,15 @@ const FriendList = ({ dmName, setDMName }) => {
         
         chatSocket.emit('join-dm', data, (response: any) => { //// nhwang
             console.log('join-dm: ', response);
-            if (!response.checktoken) {
+            if (response.checktoken===false) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
                 gameSocket.disconnect();
                 removeJwtCookie('jwt');
                 localStorage.clear();
                 setOpenTokenError(true);
+                // alert('Token');
+                // navigate('/');
                 return ;
             }
             
@@ -148,7 +160,7 @@ const FriendList = ({ dmName, setDMName }) => {
     return (
         <div style={{ border: '1px solid #000', padding: '10px' }}>
             <ModalError isOpen={openError} onClose={handleClose} title={'입장 불가'} message={message} />
-            <ModalTokenError isOpen={openError} onClose={handleClose} title={'토큰 에러'} message={"토큰이 만료되었습니다. 재로그인해주세요"} />
+            <ModalTokenError isOpen={openTokenError} onClose={handleClose} title={'토큰 에러'} message={"토큰이 만료되었습니다. 재로그인해주세요"} />
             <h2>친구 목록</h2>
             <ul style={{ textAlign: 'left' }}>
                 {friends ? friends.map((friend: any) => (

@@ -55,7 +55,7 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
             alert('잘못된 접근입니다.');
         }
         gameSocket.emit('ft_game_play', RsettingRoomName, (response: any) => {
-            if (!response.checktoken) {
+            if (response.checktoken===false) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
                 gameSocket.disconnect();

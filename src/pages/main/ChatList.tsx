@@ -32,7 +32,7 @@ const ChatList = () => {
     const [message, setMessage] = useState('');
     const handleExit = () => {
         gameSocket.emit('ft_exit_match_queue', (response: any) => {
-            if (!response.checktoken) {
+            if (response.checktoken===false) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
                 gameSocket.disconnect();

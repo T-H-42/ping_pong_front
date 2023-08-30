@@ -69,7 +69,7 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
     const handleInviteGameClick = (e) => {
         gameSocket.emit('ft_invite_game', { guestName: e, roomName: roomName }, (response: any) => {
             console.log('ft_invite_game: ', response);
-            if (!response.checktoken) {
+            if (response.checktoken===false) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
                 gameSocket.disconnect();

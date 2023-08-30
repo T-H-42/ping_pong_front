@@ -26,7 +26,7 @@ const Layout = () => {
                 RsetIsOwner(false);
             }
             gameSocket.emit('ft_leave_setting_room', (response: any) => {
-                if (!response.checktoken) {
+                if (response.checktoken===false) {
                     pingpongSocket.disconnect();
                     chatSocket.disconnect();
                     gameSocket.disconnect();

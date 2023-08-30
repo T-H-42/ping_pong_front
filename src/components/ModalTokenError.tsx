@@ -16,7 +16,10 @@ interface props {
 
 const ModalTokenError: React.FC<props> = ({ isOpen, onClose, title, message }) => {
     console.log('모달에러');
-
+    const navigate = useNavigate();
+    const goHome = () =>{
+        navigate('/');
+    }
     return (
         <Modal
             open={isOpen}
@@ -33,7 +36,7 @@ const ModalTokenError: React.FC<props> = ({ isOpen, onClose, title, message }) =
                 </Typography>
             
                 <Box sx={{ position: 'absolute', bottom: 20, right: 10 }}>
-                    <Button variant="contained" onClick={onClose} sx={{
+                    <Button variant="contained" onClick={goHome} sx={{
                         mt: 2,
                         mx: 1,
                         backgroundColor: 'red',
