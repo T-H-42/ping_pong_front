@@ -64,6 +64,7 @@ const fetchChangeImage = (formData) =>
 const MyPage = () => {
   const navigate = useNavigate();
   const { pingpongSocket, chatSocket, gameSocket } = useContext(SocketContext);
+
   const fetchChangeNickName = (nickname) =>
   axios.post(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/nickname`,
     { nickname },
@@ -135,6 +136,7 @@ const MyPage = () => {
   };
 
   const handleChangeClick = () => {
+    console.log(newUserInfo);
     if (username !== newUserInfo.nickname)
       mutateUserName(newUserInfo.nickname);
 

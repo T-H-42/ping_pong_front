@@ -11,7 +11,7 @@ const FriendList = ({ dmName, setDMName }) => {
     console.log('프렌드리스트 컴포넌트');
 
     const navigate = useNavigate();
-    const { chatSocket } = useContext(SocketContext);
+    const { chatSocket, gameSocket } = useContext(SocketContext); ///gameSocket 추가 ,nhwang
 
     const [newDM, setNewDM] = useState(false);
     const [sender, setSender] = useState('');
@@ -22,10 +22,30 @@ const FriendList = ({ dmName, setDMName }) => {
     const [openError, setOpenError] = useState(false);
     const [message, setMessage] = useState('');
 
+
+    /* -> [in Game스테이터스를 위한 부분] scope는 어딘지 몰라서 일단 주석 추가했습니다. on은 game이고, emit은 chat의 소켓이라 의아하실수 있지만, 이게 맞을겁니다. - nhwang
+        gameSocket.on('ft_trigger', (res: any) => {
+            console.log('ft_trigger on: ', res);
+            chatSocket.emit('ft_getfriendlist', (res: any) => { 
+                console.log('ft_getfriendlist emit: ', res);
+                setFriends(res);
+            });
+        });
+    */
+   
+
     useEffect(() => {
         chatSocket.on('ft_trigger', (res: any) => {
-            console.log('ft_trigger on: ', res);
+            console.log('ft_trigger chatsocket on: ', res);
             chatSocket.emit('ft_getfriendlist', (res: any) => {
+                console.log('ft_getfriendlist emit: ', res);
+                setFriends(res);
+            });
+        });
+
+        gameSocket.on('ft_trigger', (res: any) => {
+            console.log('ft_trigger gamesocket on: ', res);
+            chatSocket.emit('ft_getfriendlist', (res: any) => { 
                 console.log('ft_getfriendlist emit: ', res);
                 setFriends(res);
             });
@@ -78,7 +98,7 @@ const FriendList = ({ dmName, setDMName }) => {
         chatSocket.emit('join-dm', data, (response: any) => { //// nhwang
             console.log('join-dm: ', response);
             if (response.success) {
-                localStorage.setItem('dm-username', username); 
+                localStorage.setItem('dm-username', username);
                 localStorage.setItem('dm-index', response.index);
                 navigate(`/dm/${response.index}`);
             } else {
@@ -112,7 +132,6 @@ const FriendList = ({ dmName, setDMName }) => {
             <ModalError isOpen={openError} onClose={handleClose} title={'입장 불가'} message={message} />
             <h2>친구 목록</h2>
             <ul style={{ textAlign: 'left' }}>
-
                 {friends ? friends.map((friend: any) => (
                     <div key={friend.f_id}>
                         <li
@@ -123,29 +142,25 @@ const FriendList = ({ dmName, setDMName }) => {
                                 padding: '5px',
                             }}
                         >
-                            {friend.status ? (
-                                <div style={{ alignItems: 'center' }}>
-                                    <button
-                                        style={{
-                                            width: '15px',
-                                            height: '15px',
-                                            borderRadius: '50%',
-                                            backgroundColor: 'green',
-                                        }}
-                                    ></button>
-                                    {/* <span>게임 중</span> */}
-                                </div>
-                            ) : (
-                                <button
-                                    style={{
-                                        width: '15px',
-                                        height: '15px',
-                                        borderRadius: '50%',
-                                        backgroundColor: 'red',
-                                    }}
-                                ></button>
-                            )}{' '}
-                            {friend.username}
+
+                            <button
+                                style={{
+                                    width: '15px',
+                                    height: '15px',
+                                    borderRadius: '50%',
+                                    backgroundColor:
+                                        friend.status === 0 ? "grey" :
+                                            friend.status >= 1 && friend.status <= 3 ? "green" :
+                                                friend.status === 4 ? "red" : "blue",
+                                }}
+                            ></button>{' '}
+
+                            {friend.image_url &&
+                                (<img src={friend.image_url ? `http://${process.env.REACT_APP_IP_ADDRESS}:4000/${friend.image_url}` : '/images/profile.jpg'} alt={`${friend.username}'s profile`}
+                                    style={{ width: '30px', height: '30px', borderRadius: '50%' }} />
+                                )
+                            }
+                            {' ' + friend.username + '(' +  friend.intra_id + ')'}
                             <div>
                                 {friend.alert || (newDM && friend.username === sender) ? (
                                     <button
