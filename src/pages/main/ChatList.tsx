@@ -38,6 +38,7 @@ const ChatList = () => {
                 gameSocket.disconnect();
                 removeJwtCookie('jwt');
                 localStorage.clear();
+                navigate('/');
                 // setOpenTokenError(true);
                 return ;
             }

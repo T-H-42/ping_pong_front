@@ -21,13 +21,14 @@ const GameStartButton = () => {
             setInitGameState((prev) => !prev);
             gameSocket.emit('ft_exit_match_queue', (response: any) => {
                 if (response.checktoken===false) {
-                    pingpongSocket.disconnect();
-                    chatSocket.disconnect();
-                    gameSocket.disconnect();
-                    removeJwtCookie('jwt');
-                    localStorage.clear();
-                    // setOpenTokenError(true);
-                    return ;
+                     console.log('ft_exit_match_queue');
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                navigate('/');
+                return ;
                 }
                 if (!response.success) {
                     alert('매치 취소에 실패하였습니다 : ');
@@ -39,13 +40,14 @@ const GameStartButton = () => {
             setInitGameState((prev) => !prev);
             gameSocket.emit('ft_enter_match_queue', (response: any) => {
                 if (response.checktoken===false) {
-                    pingpongSocket.disconnect();
-                    chatSocket.disconnect();
-                    gameSocket.disconnect();
-                    removeJwtCookie('jwt');
-                    localStorage.clear();
-                    // setOpenTokenError(true);
-                    return ;
+                        console.log('ft_enter_match_queue');
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                navigate('/');
+                return ;
                 }
                 if (!response.success) {
                     alert(`매칭에 실패하였습니다. ${response}`);

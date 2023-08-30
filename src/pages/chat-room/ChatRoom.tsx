@@ -24,10 +24,12 @@ import {
     AppBar,
     Stack,
 } from '@mui/material';
+import { removeJwtCookie } from '../../api/cookies';
+import ModalTokenError from '../../components/ModalTokenError';
 
 const ChatRoom: React.FC = () => {
     console.log('챗룸 컴포넌트');
-    const { chatSocket, gameSocket } = useContext(SocketContext);
+    const { chatSocket, gameSocket,pingpongSocket } = useContext(SocketContext);
     const [openRoomInfo, setOpenRoomInfo] = useState(false);
     const [openRoomInvitation, setOpenRoomInvitation] = useState(false);
     const [chats, setChats] = useState([]);
@@ -40,6 +42,8 @@ const ChatRoom: React.FC = () => {
     const chatContainerEl = useRef(null);
     const roomName = localStorage.getItem('room-name');
     const navigate = useNavigate();
+
+    const [openTokenError, setOpenTokenError] = useState(false);
 
     const [sender, setSender] = useState('');
     const [receiver, setReceiver] = useState('');
@@ -214,6 +218,16 @@ const ChatRoom: React.FC = () => {
 
     const handleOpenInvitation = () => {
         chatSocket.emit('ft_getfriendlist', (res: any) => {
+            if (res.checktoken===false) {
+                console.log('ft_getfriendlist - scope-test from just emit');
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                setOpenTokenError(true);
+                return ;
+            }
             console.log('ft_getfriendlist emit: ', res);
             setFriends(res);
         });
@@ -240,9 +254,14 @@ const ChatRoom: React.FC = () => {
         setOpenError(false);
     };
 
+    const handleClose = () => {
+        setOpenError(false);
+    };
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <ModalError isOpen={openError} onClose={handleCloseError} title={'에러'} message={errorMessage} />
+            <ModalTokenError isOpen={openTokenError} onClose={handleClose} title={'토큰 에러'} message={"토큰이 만료되었습니다. 재로그인해주세요"} />
             <ModalAddFriend
                 isOpen={showAddFriend}
                 onClose={handleAddFriendClose}
