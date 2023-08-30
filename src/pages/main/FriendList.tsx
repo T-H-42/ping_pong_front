@@ -25,25 +25,13 @@ const FriendList = ({ dmName, setDMName }) => {
     const [openTokenError, setOpenTokenError] = useState(false);
     const [message, setMessage] = useState('');
 
-
-    /* -> [in Game스테이터스를 위한 부분] scope는 어딘지 몰라서 일단 주석 추가했습니다. on은 game이고, emit은 chat의 소켓이라 의아하실수 있지만, 이게 맞을겁니다. - nhwang
-        gameSocket.on('ft_trigger', (res: any) => {
-            console.log('ft_trigger on: ', res);
-            chatSocket.emit('ft_getfriendlist', (res: any) => { 
-                console.log('ft_getfriendlist emit: ', res);
-                setFriends(res);
-            });
-        });
-    */
-   
-
     useEffect(() => {
         chatSocket.on('ft_trigger', (res: any) => {
             console.log('ft_trigger chatsocket on: ', res);
             chatSocket.emit('ft_getfriendlist', (res: any) => {
                 console.log('ft_getfriendlist emit: ', res);
                 if (res.checktoken===false) {
-                    console.log('ft_getfriendlist - scope-test');
+                    console.log('ft_getfriendlist - scope-test from triger');
                     pingpongSocket.disconnect();
                     chatSocket.disconnect();
                     gameSocket.disconnect();
@@ -66,6 +54,16 @@ const FriendList = ({ dmName, setDMName }) => {
 
         chatSocket.emit('ft_getfriendlist', (res: any) => {
             console.log('ft_getfriendlist emit: ', res);
+            if (res.checktoken===false) {
+                console.log('ft_getfriendlist - scope-test from just emit');
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                setOpenTokenError(true);
+                return ;
+            }
             setFriends(res);
         });
 

@@ -94,7 +94,8 @@ const MyPage = () => {
     // }
     // );
 
-  const username = localStorage.getItem('username');
+  const [username, setUsername] = useState(localStorage.getItem('username'));
+
   const { data: userInfo, remove } = useQuery(
     ['userInfo', username],
     () => fetchProfileData(username),
@@ -110,6 +111,7 @@ const MyPage = () => {
 
   const { mutate: mutateUserName } = useMutation(fetchChangeNickName, {
     onSuccess: (res : any) => {
+      setUsername(newUserInfo.nickname);
       remove();
       localStorage.setItem('username', newUserInfo.nickname);
       console.log('/user/nickname 요청 성공: ', res);

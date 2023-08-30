@@ -70,7 +70,7 @@ function App() {
                     <SocketContext.Provider value={{ pingpongSocket, chatSocket, gameSocket }}>
                         <BrowserRouter>
                             <QueryClientProvider client={queryClient}>
-                                <Suspense fallback={<h1>Fucking Loading</h1>}>
+                                <Suspense fallback={<h1>Loading</h1>}>
                                     <Routes>
                                         <Route path="/" element={<Login />}></Route>
                                         <Route path="/redirect" element={<OAuth />}></Route>

@@ -63,19 +63,19 @@ const ProfileGameHistory = ({ username, history }) => {
 };
 
 const ProfileHeader = ({ imageUrl, userName, ladderLv }) => {
-	return (
-	<>
-		<Box
-		component="img"
-		className={styles.sample}
-		src={imageUrl ? `http://${process.env.REACT_APP_IP_ADDRESS}:4000/${imageUrl}` : "/images/profile.jpg"}
-		></Box>
+  return (
+  <>
+    <Box
+    component="img"
+    className={styles.sample}
+    src={imageUrl ? `http://${process.env.REACT_APP_IP_ADDRESS}:4000/${imageUrl}` : "/images/profile.jpg"}
+    ></Box>
 
-		<Typography variant="h3">{userName}</Typography>
+    <Typography variant="h3">{userName}</Typography>
     <Typography variant='body1'>등급 점수 : {ladderLv}</Typography>
 
-	</>
-	)
+  </>
+  )
 }
 
 export {ProfileHeader, ProfileGameHistory, ProfileAchievements};
