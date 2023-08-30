@@ -9,10 +9,11 @@ import axios from 'axios';
 import { getJwtCookie } from '../../api/cookies';
 import UserInfo from '../../types/UserInfo';
 import {ProfileGameHistory} from '../../components/ProfileComponents'
+import  { removeJwtCookie}  from '../../api/cookies';
 
 const GuestPlayer = ({ onReady, onReadyToggle }) => {
     const RisOwner = useRecoilValue(isOwnerState);
-    const { gameSocket } = useContext(SocketContext);
+    const { gameSocket , pingpongSocket, chatSocket} = useContext(SocketContext);
     const navigate = useNavigate();
     const [guestInformation, setGuestInformation] = useState<UserInfo | null>(null);
     const settingInfo = useRecoilValue(settingState);
@@ -40,6 +41,15 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
 }, []);
     const handleExit = () => {
         gameSocket.emit('ft_leave_setting_room', (response: any) => {
+            if (!response.checktoken) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                // setOpenTokenError(true);
+                return ;
+            }
             if (!response.success) {
                 alert(`설정 방 나가기 실패 :  ${response.payload}`);
                 return;

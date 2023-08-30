@@ -5,9 +5,10 @@ import { useRecoilValue } from 'recoil';
 import { settingRoomNameState } from '../../api/atoms';
 import OwnerPlayer from './OwnerPlayer';
 import GuestPlayer from './GuestPlayer';
+import  { removeJwtCookie}  from '../../api/cookies';
 
 const PlayerReadyStatus = ({ onReady, setOnReady, settingInformation }) => {
-    const { gameSocket } = useContext(SocketContext);
+    const { gameSocket, pingpongSocket, chatSocket} = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     const [initGame, setInitGame] = useState(false);
     const [guestReady, setGuestReady] = useState(false);
@@ -18,6 +19,15 @@ const PlayerReadyStatus = ({ onReady, setOnReady, settingInformation }) => {
 
         // if (!onReady) {
         gameSocket.emit('ft_game_ready', RsettingRoomName, guestReady, (response: any) => {
+            if (!response.checktoken) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                // setOpenTokenError(true);
+                return ;
+            }
             if (!response.success) {
                 alert(response.payload);
                 return;

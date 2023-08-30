@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 import { getJwtCookie } from '../../api/cookies';
 import { useSetRecoilState } from 'recoil';
 import { roomNameState } from '../../api/atoms';
-
+import  { removeJwtCookie}  from '../../api/cookies';
 import { SocketContext } from '../../api/SocketContext';
 
 import ModalCreateRoom from '../../components/ModalCreateRoom';
@@ -25,13 +25,22 @@ const ChatList = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [password, setPassword] = useState<string>('');
     const [rooms, setRooms] = useState<Response[]>([]);
-    const { chatSocket, gameSocket} = useContext(SocketContext);
+    const { chatSocket, gameSocket, pingpongSocket} = useContext(SocketContext);
     const roomName = localStorage.getItem('room-name');
 
     const [openError, setOpenError] = useState(false);
     const [message, setMessage] = useState('');
     const handleExit = () => {
         gameSocket.emit('ft_exit_match_queue', (response: any) => {
+            if (!response.checktoken) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                // setOpenTokenError(true);
+                return ;
+            }
                 if (!response.success) {
                     alert("매치 취소에 실패하였습니다 : ");
                     return

@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Modal, Box, Typography, TextField, Switch, FormControlLabel, Alert } from '@mui/material';
 import { SocketContext } from '../api/SocketContext';
+import  { removeJwtCookie}  from '../api/cookies';
 
 interface ModalExampleProps {
     isOpen: boolean;
@@ -16,7 +17,7 @@ interface Response {
 }
 
 const ModalCreateRoom: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, message }) => {
-    const { chatSocket , gameSocket} = useContext(SocketContext);
+    const { chatSocket , gameSocket, pingpongSocket} = useContext(SocketContext);
     const navigate = useNavigate();
     const [roomName, setRoomName] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -54,6 +55,15 @@ const ModalCreateRoom: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, 
         console.log("생성 에밌!!!!!!!!!!!!!!!!!!!!!!!!");
         
         gameSocket.emit('ft_exit_match_queue', (response: any) => {
+            if (!response.checktoken) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                // setOpenTokenError(true);
+                return ;
+            }
                 if (!response.success) {
                     alert("매치 취소에 실패하였습니다 : ");
                     return

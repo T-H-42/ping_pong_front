@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Modal, Box, Typography, TextField, Switch, FormControlLabel, Alert } from '@mui/material';
 import { SocketContext } from '../api/SocketContext';
+import  { removeJwtCookie}  from '../api/cookies';
 
 import ModalError from './ModalError';
 
@@ -19,7 +20,7 @@ interface Response {
 }
 
 const ModalGameInvitationReceiver: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, roomName, sender }) => {
-    const { chatSocket, gameSocket } = useContext(SocketContext);
+    const { chatSocket, gameSocket, pingpongSocket } = useContext(SocketContext);
     const navigate = useNavigate();
     const password = '';
 
@@ -29,6 +30,15 @@ const ModalGameInvitationReceiver: React.FC<ModalExampleProps> = ({ isOpen, onCl
     const onAccept = () => {
         const data = { sender: sender, receiver: localStorage.getItem('username'), result: true, roomName: roomName };
         gameSocket.emit('ft_invite_game_result', data, (res: any) => {
+            if (!res.checktoken) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                // setOpenTokenError(true);
+                return ;
+            }
             console.log('ft_invite_game_result emit: ', res);
             if (!res.success) {
                 setOpenError(true);
@@ -45,6 +55,15 @@ const ModalGameInvitationReceiver: React.FC<ModalExampleProps> = ({ isOpen, onCl
     const handleReject = () => {
         const data = { sender: sender, receiver: localStorage.getItem('username'), result: false, roomName: roomName };
         gameSocket.emit('ft_invite_game_result', data, (res: any) => {
+            if (!res.checktoken) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                // setOpenTokenError(true);
+                return ;
+            }
             console.log('ft_invite_game_result emit: ', res);
         });
         onClose();

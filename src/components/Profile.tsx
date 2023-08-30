@@ -2,9 +2,8 @@ import React, { useState, useContext } from 'react';
 import { Button, Stack, Modal } from '@mui/material';
 import { useQuery } from 'react-query';
 import { SocketContext } from '../api/SocketContext';
-
+import  { removeJwtCookie}  from '../api/cookies';
 import ModalError from './ModalError';
-
 import {ProfileHeader, ProfileGameHistory, ProfileAchievements} from "./ProfileComponents";
 import fetchProfileData from "./fetchProfileData"
 
@@ -24,7 +23,7 @@ const style = {
 };
 
 const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }) => {
-    const { chatSocket, gameSocket } = useContext(SocketContext);
+    const { chatSocket, gameSocket, pingpongSocket } = useContext(SocketContext);
     const { data: userInfo } = useQuery(['userInfo', username], () => fetchProfileData(username), {
         suspense: true,
         useErrorBoundary: true,
@@ -70,6 +69,15 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
     const handleInviteGameClick = (e) => {
         gameSocket.emit('ft_invite_game', { guestName: e, roomName: roomName }, (response: any) => {
             console.log('ft_invite_game: ', response);
+            if (!response.checktoken) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                // setOpenTokenError(true);
+                return ;
+            }
             if (!response.success) {
                 setOpenError(true);
                 setMessage(response.faillog);

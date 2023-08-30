@@ -9,6 +9,7 @@ import PlayerReadyStatus from './PlayerReadyStatus';
 import { Box, Button } from '@mui/material';
 import { isOwnerState } from '../../api/atoms';
 import { useSetRecoilState } from 'recoil';
+import  { removeJwtCookie}  from '../../api/cookies';
 
 interface ISettingInformation {
     score: number;
@@ -22,7 +23,7 @@ const SettingRoomLayout = () => {
     const [guestOnReady, setGuestOnReady] = useState(false);
     const [onReady, setOnReady] = useState(false);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
-    const { gameSocket } = useContext(SocketContext);
+    const { gameSocket, chatSocket, pingpongSocket } = useContext(SocketContext);
     const RisOwner = useRecoilValue(isOwnerState);
 
     const [settingInformation, setSettingInformaiton] = useState<ISettingInformation>({
@@ -41,6 +42,15 @@ const SettingRoomLayout = () => {
             event.preventDefault();
 
             gameSocket.emit('ft_leave_setting_room', (response: any) => {
+                if (!response.checktoken) {
+                    pingpongSocket.disconnect();
+                    chatSocket.disconnect();
+                    gameSocket.disconnect();
+                    removeJwtCookie('jwt');
+                    localStorage.clear();
+                    // setOpenTokenError(true);
+                    return ;
+                }
                 if (!response.success) {
                     alert(`설정 방 나가기 실패 :  ${response.payload}`);
                     return;

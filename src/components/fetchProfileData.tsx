@@ -10,9 +10,9 @@ const fetchProfileData = async (userName) => {
             Authorization: `Bearer ${getJwtCookie('jwt')}`,
         },
       },
-    ).catch((res) => {
-      console.log(res);
-      return res;
+    ).catch((error) => {
+      console.error('프로필 데이터 가져오기 오류:', error);
+    throw error; // React Query에서 잡힐 수 있도록 에러를 다시 던집니다.
     })
   return res.data;
 };

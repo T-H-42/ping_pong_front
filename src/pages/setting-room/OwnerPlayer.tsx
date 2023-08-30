@@ -10,8 +10,10 @@ import { getJwtCookie } from '../../api/cookies';
 import axios from 'axios';
 import UserInfo from '../../types/UserInfo';
 import {ProfileGameHistory} from '../../components/ProfileComponents'
+import  { removeJwtCookie}  from '../../api/cookies';
+
 const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
-    const { gameSocket } = useContext(SocketContext);
+    const { gameSocket, pingpongSocket, chatSocket } = useContext(SocketContext);
     const RsettingRoomName = useRecoilValue(settingRoomNameState);
     const RisOwner = useRecoilValue(isOwnerState);
     const navigate = useNavigate();
@@ -53,6 +55,15 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
             alert('잘못된 접근입니다.');
         }
         gameSocket.emit('ft_game_play', RsettingRoomName, (response: any) => {
+            if (!response.checktoken) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                // setOpenTokenError(true);
+                return ;
+            }
             if (!response.success) {
                 alert(response.payload);
                 return;

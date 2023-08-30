@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useRecoilValue } from 'recoil';
-
+import  { removeJwtCookie}  from '../../api/cookies';
 import PingPongContainer from './PingPongContainer';
 import PaddleManager from './PaddleManager';
 import ModalContainer from '../../components/ModalContainer';
@@ -15,7 +15,7 @@ const Layout = () => {
     const RsetIsOwner = useSetRecoilState<boolean>(isOwnerState);
     const RisOwner = useRecoilValue(isOwnerState);
     const [gameResult, setGameResult] = useState(false);
-    const { gameSocket } = useContext(SocketContext);
+    const { gameSocket , pingpongSocket, chatSocket} = useContext(SocketContext);
     const navigate = useNavigate();
     useEffect(() => {
         window.history.pushState(null, '', window.location.href);
@@ -26,6 +26,15 @@ const Layout = () => {
                 RsetIsOwner(false);
             }
             gameSocket.emit('ft_leave_setting_room', (response: any) => {
+                if (!response.checktoken) {
+                    pingpongSocket.disconnect();
+                    chatSocket.disconnect();
+                    gameSocket.disconnect();
+                    removeJwtCookie('jwt');
+                    localStorage.clear();
+                    // setOpenTokenError(true);
+                    return ;
+                }
                 if (!response.success) {
                     alert(`설정 방 나가기 실패 :  ${response.payload}`);
                     return;
