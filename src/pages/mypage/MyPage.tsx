@@ -125,15 +125,12 @@ const MyPage = () => {
     }
   );
   
-  const { mutate: mutateUserName } = useMutation(fetchChangeNickName, {
+  const { mutateAsync: mutateUserName } = useMutation(fetchChangeNickName, {
     onSuccess: (res : any) => {
       setUsername(newUserInfo.nickname);
       remove();
       localStorage.setItem('username', newUserInfo.nickname);
       console.log('/user/nickname 요청 성공: ', res);
-    chatSocket.emit('ft_changenickname', (res: any) => {
-      console.log('ft_changenickname emit: ', res);
-    });
     },
     onError: (err : any) => {
       setNewUserInfo({ ...newUserInfo, nickname: userInfo.username });
@@ -152,14 +149,14 @@ const MyPage = () => {
   }
   );
 
-  const { mutate: mutateImage } = useMutation(fetchChangeImage, {
+  const { mutateAsync: mutateImage } = useMutation(fetchChangeImage, {
     onSettled: () => setNewUserInfo({ ...newUserInfo, image: '' }),
     onSuccess: () => remove(),
     onError: () => alert('이미지를 변경할 수 없습니다'),
   }
   )
 
-  const { mutate: mutateTwoFactorAuthenticationStatus } = useMutation(fetchChangeAuthentication, {
+  const { mutateAsync: mutateTwoFactorAuthenticationStatus } = useMutation(fetchChangeAuthentication, {
     onError: () => {
       setNewUserInfo({ ...newUserInfo, two_factor_authentication_status: userInfo.two_factor_authentication_status })
       alert('2차 인증을 변경할 수 없습니다');
@@ -179,18 +176,21 @@ const MyPage = () => {
     setNewUserInfo({ ...newUserInfo, image: event.target.files[0] });
   };
 
-  const handleChangeClick = () => {
+  const handleChangeClick = async () => {
     if (username !== newUserInfo.nickname)
-      mutateUserName(newUserInfo.nickname);
+      await mutateUserName(newUserInfo.nickname);
 
     if (newUserInfo.image) {
       const formData = new FormData();
       formData.append('image', newUserInfo.image);
-      mutateImage(formData);
+      await mutateImage(formData);
     }
     if (userInfo.two_factor_authentication_status !== newUserInfo.two_factor_authentication_status)
-      mutateTwoFactorAuthenticationStatus(newUserInfo.two_factor_authentication_status);
+      await mutateTwoFactorAuthenticationStatus(newUserInfo.two_factor_authentication_status);
 
+    chatSocket.emit('ft_changenickname', (res: any) => {
+        console.log('ft_changenickname emit: ', res);
+    });
     navigate('/main');
   }
 
