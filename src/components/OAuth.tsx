@@ -49,7 +49,8 @@ const OAuth = () => {
     const {data, mutate} = useMutation(fetchOauth, {
         onSuccess: (response) => {
             if (oauthSuccess(response.data, sockets) === false)
-                return navigate('/two-factor-auth', {replace: true});
+            return navigate('/two-factor-auth', {replace: true});
+            alert("첫 로그인이라면 개인정보를 업데이트 해주세요");
             return navigate('/main', {replace: true});
         }
         ,onError: (error) => {
