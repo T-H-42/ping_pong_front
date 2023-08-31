@@ -43,7 +43,7 @@ const SettingRoomLayout = () => {
         chatSocket.off('ft_trigger');
         chatSocket.off('ft_getfriendlist');
         console.log("hello2");
-
+    
         window.history.pushState(null, '', window.location.href);
         const confirmGoBack = (event: any) => {
             event.preventDefault();

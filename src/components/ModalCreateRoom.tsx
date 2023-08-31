@@ -32,7 +32,9 @@ const ModalCreateRoom: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, 
     const [errorMessage, setErrorMessage] = useState('');
 
     const handleInputRoomNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRoomName(event.target.value);
+        const input = event.target.value;
+        const sanitizedInput = input.replace(/[^\wㄱ-ㅎ가-힣]/gi, '');
+        setRoomName(sanitizedInput);
     };
 
     const handleInputPasswordChange = (event) => {
