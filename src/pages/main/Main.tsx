@@ -6,41 +6,30 @@ import ChatList from './ChatList';
 import FriendList from './FriendList';
 import LogOutButton from '../../components/LogOutButton';
 import { useRecoilValue, useRecoilState } from 'recoil';
-import { IFriendsState, usernameState, friendsState } from '../../api/atoms';
+
 import { SocketContext } from '../../api/SocketContext';
-import GameStartButton from './GameStartButton';
 import { isOwnerState, settingRoomNameState } from '../../api/atoms';
+import { removeJwtCookie } from '../../api/cookies';
+
+import ModalTokenError from '../../components/ModalTokenError';
+import GameStartButton from '../../components/GameStartButton';
 import ModalRoomInvitationReceiver from '../../components/ModalRoomInvitationReceiver';
-import  { removeJwtCookie}  from '../../api/cookies';
+
+import { Button, Box, Typography } from '@mui/material';
 
 const Main = () => {
     const RisOwner = useRecoilValue(isOwnerState);
-    
+
     const { pingpongSocket, chatSocket, gameSocket } = useContext(SocketContext);
-    // const [friends, setFriends] = useRecoilState<IFriendsState[]>(friendsState);
     const [friends, setFriends] = useState([]);
-    const [dmName, setDMName] = useState<any>();
     const [openInvitation, setOpenInvitation] = useState(false);
     const [roomName, setRoomname] = useState('');
     const [sender, setSender] = useState('');
 
+    const [openTokenError, setOpenTokenError] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
-        // axios
-        //     .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/friend/allfriend`, {
-        //         headers: {
-        //             Authorization: `Bearer ${getJwtCookie('jwt')}`,
-        //         },
-        //     })
-        //     .then((res) => {
-        //         console.log('/user/allfriend 요청 성공: ', res.data);
-        //         setFriends(res.data);
-        //     })
-        //     .catch((err) => {
-        //         console.log(`/user/allfriend 요청 실패: ${err}`);
-        //     });
-
         if (!getJwtCookie('jwt')) {
             navigate('/');
         }
@@ -53,6 +42,17 @@ const Main = () => {
 
         return (() => {
             gameSocket.emit('ft_exit_match_queue', (response: any) => {
+                if (response.checktoken === false) {
+                    console.log('ft_exit_match_queue');
+                    pingpongSocket.disconnect();
+                    chatSocket.disconnect();
+                    gameSocket.disconnect();
+                    removeJwtCookie('jwt');
+                    localStorage.clear();
+                    setOpenTokenError(true);
+                    return;
+                }
+
                 if (!response.success) {
                     alert("매치 취소에 실패하였습니다 : ");
                     return
@@ -77,7 +77,7 @@ const Main = () => {
                 removeJwtCookie('jwt');
                 localStorage.clear();
                 // setOpenTokenError(true);
-                return ;
+                return;
             }
 
             const updatedFriends: any = friends.map((friend: any) => {
@@ -110,17 +110,53 @@ const Main = () => {
         setOpenInvitation(false);
     };
 
+    const handleTokenErrorClose = () => {
+        setOpenTokenError(false);
+    };
+
+    const handleClickMyPage = () => {
+        axios.get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
+            params: {
+                username: localStorage.getItem('username'),
+            },
+            headers: {
+                Authorization: `Bearer ${getJwtCookie('jwt')}`,
+            },
+        })
+            .then(() => {
+                navigate('/mypage');
+            })
+            .catch((error) => {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                setOpenTokenError(true);
+            });
+    };
+
+
+
     return (
         <div style={{ textAlign: 'center' }}>
+            <ModalTokenError isOpen={openTokenError} onClose={handleTokenErrorClose} title={'토큰 에러'} message={"토큰이 만료되었습니다. 재로그인해주세요"} />
             <ModalRoomInvitationReceiver isOpen={openInvitation} onClose={handleClose} title={'채팅방 초대'} roomName={roomName} sender={sender} />
-            <GameStartButton />
-            <LogOutButton />
-            <h1>
-                <NavLink to="/myPage">{localStorage.getItem('username')}</NavLink>
-                의 메인 페이지</h1>
-            {chatSocket ? <ChatList /> : null}
+            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+                <GameStartButton />
+                <LogOutButton />
+            </Box>
             <div style={{ margin: '30px 0' }} />
-            <FriendList dmName={dmName} setDMName={setDMName} />
+            <Typography variant="h3" component="h3">
+                <Button onClick={handleClickMyPage}>
+                    {localStorage.getItem('username')}
+                </Button>
+                의 메인 페이지
+            </Typography>
+            <div style={{ margin: '30px 0' }} />
+            <ChatList />
+            <div style={{ margin: '30px 0' }} />
+            <FriendList />
             <div style={{ margin: '30px 0' }} />
         </div>
     );

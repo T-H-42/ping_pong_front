@@ -4,6 +4,8 @@ import { Button, Modal, Box, Typography, TextField, Switch, FormControlLabel, Al
 import { SocketContext } from '../api/SocketContext';
 
 import ModalError from './ModalError';
+import { removeJwtCookie } from '../api/cookies';
+import ModalTokenError from './ModalTokenError';
 
 interface ModalExampleProps {
     isOpen: boolean;
@@ -18,8 +20,11 @@ interface Response {
     payload: string;
 }
 
+
 const ModalRoomInvitationReceiver: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, roomName, sender }) => {
-    const { chatSocket } = useContext(SocketContext);
+    const { chatSocket,pingpongSocket,gameSocket } = useContext(SocketContext);
+    const [openTokenError, setOpenTokenError] = useState(false);
+    
     const navigate = useNavigate();
     const password = '';
 
@@ -28,6 +33,15 @@ const ModalRoomInvitationReceiver: React.FC<ModalExampleProps> = ({ isOpen, onCl
 
     const onAccept = () => {
         chatSocket.emit('join-room', { roomName, password }, (response: any) => {
+            if (response.checktoken===false) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                setOpenTokenError(true);
+                return ;
+            }
             console.log(response);
             if (response.success) {
                 localStorage.setItem('room-name', roomName);
@@ -53,6 +67,7 @@ const ModalRoomInvitationReceiver: React.FC<ModalExampleProps> = ({ isOpen, onCl
             aria-describedby="modal-description"
         >
             <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, height: 300, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+                <ModalTokenError isOpen={openTokenError} onClose={handleClose} title={'토큰 에러'} message={"토큰이 만료되었습니다. 재로그인해주세요"} />
                 <ModalError isOpen={openError} onClose={handleClose} title={'에러'} message={message} />
                 <Typography id="modal-title" variant="h6" component="h2">
                     {title}

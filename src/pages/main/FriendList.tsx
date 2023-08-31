@@ -9,27 +9,28 @@ import { Button } from '@mui/material';
 import ModalTokenError from '../../components/ModalTokenError';
 import { removeJwtCookie } from '../../api/cookies';
 
-const FriendList = ({ dmName, setDMName }) => {
-    const [openTokenError, setOpenTokenError] = useState(false);
+const FriendList = () => {
     console.log('프렌드리스트 컴포넌트');
     
     const navigate = useNavigate();
     const { pingpongSocket, chatSocket, gameSocket } = useContext(SocketContext); ///gameSocket 추가 ,nhwang
-
+    
     const [newDM, setNewDM] = useState(false);
     const [sender, setSender] = useState('');
-
+    
     // const friends = useRecoilValue<IFriendsState[]>(friendsState);
     const [friends, setFriends] = useState([]);
-
+    
     const [openError, setOpenError] = useState(false);
     const [message, setMessage] = useState('');
+    
+    const [openTokenError, setOpenTokenError] = useState(false);
 
     useEffect(() => {
         chatSocket.on('ft_trigger', (res: any) => {
             console.log('ft_trigger chatsocket on: ', res);
             chatSocket.emit('ft_getfriendlist', (res: any) => {
-                console.log('ft_getfriendlist emit: ', res);
+                console.log('ft_getfriendlist emit: 여기서', res);
                 if (res.checktoken===false) {
                     console.log('ft_getfriendlist - scope-test from triger');
                     pingpongSocket.disconnect();
@@ -65,11 +66,11 @@ const FriendList = ({ dmName, setDMName }) => {
         chatSocket.emit('ft_getfriendlist', (res: any) => {
             console.log('ft_getfriendlist emit: ', res);
             if (res.checktoken===false) {
-                console.log('ft_getfriendlist - scope-test from just emit');
+                console.log('ft_getfriendlist - scope-test from just emit 료깅?');
+                removeJwtCookie('jwt');
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
                 gameSocket.disconnect();
-                removeJwtCookie('jwt');
                 localStorage.clear();
                 setOpenTokenError(true);
                 return ;
@@ -176,7 +177,7 @@ const FriendList = ({ dmName, setDMName }) => {
     return (
         <div style={{ border: '1px solid #000', padding: '10px' }}>
             <ModalError isOpen={openError} onClose={handleClose} title={'입장 불가'} message={message} />
-            <ModalTokenError isOpen={openTokenError} onClose={handleClose} title={'토큰 에러'} message={"토큰이 만료되었습니다. 재로그인해주세요"} />
+            <ModalTokenError isOpen={openTokenError} onClose={handleReLoginClose} title={'토큰 에러'} message={"토큰이 만료되었습니다. 재로그인해주세요"} />
             <h2>친구 목록</h2>
             <ul style={{ textAlign: 'left' }}>
                 {friends ? friends.map((friend: any) => (

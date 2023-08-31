@@ -74,7 +74,7 @@ function App() {
                                     <Routes>
                                         <Route path="/" element={<Login />}></Route>
                                         <Route path="/redirect" element={<OAuth />}></Route>
-                                        <Route path="/redirect2" element={<DummyOAuth />}></Route>]
+                                        <Route path="/redirect2" element={<DummyOAuth />}></Route>
                                         <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
                                          <Route element={<PrivateRoute />}> 
                                             <Route path="/main" element={<Main />} />
@@ -82,7 +82,7 @@ function App() {
                                             <Route path="/dm/:dmName" element={<DMRoom />} />
                                             <Route path="/setting-room/:roomName" element={<SettingRoomLayout />} />
                                             <Route path="/game-room/:roomName" element={<GameRoomLayout />} />
-                                            <Route path="/myPage" element={<MyPage />} />
+                                            <Route path="/myPage" element={<MyPageWithErrorBoundary />} />
                                          </Route> 
                                         <Route path="*" element={<NotFound />} />
                                     </Routes>

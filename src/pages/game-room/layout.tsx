@@ -26,8 +26,10 @@ const Layout = () => {
                 RsetIsOwner(false);
             }
             gameSocket.emit('ft_leave_setting_room', (response: any) => {
+                console.log('ft_leave_setting_room emit!!!!!!!');
+                
                 if (response.checktoken===false) {
-                    pingpongSocket.disconnect();
+                    // pingpongSocket.disconnect();
                     chatSocket.disconnect();
                     gameSocket.disconnect();
                     removeJwtCookie('jwt');
@@ -46,16 +48,22 @@ const Layout = () => {
         window.addEventListener('popstate', confirmGoBack);
 
         return () => {
+            RsetIsOwner(false);
             window.removeEventListener('popstate', confirmGoBack);
         };
     }, []);
 
     useEffect(() => {
         const handleMyselfLeaveSettingRoom = (response: any) => {
+            console.log("내 자신이 나가는 겁니다 !");
+            
             //자신 나가는 로직
             if (!response) {
                 return alert(`${response} 에러가 발생했습니다.`);
             }
+            //FIX : 고민해야함
+            removeJwtCookie('jwt');
+
             // if(RisOwner)
             // {
             //     RsetIsOwner(false)
@@ -63,7 +71,6 @@ const Layout = () => {
             navigate('/main');
         };
         const handleEnemyLeaveGameRoom = (response) => {
-            console.log("호로로롤!!!!@#!@#!@#!@#!#!@#!@");
             
             if (!response) {
                 return alert(`${response} 에러가 발생했습니다.`);

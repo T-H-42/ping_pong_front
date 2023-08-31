@@ -1,15 +1,16 @@
-import ModalContainer from '../../components/ModalContainer';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import GameSettingContainer from './GameSettingContainer';
 import { SocketContext } from '../../api/SocketContext';
 import { useRecoilValue } from 'recoil';
 import { settingRoomNameState } from '../../api/atoms';
 import { Navigate, useNavigate } from 'react-router-dom';
-import PlayerReadyStatus from './PlayerReadyStatus';
 import { Box, Button } from '@mui/material';
 import { isOwnerState } from '../../api/atoms';
 import { useSetRecoilState } from 'recoil';
 import  { removeJwtCookie}  from '../../api/cookies';
+
+import ModalContainer from '../../components/ModalContainer';
+import GameSettingContainer from './GameSettingContainer';
+import PlayerReadyStatus from './PlayerReadyStatus';
 
 interface ISettingInformation {
     score: number;
@@ -37,6 +38,12 @@ const SettingRoomLayout = () => {
     // 새로고침 이벤트는  beforeunload, popstate는 새로 고침
 
     useEffect(() => {
+        console.log("hello1");
+        gameSocket.off('ft_trigger');
+        chatSocket.off('ft_trigger');
+        chatSocket.off('ft_getfriendlist');
+        console.log("hello2");
+
         window.history.pushState(null, '', window.location.href);
         const confirmGoBack = (event: any) => {
             event.preventDefault();

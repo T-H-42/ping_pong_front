@@ -10,6 +10,7 @@ import { SocketContext } from '../../api/SocketContext';
 import ModalCreateRoom from '../../components/ModalCreateRoom';
 import ModalError from '../../components/ModalError';
 import { Button } from '@mui/material';
+import ModalTokenError from '../../components/ModalTokenError';
 
 
 interface Response {
@@ -27,6 +28,7 @@ const ChatList = () => {
     const [rooms, setRooms] = useState<Response[]>([]);
     const { chatSocket, gameSocket, pingpongSocket} = useContext(SocketContext);
     const roomName = localStorage.getItem('room-name');
+    const [openTokenError, setOpenTokenError] = useState(false);
 
     const [openError, setOpenError] = useState(false);
     const [message, setMessage] = useState('');
@@ -53,6 +55,15 @@ const ChatList = () => {
     const onJoinRoom = useCallback((roomName: string) => () => {
         chatSocket.emit('join-room', { roomName, password }, (response: any) => {
             console.log(response);
+            if (response.checktoken===false) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                setOpenTokenError(true);
+                return ;
+            }
             if (response.success) {
                 localStorage.setItem('room-name', roomName);
                 handleExit();
@@ -96,6 +107,15 @@ const ChatList = () => {
         console.log(roomName, password);
         chatSocket.emit('join-room', { roomName, password }, (response: any) => {
             console.log(response);
+            if (response.checktoken===false) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                setOpenTokenError(true);
+                return ;
+            }
             if (response.success) {
                 localStorage.setItem('room-name', roomName);
                 navigate(`/room/${roomName}`);
@@ -116,6 +136,8 @@ const ChatList = () => {
                 }}
             >
                 <ModalError isOpen={openError} onClose={handleClose} title={'채팅방 입장 에러'} message={message} />
+                <ModalTokenError isOpen={openTokenError} onClose={handleClose} title={'토큰 에러'} message={"토큰이 만료되었습니다. 재로그인해주세요"} />
+                <div style={{ margin: '30px 0' }} />
                 <h2>채팅방 목록</h2>
                 <Button variant='outlined' onClick={handleOpen}>채팅방 생성</Button>
                 <ModalCreateRoom isOpen={open} onClose={handleClose} title={'채팅방 생성'} message={''} />

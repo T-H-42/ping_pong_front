@@ -1,11 +1,14 @@
 import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Stack, Modal } from '@mui/material';
 import { useQuery } from 'react-query';
 import { SocketContext } from '../api/SocketContext';
 import  { removeJwtCookie}  from '../api/cookies';
-import ModalError from './ModalError';
 import {ProfileHeader, ProfileGameHistory, ProfileAchievements} from "./ProfileComponents";
 import fetchProfileData from "./fetchProfileData"
+
+import ModalError from './ModalError';
+import ModalTokenError from './ModalTokenError';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -31,6 +34,8 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
 
     const [openError, setOpenError] = useState(false);
     const [message, setMessage] = useState('');
+    const [openTokenError, setOpenTokenError] = useState(false);
+    const navigate = useNavigate();
 
     const handleMuteClick = (e) => {
         chatSocket.emit('ft_mute', { roomName, targetUser: e }, (response: any) => {
@@ -58,6 +63,15 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
     const handleAddFriendClick = (e) => {
         chatSocket.emit('ft_addfriend', { receiver: e, roomName: roomName }, (response: any) => { //nhwang roomName추가하였슴다
             console.log('ft_addfriend emit: ', response);
+            if (response.checktoken===false) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                setOpenTokenError(true);
+                return ;
+            }
             if (!response.success) {
                 setOpenError(true);
                 setMessage(response.faillog);
@@ -68,14 +82,14 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
 
     const handleInviteGameClick = (e) => {
         gameSocket.emit('ft_invite_game', { guestName: e, roomName: roomName }, (response: any) => {
-            console.log('ft_invite_game: ', response);
+            console.log('ft_invite_game emit: ', response);
             if (response.checktoken===false) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
                 gameSocket.disconnect();
                 removeJwtCookie('jwt');
                 localStorage.clear();
-                // setOpenTokenError(true);
+                setOpenTokenError(true);
                 return ;
             }
             if (!response.success) {
@@ -88,7 +102,16 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
 
     const handleKickClick = (e) => {
         chatSocket.emit('ft_kick', { roomName, targetUser: e }, (response: any) => {
-            console.log('ft_kick: ', response);
+            console.log('ft_kick emit: ', response);
+            if (response.checktoken===false) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                setOpenTokenError(true);
+                return ;
+            }
             if (!response.success) {
                 setOpenError(true);
                 setMessage(response.faillog);
@@ -99,7 +122,16 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
 
     const handleBanClick = (e) => {
         chatSocket.emit('ft_ban', { roomName, targetUser: e }, (response: any) => {
-            console.log('ft_ban: ', response);
+            console.log('ft_ban emit: ', response);
+            if (response.checktoken===false) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                setOpenTokenError(true);
+                return ;
+            }
             if (!response.success) {
                 setOpenError(true);
                 setMessage(response.faillog);
@@ -110,7 +142,16 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
 
     const handleBlockClick = (e) => {
         chatSocket.emit('ft_block', { roomName, targetUser: e }, (response: any) => {
-            console.log('ft_block: ', response);
+            console.log('ft_block emit: ', response);
+            if (response.checktoken===false) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                setOpenTokenError(true);
+                return ;
+            }
             if (!response.success) {
                 setOpenError(true);
                 setMessage(response.faillog);
@@ -121,7 +162,16 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
 
     const handleHostClick = (e) => {
         chatSocket.emit('ft_addAdmin', { roomName, targetUser: e }, (response: any) => {
-            console.log('ft_addAdmin: ', response);
+            console.log('ft_addAdmin emit: ', response);
+            if (response.checktoken===false) {
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                removeJwtCookie('jwt');
+                localStorage.clear();
+                setOpenTokenError(true);
+                return ;
+            }
             if (!response.success) {
                 setOpenError(true);
                 setMessage(response.faillog);
@@ -135,9 +185,14 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
         setOpenError(false);
     };
 
+    const handleTokenErrorClose = () => {
+        setOpenTokenError(false);
+    };
+
     return (
         <Modal open={isOpen} onClose={onClose} sx={{ overflow: 'auto' }}>
             <Stack spacing={5} direction="column" alignItems="center" sx={{ ...style, overflow: 'auto' }}>
+            <ModalTokenError isOpen={openTokenError} onClose={handleTokenErrorClose} title={'토큰 에러'} message={"토큰이 만료되었습니다. 재로그인해주세요"} />
                 <ModalError isOpen={openError} onClose={handleClose} title={'에러'} message={message} />
 				<ProfileHeader imageUrl={ userInfo.image_url} userName={ username } ladderLv={userInfo.ladder_lv }></ProfileHeader>
                 <Stack direction="column" spacing={6}>

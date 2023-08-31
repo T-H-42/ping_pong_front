@@ -1,10 +1,11 @@
-import { SocketContext } from '../../api/SocketContext';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
-import { settingRoomNameState, isOwnerState, settingState } from '../../api/atoms';
 import { Button } from '@mui/material';
-import  { removeJwtCookie}  from '../../api/cookies';
+
+import { settingRoomNameState, isOwnerState, settingState } from '../api/atoms';
+import { SocketContext } from '../api/SocketContext';
+import { removeJwtCookie } from '../api/cookies';
 
 const GameStartButton = () => {
     const [initialGameState, setInitGameState] = useState(false);
@@ -20,15 +21,15 @@ const GameStartButton = () => {
 
             setInitGameState((prev) => !prev);
             gameSocket.emit('ft_exit_match_queue', (response: any) => {
-                if (response.checktoken===false) {
-                     console.log('ft_exit_match_queue');
-                pingpongSocket.disconnect();
-                chatSocket.disconnect();
-                gameSocket.disconnect();
-                removeJwtCookie('jwt');
-                localStorage.clear();
-                navigate('/');
-                return ;
+                if (response.checktoken === false) {
+                    console.log('ft_exit_match_queue');
+                    pingpongSocket.disconnect();
+                    chatSocket.disconnect();
+                    gameSocket.disconnect();
+                    removeJwtCookie('jwt');
+                    localStorage.clear();
+                    navigate('/');
+                    return;
                 }
                 if (!response.success) {
                     alert('매치 취소에 실패하였습니다 : ');
@@ -39,15 +40,15 @@ const GameStartButton = () => {
             console.log('매치 잡기');
             setInitGameState((prev) => !prev);
             gameSocket.emit('ft_enter_match_queue', (response: any) => {
-                if (response.checktoken===false) {
-                        console.log('ft_enter_match_queue');
-                pingpongSocket.disconnect();
-                chatSocket.disconnect();
-                gameSocket.disconnect();
-                removeJwtCookie('jwt');
-                localStorage.clear();
-                navigate('/');
-                return ;
+                if (response.checktoken === false) {
+                    console.log('ft_enter_match_queue');
+                    pingpongSocket.disconnect();
+                    chatSocket.disconnect();
+                    gameSocket.disconnect();
+                    removeJwtCookie('jwt');
+                    localStorage.clear();
+                    navigate('/');
+                    return;
                 }
                 if (!response.success) {
                     alert(`매칭에 실패하였습니다. ${response}`);
@@ -70,6 +71,7 @@ const GameStartButton = () => {
             if (response.isOwner) {
                 RsetIsOwner(true);
             }
+            console.log("내가 받은 방번호다!!!", response.roomName)
             navigate(`/setting-room/${response.roomName}`);
         };
 

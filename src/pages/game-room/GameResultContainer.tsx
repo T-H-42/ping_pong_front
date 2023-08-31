@@ -9,7 +9,7 @@ const GameResultContainer = ({ open, setOpen, gameResult }, modalRef) => {
     const RsetIsOwner = useSetRecoilState<boolean>(isOwnerState);
 
     const goBackMain = () => {
-        navigate('/');
+        navigate('/main');
     };
     return (
         <Box sx={{   
