@@ -1,23 +1,22 @@
 import React, { useEffect, useContext } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 import { getJwtCookie } from '../api/cookies';
 import { SocketContext } from '../api/SocketContext';
 import { useMutation } from 'react-query';
 import { Socket } from 'socket.io-client';
 
+interface ErrorData {
+    message: string,
+    // error: string,
+    // status: number,
+}
+
 const fetchOauth = async ({ code }) => {
     const response = await axios.post(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/signin`,
         { code },
-        {
-            // headers: { 'Content-Type': 'application/json' },
-            withCredentials: true,
-            timeout : 5000,
-            // headers: {
-            //             Authorization: `Bearer ${getJwtCookie('jwt')}`,
-            //     },
-        },
+        { withCredentials: true },
     );
     return (response);
 }
@@ -46,14 +45,22 @@ const OAuth = () => {
     const sockets = useContext(SocketContext);
     
     const navigate = useNavigate();
-    const {data, mutate} = useMutation(fetchOauth, {
+    const {mutate} = useMutation(fetchOauth, {
         onSuccess: (response) => {
             if (oauthSuccess(response.data, sockets) === false)
-            return navigate('/two-factor-auth', {replace: true});
-            alert("첫 로그인이라면 개인정보를 업데이트 해주세요");
-            return navigate('/main', {replace: true});
+                navigate('/two-factor-auth', {replace: true});
+            
+            if (response.data.isFirstLogin === true)
+            {
+                alert('첫 로그인입니다. 마이페이지로 이동합니다.');
+                navigate('/mypage', {replace: true});
+            }
+            else
+                navigate('/main', {replace: true});
         }
-        ,onError: (error) => {
+        ,onError: (error: AxiosError<ErrorData>) => {
+            alert(error.response.data.message);
+            // console.log(error.response.data.message);
             navigate('/', {replace: true});
         }
 });

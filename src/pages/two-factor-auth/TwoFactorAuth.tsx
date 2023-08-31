@@ -6,6 +6,7 @@ import { SocketContext } from '../../api/SocketContext';
 import ModalError from '../../components/ModalError';
 
 const TwoFactorAuth = () => {
+    console.log('TwoFactorAuth 컴포넌트');
     const navigate = useNavigate();
     const [openError, setOpenError] = useState(false);
     const [info, setInfo] = useState({

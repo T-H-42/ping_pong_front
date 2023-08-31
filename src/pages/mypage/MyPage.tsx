@@ -7,7 +7,6 @@ import fetchProfileData from '../../components/fetchProfileData'
 import { ProfileHeader, ProfileGameHistory, ProfileAchievements } from '../../components/ProfileComponents'
 import { Button, Stack, Box, Typography, Switch, TextField } from '@mui/material';
 import { SocketContext } from '../../api/SocketContext';
-import { ErrorBoundary } from 'react-error-boundary';
 
 // const fetchChangeNickName = (nickname) =>
 //   axios.post(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/nickname`,
@@ -103,8 +102,7 @@ const MyPage = () => {
   const { data: userInfo, remove } = useQuery(
     ['userInfo', username],
     () => fetchProfileData(username),
-
-    { suspense: true, useErrorBoundary: true, 
+    { suspense: true,
       onError: (err : any) => {
       // 에러가 발생한 경우에 대한 처리
       if (err?.response?.status === 401) {
@@ -125,15 +123,12 @@ const MyPage = () => {
     }
   );
   
-  const { mutate: mutateUserName } = useMutation(fetchChangeNickName, {
+  const { mutateAsync: mutateUserName } = useMutation(fetchChangeNickName, {
     onSuccess: (res : any) => {
       setUsername(newUserInfo.nickname);
       remove();
       localStorage.setItem('username', newUserInfo.nickname);
       console.log('/user/nickname 요청 성공: ', res);
-    chatSocket.emit('ft_changenickname', (res: any) => {
-      console.log('ft_changenickname emit: ', res);
-    });
     },
     onError: (err : any) => {
       setNewUserInfo({ ...newUserInfo, nickname: userInfo.username });
@@ -152,14 +147,14 @@ const MyPage = () => {
   }
   );
 
-  const { mutate: mutateImage } = useMutation(fetchChangeImage, {
+  const { mutateAsync: mutateImage } = useMutation(fetchChangeImage, {
     onSettled: () => setNewUserInfo({ ...newUserInfo, image: '' }),
     onSuccess: () => remove(),
     onError: () => alert('이미지를 변경할 수 없습니다'),
   }
   )
 
-  const { mutate: mutateTwoFactorAuthenticationStatus } = useMutation(fetchChangeAuthentication, {
+  const { mutateAsync: mutateTwoFactorAuthenticationStatus } = useMutation(fetchChangeAuthentication, {
     onError: () => {
       setNewUserInfo({ ...newUserInfo, two_factor_authentication_status: userInfo.two_factor_authentication_status })
       alert('2차 인증을 변경할 수 없습니다');
@@ -179,18 +174,22 @@ const MyPage = () => {
     setNewUserInfo({ ...newUserInfo, image: event.target.files[0] });
   };
 
-  const handleChangeClick = () => {
+  const handleChangeClick = async () => {
     if (username !== newUserInfo.nickname)
-      mutateUserName(newUserInfo.nickname);
+      await mutateUserName(newUserInfo.nickname);
 
     if (newUserInfo.image) {
       const formData = new FormData();
       formData.append('image', newUserInfo.image);
-      mutateImage(formData);
+      await mutateImage(formData);
     }
     if (userInfo.two_factor_authentication_status !== newUserInfo.two_factor_authentication_status)
-      mutateTwoFactorAuthenticationStatus(newUserInfo.two_factor_authentication_status);
-
+      await mutateTwoFactorAuthenticationStatus(newUserInfo.two_factor_authentication_status);
+      
+    chatSocket.emit('ft_changenickname', (res: any) => {
+      console.log('ft_changenickname emit: ', res);
+    });
+    alert('변경되었습니다');
     navigate('/main');
   }
 
@@ -247,16 +246,4 @@ const MyPage = () => {
 
 
 
-
-// 예시 에러 바운더리
-
-
-const MyPageWithErrorBoundary = () => {
-  return (
-    <ErrorBoundary fallback={<div>MyPage 컴포넌트에서 오류 발생</div>}>
-      <MyPage />
-    </ErrorBoundary>
-  );
-};
-
-export {MyPageWithErrorBoundary, MyPage} ;
+export default MyPage;
