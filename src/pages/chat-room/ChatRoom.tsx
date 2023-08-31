@@ -24,12 +24,16 @@ import {
     AppBar,
     Stack,
 } from '@mui/material';
-import { removeJwtCookie } from '../../api/cookies';
+import { getJwtCookie, removeJwtCookie } from '../../api/cookies';
 import ModalTokenError from '../../components/ModalTokenError';
+
+import { Cookies } from 'react-cookie';
+
+const Cookie = new Cookies();
 
 const ChatRoom: React.FC = () => {
     console.log('챗룸 컴포넌트');
-    const { chatSocket, gameSocket,pingpongSocket } = useContext(SocketContext);
+    const { chatSocket, gameSocket, pingpongSocket } = useContext(SocketContext);
     const [openRoomInfo, setOpenRoomInfo] = useState(false);
     const [openRoomInvitation, setOpenRoomInvitation] = useState(false);
     const [chats, setChats] = useState([]);
@@ -54,12 +58,35 @@ const ChatRoom: React.FC = () => {
     const [openError, setOpenError] = useState(false);
 
     useEffect(() => {
+        // chatSocket.emit('ft_getfriendlist', (res: any) => {
+        //     if (res.checktoken === false) {
+        //         console.log('ft_getfriendlist emit fuck: ', res);
+        //         setOpenTokenError(true);
+        //         return;
+        //     }
+        // });
         chatSocket.on('ft_tomain', (res: any) => {
             console.log('ft_tomain on: ', res);
+            if (res.checktoken===false) {
+                console.log('fuck');
+                removeJwtCookie('jwt');
+                pingpongSocket.disconnect();
+                chatSocket.disconnect();
+                gameSocket.disconnect();
+                localStorage.clear();
+                setOpenTokenError(true);
+                // navigate('/');
+                return ;
+            }
             if (res.success) {
+                console.log('you');
                 navigate('/main');
             }
         });
+
+        console.log("hey stop");
+
+
         const data = {
             roomName,
         };
@@ -218,15 +245,15 @@ const ChatRoom: React.FC = () => {
 
     const handleOpenInvitation = () => {
         chatSocket.emit('ft_getfriendlist', (res: any) => {
-            if (res.checktoken===false) {
-                console.log('ft_getfriendlist - scope-test from just emit');
+            if (res.checktoken === false) {
+                console.log('ft_getfriendlist - scope-test from just emit 여깃?');
+                removeJwtCookie('jwt');
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
                 gameSocket.disconnect();
-                removeJwtCookie('jwt');
                 localStorage.clear();
                 setOpenTokenError(true);
-                return ;
+                return;
             }
             console.log('ft_getfriendlist emit: ', res);
             setFriends(res);
@@ -255,7 +282,7 @@ const ChatRoom: React.FC = () => {
     };
 
     const handleClose = () => {
-        setOpenError(false);
+        setOpenTokenError(false);
     };
 
     return (

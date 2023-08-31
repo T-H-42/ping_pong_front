@@ -1,11 +1,11 @@
 import React, { useState, useContext, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getJwtCookie } from '../../api/cookies';
 import { useMutation, useQuery } from 'react-query';
 import fetchProfileData from '../../components/fetchProfileData'
 import { ProfileHeader, ProfileGameHistory, ProfileAchievements } from '../../components/ProfileComponents'
 import { Button, Stack, Box, Typography, Switch, TextField } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import { SocketContext } from '../../api/SocketContext';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -65,8 +65,10 @@ const fetchChangeImage = (formData) =>
 const MyPage = () => {
   const navigate = useNavigate();
   const { pingpongSocket, chatSocket, gameSocket } = useContext(SocketContext);
-  
 
+  useEffect(()=>{
+    chatSocket.off('ft_getfriendlist');
+  })
 
   const fetchChangeNickName = (nickname) =>
   axios.post(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/nickname`,
@@ -178,7 +180,6 @@ const MyPage = () => {
   };
 
   const handleChangeClick = () => {
-    console.log(newUserInfo);
     if (username !== newUserInfo.nickname)
       mutateUserName(newUserInfo.nickname);
 
@@ -189,9 +190,11 @@ const MyPage = () => {
     }
     if (userInfo.two_factor_authentication_status !== newUserInfo.two_factor_authentication_status)
       mutateTwoFactorAuthenticationStatus(newUserInfo.two_factor_authentication_status);
+
+    navigate('/main');
   }
 
-  const hadleCancelClick = () => {
+  const handleCancelClick = () => {
     pingpongSocket.disconnect();
     chatSocket.disconnect();
     gameSocket.disconnect();
@@ -237,7 +240,7 @@ const MyPage = () => {
       </Box>
 
       <Button variant='contained' onClick={handleChangeClick}>변경</Button>
-      <Button variant='contained' onClick={hadleCancelClick}>닫기</Button>
+      <Button variant='contained' onClick={handleCancelClick}>닫기</Button>
     </>
   )
 }

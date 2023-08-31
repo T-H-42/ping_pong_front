@@ -74,7 +74,7 @@ function App() {
                                     <Routes>
                                         <Route path="/" element={<Login />}></Route>
                                         <Route path="/redirect" element={<OAuth />}></Route>
-                                        <Route path="/redirect2" element={<DummyOAuth />}></Route>]
+                                        <Route path="/redirect2" element={<DummyOAuth />}></Route>
                                         <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
                                          <Route element={<PrivateRoute />}> 
                                             <Route path="/main" element={<Main />} />

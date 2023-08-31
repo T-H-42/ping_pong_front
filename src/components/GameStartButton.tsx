@@ -71,6 +71,7 @@ const GameStartButton = () => {
             if (response.isOwner) {
                 RsetIsOwner(true);
             }
+            console.log("내가 받은 방번호다!!!", response.roomName)
             navigate(`/setting-room/${response.roomName}`);
         };
 

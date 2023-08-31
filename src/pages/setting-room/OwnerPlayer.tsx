@@ -37,6 +37,10 @@ const OwnerPlayer = ({ onReady, guestReady, onReadyToggle }) => {
                     setUserInformation(response.data);
                 })
                 .catch((err) => {
+                    if(err?.response?.status === 401)
+                    {
+                        navigate('/');
+                    }
                     console.log(`방장 정보를 불러오는데 실패하였습니다. : ${err}`);
                 });
         }

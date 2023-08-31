@@ -35,6 +35,10 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                 setGuestInformation(response.data);
             })
             .catch((err) => {
+                if(err?.response?.status === 401)
+                {
+                    navigate('/');
+                }
                 alert(`게스트 정보를 불러오는데 실패하였습니다. : ${err}`);
             });
     }
