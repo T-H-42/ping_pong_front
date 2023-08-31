@@ -185,6 +185,7 @@ const MyPage = () => {
     }
     if (userInfo.two_factor_authentication_status !== newUserInfo.two_factor_authentication_status)
       await mutateTwoFactorAuthenticationStatus(newUserInfo.two_factor_authentication_status);
+
       
     chatSocket.emit('ft_changenickname', (res: any) => {
       console.log('ft_changenickname emit: ', res);
