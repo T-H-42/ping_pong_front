@@ -82,7 +82,7 @@ function App() {
                                             <Route path="/dm/:dmName" element={<DMRoom />} />
                                             <Route path="/setting-room/:roomName" element={<SettingRoomLayout />} />
                                             <Route path="/game-room/:roomName" element={<GameRoomLayout />} />
-                                            <Route path="/myPage" element={<MyPage />} />
+                                            <Route path="/myPage" element={<MyPageWithErrorBoundary />} />
                                          </Route> 
                                         <Route path="*" element={<NotFound />} />
                                     </Routes>

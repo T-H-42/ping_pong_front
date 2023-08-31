@@ -9,21 +9,22 @@ import { Button } from '@mui/material';
 import ModalTokenError from '../../components/ModalTokenError';
 import { removeJwtCookie } from '../../api/cookies';
 
-const FriendList = ({ dmName, setDMName }) => {
-    const [openTokenError, setOpenTokenError] = useState(false);
+const FriendList = () => {
     console.log('프렌드리스트 컴포넌트');
     
     const navigate = useNavigate();
     const { pingpongSocket, chatSocket, gameSocket } = useContext(SocketContext); ///gameSocket 추가 ,nhwang
-
+    
     const [newDM, setNewDM] = useState(false);
     const [sender, setSender] = useState('');
-
+    
     // const friends = useRecoilValue<IFriendsState[]>(friendsState);
     const [friends, setFriends] = useState([]);
-
+    
     const [openError, setOpenError] = useState(false);
     const [message, setMessage] = useState('');
+    
+    const [openTokenError, setOpenTokenError] = useState(false);
 
     useEffect(() => {
         chatSocket.on('ft_trigger', (res: any) => {

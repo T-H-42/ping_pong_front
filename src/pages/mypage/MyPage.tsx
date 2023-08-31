@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import axios from 'axios';
 import { getJwtCookie } from '../../api/cookies';
 import { useMutation, useQuery } from 'react-query';
@@ -65,6 +65,8 @@ const fetchChangeImage = (formData) =>
 const MyPage = () => {
   const navigate = useNavigate();
   const { pingpongSocket, chatSocket, gameSocket } = useContext(SocketContext);
+  
+
 
   const fetchChangeNickName = (nickname) =>
   axios.post(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/nickname`,
@@ -99,8 +101,20 @@ const MyPage = () => {
   const { data: userInfo, remove } = useQuery(
     ['userInfo', username],
     () => fetchProfileData(username),
-    { suspense: true, useErrorBoundary: true, },
+
+    { suspense: true, useErrorBoundary: true, 
+      onError: (err : any) => {
+      // 에러가 발생한 경우에 대한 처리
+      if (err?.response?.status === 401) {
+        // 인증 오류(401)인 경우 리다이렉션을 수행합니다.
+        navigate('/login');
+      } else {
+        // 기타 다른 예외적인 상황에 대한 처리
+        console.error('프로필 데이터 가져오기 오류:', err);
+        // 추가적인 에러 핸들링 로직을 구현합니다.
+      }},}
   );
+  
   const [newUserInfo, setNewUserInfo] = useState(
     {
       nickname: userInfo?.username,
@@ -108,7 +122,7 @@ const MyPage = () => {
       image: ""
     }
   );
-
+  
   const { mutate: mutateUserName } = useMutation(fetchChangeNickName, {
     onSuccess: (res : any) => {
       setUsername(newUserInfo.nickname);
