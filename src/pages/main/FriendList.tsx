@@ -203,7 +203,7 @@ const FriendList = () => {
                                 }}
                             ></button>{' '}
 
-                            {friend.image_url &&
+                            {
                                 (<img src={friend.image_url ? `http://${process.env.REACT_APP_IP_ADDRESS}:4000/${friend.image_url}` : '/images/profile.jpg'} alt={`${friend.username}'s profile`}
                                     style={{ width: '30px', height: '30px', borderRadius: '50%' }} />
                                 )
