@@ -68,10 +68,13 @@ const GameStartButton = () => {
 
             RsetSettingRoomName(response.roomName);
             RsettingName(response.usernames);
-            if (response.isOwner) {
+            if (response.isOwner === true) {
+                console.log("나는 오너다 !");
+                
                 RsetIsOwner(true);
             }
-            console.log("내가 받은 방번호다!!!", response.roomName)
+
+            console.log("내가 받은 방번호다!@@@@!!", response.roomName)
             navigate(`/setting-room/${response.roomName}`);
         };
 

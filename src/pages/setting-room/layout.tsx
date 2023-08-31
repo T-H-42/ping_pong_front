@@ -71,6 +71,7 @@ const SettingRoomLayout = () => {
 
         return () => {
             window.removeEventListener('popstate', confirmGoBack);
+            RsetIsOwner(false);
         };
     }, []);
 

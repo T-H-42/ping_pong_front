@@ -58,34 +58,12 @@ const ChatRoom: React.FC = () => {
     const [openError, setOpenError] = useState(false);
 
     useEffect(() => {
-        // chatSocket.emit('ft_getfriendlist', (res: any) => {
-        //     if (res.checktoken === false) {
-        //         console.log('ft_getfriendlist emit fuck: ', res);
-        //         setOpenTokenError(true);
-        //         return;
-        //     }
-        // });
         chatSocket.on('ft_tomain', (res: any) => {
             console.log('ft_tomain on: ', res);
-            if (res.checktoken===false) {
-                console.log('fuck');
-                removeJwtCookie('jwt');
-                pingpongSocket.disconnect();
-                chatSocket.disconnect();
-                gameSocket.disconnect();
-                localStorage.clear();
-                setOpenTokenError(true);
-                // navigate('/');
-                return ;
-            }
             if (res.success) {
-                console.log('you');
                 navigate('/main');
             }
         });
-
-        console.log("hey stop");
-
 
         const data = {
             roomName,
