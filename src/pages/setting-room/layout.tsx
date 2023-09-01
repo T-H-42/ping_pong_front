@@ -71,7 +71,7 @@ const SettingRoomLayout = () => {
 
         return () => {
             window.removeEventListener('popstate', confirmGoBack);
-            RsetIsOwner(false);
+            // RsetIsOwner(false); // 세팅룸 나간 이후에 상태를 지우는 건 사이드 이펙트 발생 가능성
         };
     }, []);
 

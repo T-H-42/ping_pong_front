@@ -53,7 +53,6 @@ function App() {
         console.log('핑퐁 소켓 감지기', pingpongSocket);
     }, [gameSocket, pingpongSocket, chatSocket]);
 
-    
     return (
         <RecoilRoot>
             <ThemeProvider theme={theme}>

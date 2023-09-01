@@ -59,7 +59,7 @@ const ModalRoomInvitation: React.FC<ModalExampleProps> = ({ isOpen, onClose, tit
                 <ul style={{ listStyle: 'none' }}>
                     {friends.map((element, index) => (
                         <li key={index} style={{ marginBottom: '10px' }}>
-                            <Button variant="contained" onClick={() => handleFriendClick(element.username)}>
+                            <Button variant="contained" onClick={() => handleFriendClick(element.intra_id)}>
                                 {element.username}
                             </Button>
                         </li>

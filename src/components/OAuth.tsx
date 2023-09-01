@@ -47,9 +47,11 @@ const OAuth = () => {
     const navigate = useNavigate();
     const {mutate} = useMutation(fetchOauth, {
         onSuccess: (response) => {
-            if (oauthSuccess(response.data, sockets) === false)
-                navigate('/two-factor-auth', {replace: true});
-            
+            if (oauthSuccess(response.data, sockets) === false) {
+                setTimeout(() => {
+                    navigate('/two-factor-auth');
+                  });
+            }
             if (response.data.isFirstLogin === true)
             {
                 alert('첫 로그인입니다. 마이페이지로 이동합니다.');

@@ -131,14 +131,17 @@ const MyPage = () => {
       console.log('/user/nickname 요청 성공: ', res);
     },
     onError: (err : any) => {
+      console.log('???? ', err);
+
       setNewUserInfo({ ...newUserInfo, nickname: userInfo.username });
-      if(err?.response?.status === 400){
+      if(err?.response?.data?.statusCode === 400){
         alert(err.response.data.message);
-      }else if(err?.response?.status === 500){
+        // navigate('/')
+      }else if(err?.response?.data?.statusCode === 500){
         alert("잘못된 접근입니다.")
         navigate('/')
       }
-      else if(err?.response?.status === 401)
+      else if(err?.response?.data?.statusCode === 401)
       {
         navigate('/')
       }
@@ -163,7 +166,9 @@ const MyPage = () => {
   )
 
   const handleInputNameChange = (event) => {
-    setNewUserInfo({ ...newUserInfo, nickname: event.target.value });
+    const input = event.target.value;
+    const sanitizedInput = input.replace(/[^\w\s]/gi, '');
+    setNewUserInfo({ ...newUserInfo, nickname: sanitizedInput });
   };
 
   const handleTwoFactorAuthenticationStatusChange = (event) => {
@@ -176,15 +181,15 @@ const MyPage = () => {
 
   const handleChangeClick = async () => {
     if (username !== newUserInfo.nickname)
-      await mutateUserName(newUserInfo.nickname);
+      await mutateUserName(newUserInfo.nickname).catch((err) => console.log(err));
 
     if (newUserInfo.image) {
       const formData = new FormData();
       formData.append('image', newUserInfo.image);
-      await mutateImage(formData);
+      await mutateImage(formData).catch((err) => console.log(err));;
     }
     if (userInfo.two_factor_authentication_status !== newUserInfo.two_factor_authentication_status)
-      await mutateTwoFactorAuthenticationStatus(newUserInfo.two_factor_authentication_status);
+      await mutateTwoFactorAuthenticationStatus(newUserInfo.two_factor_authentication_status).catch((err) => console.log(err));;
 
       
     chatSocket.emit('ft_changenickname', (res: any) => {
