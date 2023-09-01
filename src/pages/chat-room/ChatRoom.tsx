@@ -57,6 +57,8 @@ const ChatRoom: React.FC = () => {
     const [openGameInvitation, setOpenGameInvitation] = useState(false);
     const [openError, setOpenError] = useState(false);
 
+    const [intraId, setIntraId] = useState('');
+
     useEffect(() => {
         chatSocket.on('ft_tomain', (res: any) => {
             console.log('ft_tomain on: ', res);
@@ -203,6 +205,10 @@ const ChatRoom: React.FC = () => {
                 if (user.username === localStorage.getItem('username')) {
                     console.log('ft_getUserListInRoom on: ', res);
                     setRight(user.right);
+                    setIntraId(user.intra_id);
+
+                    console.log("내가 받아온 인트라 리스트",res);
+                    
                 }
             });
         });
@@ -282,6 +288,7 @@ const ChatRoom: React.FC = () => {
                 right={right}
                 chats={chats}
                 setChats={setChats}
+                intraId={intraId}
             />
             <ModalRoomInvitation
                 isOpen={openRoomInvitation}

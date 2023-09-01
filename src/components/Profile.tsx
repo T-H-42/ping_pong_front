@@ -25,7 +25,7 @@ const style = {
     width: '60vw',
 };
 
-const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }) => {
+const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats , intra_id}) => {
     const { chatSocket, gameSocket, pingpongSocket } = useContext(SocketContext);
     const { data: userInfo } = useQuery(['userInfo', username], () => fetchProfileData(username), {
         suspense: true,
@@ -82,6 +82,7 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
 
     const handleInviteGameClick = (e) => {
         gameSocket.emit('ft_invite_game', { guestName: e, roomName: roomName }, (response: any) => {
+            console.log('ft_invite_game intra???',e);
             console.log('ft_invite_game emit: ', response);
             if (response.checktoken===false) {
                 pingpongSocket.disconnect();
@@ -200,7 +201,7 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats }
                         <Button variant="contained" onClick={() => handleAddFriendClick(username)}>
                             친구 추가
                         </Button>
-                        <Button variant="contained" onClick={() => handleInviteGameClick(username)}>
+                        <Button variant="contained" onClick={() => handleInviteGameClick(userInfo.intra_id)}>
                             게임 초대
                         </Button>
                     </Stack>

@@ -18,6 +18,7 @@ interface ModalExampleProps {
     right: number;
     chats: any[];
     setChats: (data: any[]) => void;
+    intraId: string;
 }
 
 interface Response {
@@ -25,7 +26,7 @@ interface Response {
     faillog: string;
 }
 
-const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, chatUsers: friends, right, chats, setChats }) => {
+const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, chatUsers: friends, right, chats, setChats, intraId }) => {
     console.log('모달룸인포');
     const { chatSocket } = useContext(SocketContext);
     const navigate = useNavigate();
@@ -136,7 +137,7 @@ const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, ch
                         <TextField label="비밀번호를 입력해주세요." type="password" fullWidth sx={{ mt: 2 }} value={password} onChange={handleInputPasswordChange} />
                     </Box>
                     : null}
-                {profile ? <Profile username={username} right={right} isOpen={profile} onClose={handleCloseModal} roomName={roomName} chats={chats} setChats={setChats} /> : null}
+                {profile ? <Profile username={username} right={right} isOpen={profile} onClose={handleCloseModal} roomName={roomName} chats={chats} setChats={setChats} intra_id={intraId}/> : null}
 
                 <Box sx={{ position: 'absolute', bottom: 20, right: 10 }}>
                     {right === 2 ?
