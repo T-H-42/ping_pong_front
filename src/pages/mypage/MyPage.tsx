@@ -195,7 +195,6 @@ const MyPage = () => {
     chatSocket.emit('ft_changenickname', (res: any) => {
       console.log('ft_changenickname emit: ', res);
     });
-    alert('변경되었습니다');
     navigate('/main');
   }
 

@@ -41,7 +41,7 @@ const Layout = () => {
                     alert(`설정 방 나가기 실패 :  ${response.payload}`);
                     return;
                 }
-                alert(`상대방이 나갔습니다.`);
+                // alert(`상대방이 나갔습니다.`);
             });
             navigate('/main');
         };
@@ -78,7 +78,7 @@ const Layout = () => {
             if (RisOwner) {
                 RsetIsOwner(false);
             }
-            alert(`상대방이 나갔습니다.`);
+            // alert(`상대방이 나갔습니다.`);
             // setTimeout(() => {
                 navigate('/');
             // }, 1000);
