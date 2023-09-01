@@ -39,30 +39,16 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats ,
 
     const handleMuteClick = (e) => {
         chatSocket.emit('ft_mute', { roomName, targetUser: e }, (response: any) => {
-            console.log('ft_mute: ');
             if (!response.success) {
                 setOpenError(true);
                 setMessage(response.faillog);
                 return;
             }
-            // console.log('ft_mute: ', response);
-            ///-> nhwang: 테스트 해보니채팅방이 폭파되어도 계속호출되니, 제가 보낸 리턴값을 보고, clearInterval()을 아마 호출해야 될 것 같아요.
-            // useEffect(() => {
-            //   const intervalId = setInterval(() => {
-            //     // 여기에 매 2분마다 실행할 코드 또는 함수를 작성합니다.
-            //     console.log('특정 이벤트 발생');
-            //   }, 120000); // 2분을 밀리초로 변환한 값
-
-            //   return () => {
-            //     clearInterval(intervalId); // 컴포넌트가 언마운트될 때 인터벌 정리
-            //   };
-            // }, []);
         });
     };
 
     const handleAddFriendClick = (e) => {
         chatSocket.emit('ft_addfriend', { receiver: e, roomName: roomName }, (response: any) => { //nhwang roomName추가하였슴다
-            console.log('ft_addfriend emit: ', response);
             if (response.checktoken===false) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
@@ -82,8 +68,6 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats ,
 
     const handleInviteGameClick = (e) => {
         gameSocket.emit('ft_invite_game', { guestName: e, roomName: roomName }, (response: any) => {
-            console.log('ft_invite_game intra???',e);
-            console.log('ft_invite_game emit: ', response);
             if (response.checktoken===false) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
@@ -103,7 +87,6 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats ,
 
     const handleKickClick = (e) => {
         chatSocket.emit('ft_kick', { roomName, targetUser: e }, (response: any) => {
-            console.log('ft_kick emit: ', response);
             if (response.checktoken===false) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
@@ -123,7 +106,6 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats ,
 
     const handleBanClick = (e) => {
         chatSocket.emit('ft_ban', { roomName, targetUser: e }, (response: any) => {
-            console.log('ft_ban emit: ', response);
             if (response.checktoken===false) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
@@ -143,7 +125,6 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats ,
 
     const handleBlockClick = (e) => {
         chatSocket.emit('ft_block', { roomName, targetUser: e }, (response: any) => {
-            console.log('ft_block emit: ', response);
             if (response.checktoken===false) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
@@ -163,7 +144,6 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats ,
 
     const handleHostClick = (e) => {
         chatSocket.emit('ft_addAdmin', { roomName, targetUser: e }, (response: any) => {
-            console.log('ft_addAdmin emit: ', response);
             if (response.checktoken===false) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();

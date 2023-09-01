@@ -10,5 +10,4 @@ export const getJwtCookie = (cookieName: any) => {
 
 export const removeJwtCookie = (cookieName: string) => {
     Cookie.remove(cookieName);
-    console.log("removeJwtCookie : ", Cookie.get(cookieName));
 };

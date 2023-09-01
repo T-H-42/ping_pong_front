@@ -9,30 +9,21 @@ import { Button } from '@mui/material';
 import ModalTokenError from '../../components/ModalTokenError';
 import { removeJwtCookie } from '../../api/cookies';
 
-const FriendList = () => {
-    console.log('프렌드리스트 컴포넌트');
-    
+const FriendList = () => {    
     const navigate = useNavigate();
     const { pingpongSocket, chatSocket, gameSocket } = useContext(SocketContext); ///gameSocket 추가 ,nhwang
     
     const [newDM, setNewDM] = useState(false);
     const [sender, setSender] = useState('');
-    
-    // const friends = useRecoilValue<IFriendsState[]>(friendsState);
     const [friends, setFriends] = useState([]);
-    
     const [openError, setOpenError] = useState(false);
     const [message, setMessage] = useState('');
-    
     const [openTokenError, setOpenTokenError] = useState(false);
 
     useEffect(() => {
         chatSocket.on('ft_trigger', (res: any) => {
-            console.log('ft_trigger chatsocket on: ', res);
             chatSocket.emit('ft_getfriendlist', (res: any) => {
-                console.log('ft_getfriendlist emit: 여기서', res);
                 if (res.checktoken===false) {
-                    console.log('ft_getfriendlist - scope-test from triger');
                     pingpongSocket.disconnect();
                     chatSocket.disconnect();
                     gameSocket.disconnect();
@@ -46,11 +37,8 @@ const FriendList = () => {
         });
 
         gameSocket.on('ft_trigger', (res: any) => {
-            console.log('ft_trigger gamesocket on: ', res);
             chatSocket.emit('ft_getfriendlist', (res: any) => { 
-                console.log('ft_getfriendlist emit: ', res);
                 if (res.checktoken===false) {
-                    console.log('ft_getfriendlist - scope-test from triger');
                     pingpongSocket.disconnect();
                     chatSocket.disconnect();
                     gameSocket.disconnect();
@@ -64,9 +52,7 @@ const FriendList = () => {
         });
 
         chatSocket.emit('ft_getfriendlist', (res: any) => {
-            console.log('ft_getfriendlist emit: ', res);
             if (res.checktoken===false) {
-                console.log('ft_getfriendlist - scope-test from just emit 료깅?');
                 removeJwtCookie('jwt');
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
@@ -79,11 +65,8 @@ const FriendList = () => {
         });
 
         const messageHandler = (res: any) => {
-            console.log('ft_dmAlert on: ', res);
             chatSocket.emit('ft_getfriendlist', (res: any) => {
-                console.log('ft_getfriendlist emit: ', res);
                 if (res.checktoken===false) {
-                    console.log('ft_getfriendlist - scope-test from triger');
                     pingpongSocket.disconnect();
                     chatSocket.disconnect();
                     gameSocket.disconnect();
@@ -98,18 +81,6 @@ const FriendList = () => {
             });
         };
         chatSocket.on('ft_dmAlert', messageHandler);//ft_dm -> ft_dmAlert -nhwang
-
-        /*
-        chatSocket.emit('ft_getfriendlist', (res: any) => {
-                console.log('ft_getfriendlist emit: ', res);
-                setFriends(res);
-            });
-            const messageHandler = (res: any) => {
-                console.log('프렌드리스트 메세지 핸들러: ', res);
-                setNewDM(true);
-                setSender(res.username);
-            };
-        */
         return () => {
             chatSocket.off('ft_dm', messageHandler);
         };
@@ -117,7 +88,6 @@ const FriendList = () => {
 
     useEffect(() => {
         chatSocket.on('ft_getfriendlist', (res: any) => {
-            console.log('ft_getfriendlist on: ', res);
             setFriends(res);
         });
     }, [friends]);
@@ -126,10 +96,9 @@ const FriendList = () => {
         const data = {
             username,
             receiver,
-        };////nhwang
+        };
         
-        chatSocket.emit('join-dm', data, (response: any) => { //// nhwang
-            console.log('join-dm: ', response);
+        chatSocket.emit('join-dm', data, (response: any) => {
             if (response.checktoken===false) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();

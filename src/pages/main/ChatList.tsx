@@ -20,8 +20,6 @@ interface Response {
 }
 
 const ChatList = () => {
-    console.log('챗리스트 컴포넌트');
-
     const navigate = useNavigate();
     const [open, setOpen] = useState<boolean>(false);
     const [password, setPassword] = useState<string>('');
@@ -54,7 +52,6 @@ const ChatList = () => {
     
     const onJoinRoom = useCallback((roomName: string) => () => {
         chatSocket.emit('join-room', { roomName, password }, (response: any) => {
-            console.log(response);
             if (response.checktoken===false) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
@@ -77,14 +74,11 @@ const ChatList = () => {
     
     useEffect(() => {
         const roomListHandler = (res: any) => {
-            console.log('room-list: ', res);
             setRooms(res);
         };
         chatSocket.emit('room-list', roomListHandler);
 
         chatSocket.on('room-list', (res: any) => {
-            console.log('room-list on: ', res);
-            // setRooms((prevRooms: any) => [...prevRooms, res]);
             setRooms(res);
         });
     }, [chatSocket]);
@@ -104,9 +98,7 @@ const ChatList = () => {
 
     const handleSubmit = (event: any, roomName: string) => {
         event.preventDefault();
-        console.log(roomName, password);
         chatSocket.emit('join-room', { roomName, password }, (response: any) => {
-            console.log(response);
             if (response.checktoken===false) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();

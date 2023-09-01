@@ -27,7 +27,6 @@ const ModalRoomInvitation: React.FC<ModalExampleProps> = ({ isOpen, onClose, tit
 
     const handleFriendClick = (e) => {
         chatSocket.emit('ft_invitechat', { roomName, targetUser: e }, (res: any) => {
-            console.log('ft_invitechat emit: ', res);
             if (!res.success) {
                 setOpenError(true);
                 setMessage(res.faillog);

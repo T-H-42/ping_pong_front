@@ -7,7 +7,6 @@ const Login = () => {
     type childrenModal = {
         children: React.ReactNode;
     };
-    console.log('로그인 컴포넌트');
     const navigate = useNavigate();
 
     useEffect(() => {

@@ -8,12 +8,12 @@ import styles from '../../styles/setting-room/setting-room.module.css';
 import axios from 'axios';
 import { getJwtCookie } from '../../api/cookies';
 import UserInfo from '../../types/UserInfo';
-import {ProfileGameHistory} from '../../components/ProfileComponents'
-import  { removeJwtCookie}  from '../../api/cookies';
+import { ProfileGameHistory } from '../../components/ProfileComponents'
+import { removeJwtCookie } from '../../api/cookies';
 
 const GuestPlayer = ({ onReady, onReadyToggle }) => {
     const RisOwner = useRecoilValue(isOwnerState);
-    const { gameSocket , pingpongSocket, chatSocket} = useContext(SocketContext);
+    const { gameSocket, pingpongSocket, chatSocket } = useContext(SocketContext);
     const navigate = useNavigate();
     const [guestInformation, setGuestInformation] = useState<UserInfo | null>(null);
     const settingInfo = useRecoilValue(settingState);
@@ -21,38 +21,36 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
     useEffect(() => {
         if (settingInfo?.guestName) {
 
-        axios
-            .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
-                params: {
-                    username: settingInfo.guestName,
-                },
-                headers: {
-                    Authorization: `Bearer ${getJwtCookie('jwt')}`,
-                },
-            })
-            .then((response) => {
-                console.log(response);
-                setGuestInformation(response.data);
-            })
-            .catch((err) => {
-                if(err?.response?.status === 401)
-                {
-                    navigate('/');
-                }
-                alert(`게스트 정보를 불러오는데 실패하였습니다. : ${err}`);
-            });
-    }
-}, []);
+            axios
+                .get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
+                    params: {
+                        username: settingInfo.guestName,
+                    },
+                    headers: {
+                        Authorization: `Bearer ${getJwtCookie('jwt')}`,
+                    },
+                })
+                .then((response) => {
+                    setGuestInformation(response.data);
+                })
+                .catch((err) => {
+                    if (err?.response?.status === 401) {
+                        navigate('/');
+                    }
+                    alert(`게스트 정보를 불러오는데 실패하였습니다. : ${err}`);
+                });
+        }
+    }, []);
     const handleExit = () => {
         gameSocket.emit('ft_leave_setting_room', (response: any) => {
-            if (response.checktoken===false) {
+            if (response.checktoken === false) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
                 gameSocket.disconnect();
                 removeJwtCookie('jwt');
                 localStorage.clear();
                 // setOpenTokenError(true);
-                return ;
+                return;
             }
             if (!response.success) {
                 alert(`설정 방 나가기 실패 :  ${response.payload}`);
@@ -61,12 +59,11 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
         });
         navigate('/');
     };
-    console.log("체크해 값", guestInformation);
-    
+
     return (
         <Box className={styles.GuestContainer}>
             {!guestInformation && <h2>Loading</h2>}
-            { guestInformation && <Box
+            {guestInformation && <Box
                 sx={{
                     width: '100%',
                     height: '100%',
@@ -144,8 +141,8 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                             justifyContent: 'space-around',
                         }}
                     > */}
-                        <Box>
-                            {/* <Box
+                    <Box>
+                        {/* <Box
                                 sx={{
                                     color: 'var(--text-primary, #000)',
                                     fontFamily: 'Pretendard',
@@ -157,7 +154,7 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                             >
                                 전적
                             </Box> */}
-                            {/* <Box>
+                        {/* <Box>
                                 <Typography
                                     sx={{
                                         color: 'var(--text-primary, #000)',
@@ -171,17 +168,17 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                                     총 50판 20승 30패 승률 25%
                                 </Typography>
                             </Box> */}
-                        </Box>
-                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                         {!(guestInformation?.userGameHistory.length) ? (
-  <Typography sx={{ display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
-    최근 게임 기록 없음
-  </Typography>
-) : (
-      <ProfileGameHistory username={guestInformation.username} history={guestInformation.userGameHistory } />
-)}
+                            <Typography sx={{ display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
+                                최근 게임 기록 없음
+                            </Typography>
+                        ) : (
+                            <ProfileGameHistory username={guestInformation.username} history={guestInformation.userGameHistory} />
+                        )}
 
-    </Box>
+                    </Box>
 
                 </Box>
                 <Box className={styles.ArchvimentsContainer}>
@@ -205,8 +202,7 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                                 <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
                                     {!(guestInformation?.achievements.length) ? (
                                         <Typography>업적 없음</Typography>
-                                        ) : (
-                                        // {console.log(guestInformation);}
+                                    ) : (
                                         guestInformation?.achievements?.map((item, idx) => (
                                             <Typography className={styles.RecentRecordComment} key={idx}>
                                                 {item}
@@ -241,7 +237,7 @@ const GuestPlayer = ({ onReady, onReadyToggle }) => {
                 </Box>
             </Box>}
         </Box>
-    
+
     );
 };
 

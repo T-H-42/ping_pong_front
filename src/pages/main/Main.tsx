@@ -34,7 +34,6 @@ const Main = () => {
             navigate('/');
         }
         chatSocket.on('ft_invitechat', (res: any) => {
-            console.log('ft_invitechat on: ', res);
             setRoomname(res.index);
             setSender(res.sender);
             setOpenInvitation(true);
@@ -43,7 +42,6 @@ const Main = () => {
         return (() => {
             gameSocket.emit('ft_exit_match_queue', (response: any) => {
                 if (response.checktoken === false) {
-                    console.log('ft_exit_match_queue');
                     pingpongSocket.disconnect();
                     chatSocket.disconnect();
                     gameSocket.disconnect();
@@ -62,14 +60,7 @@ const Main = () => {
     }, []);
 
     useEffect(() => {
-        if (!pingpongSocket) {
-            return () => {
-                console.log('핑퐁소켓 없음.');
-            };
-        }
-
         pingpongSocket.on('ft_connect', (respnose: any) => {
-            console.log('ft_connect 입니다.', respnose);
             if (!respnose.checktoken) {
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
@@ -90,7 +81,6 @@ const Main = () => {
         });
 
         pingpongSocket.on('ft_disconnect', (respnose: any) => {
-            console.log('ft_disconnect 입니다.', respnose);
             const updatedFriends: any = friends.map((friend: any) => {
                 if (friend.username === respnose.status) {
                     return { ...friend, status: 0 };

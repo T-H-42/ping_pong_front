@@ -57,9 +57,7 @@ const ModalCreateRoom: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, 
         setInputNumber(event.target.value);
     };
      
-    const handleExit = () => {
-        console.log("생성 에밌!!!!!!!!!!!!!!!!!!!!!!!!");
-        
+    const handleExit = () => {        
         gameSocket.emit('ft_exit_match_queue', (response: any) => {
             if (response.checktoken===false) {
                 pingpongSocket.disconnect();
@@ -96,9 +94,7 @@ const ModalCreateRoom: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, 
 
         // handleExit()
         chatSocket.emit('create-room', data, (response: any) => {
-            console.log('create-room: ', response);
             if (response.checktoken===false) {
-                console.log('ft_getfriendlist - scope-test from triger');
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
                 gameSocket.disconnect();

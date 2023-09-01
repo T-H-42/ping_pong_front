@@ -62,7 +62,6 @@ const OAuth = () => {
         }
         ,onError: (error: AxiosError<ErrorData>) => {
             alert(error.response.data.message);
-            // console.log(error.response.data.message);
             navigate('/', {replace: true});
         }
 });

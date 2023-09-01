@@ -10,25 +10,6 @@ import { ProfileHeader, ProfileGameHistory, ProfileAchievements } from '../../co
 import ModalRoomInvitationReceiver from '../../components/ModalRoomInvitationReceiver'
 import { SocketContext } from '../../api/SocketContext';
 
-// const fetchChangeNickName = (nickname) =>
-//   axios.post(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/nickname`,
-//     { nickname },
-//     {
-//       withCredentials: true,
-//       headers: {
-//         Authorization: `Bearer ${getJwtCookie('jwt')}`,
-//       }
-//     },
-//   ).then((res) => {
-//     console.log('/user/nickname 요청 성공: ', res);
-//     chatSocket.emit('ft_changenickname', (res: any) => {
-//       console.log('ft_changenickname emit: ', res);
-//     });
-//   })
-//     .catch((err) => {
-//       console.log(`/user/nickname 요청 실패: ${err}`);
-//     });
-
 const fetchChangeAuthentication = (two_factor_authentication_status) =>
   axios.post(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/authentication`,
     { two_factor_authentication_status },
@@ -38,10 +19,8 @@ const fetchChangeAuthentication = (two_factor_authentication_status) =>
       },
     }
   ).then((res) => {
-    console.log('/user/authentication 요청 성공: ', res);
   })
     .catch((err) => {
-      console.log(`/user/authentication 요청 실패: ${err}`);
     });
 
 const fetchChangeImage = (formData) =>
@@ -55,11 +34,9 @@ const fetchChangeImage = (formData) =>
     }
   )
     .then((res) => {
-      console.log('/user/profile/upload 요청 성공: ', res);
 
     })
     .catch((err) => {
-      console.log(`/user/profile/upload 요청 실패: ${err}`);
     });
 
 
@@ -73,11 +50,10 @@ const MyPage = () => {
   useEffect(() => {
     chatSocket.off('ft_getfriendlist');
     chatSocket.on('ft_invitechat', (res: any) => {
-      console.log('ft_invitechat on: ', res);
       setRoomname(res.index);
       setSender(res.sender);
       setOpenInvitation(true);
-  });
+    });
   })
 
   const fetchChangeNickName = (nickname) =>
@@ -90,23 +66,6 @@ const MyPage = () => {
         }
       },
     )
-  // .then((res) => {
-  //   console.log('/user/nickname 요청 성공: ', res);
-  //   chatSocket.emit('ft_changenickname', (res: any) => {
-  //     console.log('ft_changenickname emit: ', res);
-  //   });
-  // })
-  // .catch((err) => {
-  //   console.log(`/user/nickname 요청 실패: ${err}`);
-  //   console.log(err);
-  //   if(err?.response?.status === 400){
-  //     alert("닉네임 수정에 실패하였습니다.")
-  //     navigate('/')
-  //   }else if(err?.response?.status === 500)
-  //     alert("잘못된 접근입니다.")
-  //     navigate('/')
-  // }
-  // );
 
   const [username, setUsername] = useState(localStorage.getItem('username'));
 
@@ -142,11 +101,8 @@ const MyPage = () => {
       setUsername(newUserInfo.nickname);
       remove();
       localStorage.setItem('username', newUserInfo.nickname);
-      console.log('/user/nickname 요청 성공: ', res);
     },
     onError: (err: any) => {
-      console.log('???? ', err);
-
       setNewUserInfo({ ...newUserInfo, nickname: userInfo.username });
       if (err?.response?.data?.statusCode === 400) {
         alert(err.response.data.message);
@@ -158,7 +114,6 @@ const MyPage = () => {
       else if (err?.response?.data?.statusCode === 401) {
         navigate('/')
       }
-      // alert('닉네임을 변경할 수 없습니다');
     }
   }
   );

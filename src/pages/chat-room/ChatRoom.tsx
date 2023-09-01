@@ -32,7 +32,6 @@ import { Cookies } from 'react-cookie';
 const Cookie = new Cookies();
 
 const ChatRoom: React.FC = () => {
-    console.log('챗룸 컴포넌트');
     const { chatSocket, gameSocket, pingpongSocket } = useContext(SocketContext);
     const [openRoomInfo, setOpenRoomInfo] = useState(false);
     const [openRoomInvitation, setOpenRoomInvitation] = useState(false);
@@ -61,7 +60,6 @@ const ChatRoom: React.FC = () => {
 
     useEffect(() => {
         chatSocket.on('ft_tomain', (res: any) => {
-            console.log('ft_tomain on: ', res);
             if (res.success) {
                 navigate('/main');
             }
@@ -71,36 +69,23 @@ const ChatRoom: React.FC = () => {
             roomName,
         };
         chatSocket.emit('ft_isEmptyRoom', data, (res: any) => {
-            console.log('ft_isEmptyRoom: ', res);
             if (res) {
                 navigate('/main');
             }
         });
 
         chatSocket.on('ft_mute', (res: any) => {
-            console.log('ft_mute on: ', res);
-
             const intervalId = setInterval(() => {
-                console.log('setInterval');
                 chatSocket.emit('ft_mute_check', { roomName, targetUser: username }, (response: any) => {
-                    console.log('ft_mute_check: ', response);
                     if (response.success >= 1) {
-                        console.log('clearInterval 실행');
-                        clearInterval(intervalId); // 컴포넌트가 언마운트될 때 인터벌 정리
+                        clearInterval(intervalId);
                     }
                 });
             }, 6000);
         });
 
-        // gameSocket.on('ft_match_success', (res: any) => {
-        //     console.log('ft_match_success on: ', res);
-
-        // });
-
         return () => {
-            // roomName -> data nhwang -> 상단으로 뺐습니다. ft_isEmptyRoom에서도 사용하기 때문
             chatSocket.emit('leave-room', data, () => {
-                console.log('leave-room: ', data);
             });
         };
     }, []);
@@ -121,36 +106,30 @@ const ChatRoom: React.FC = () => {
             roomName,
         }; // { roomName } -> data nhwang
         chatSocket.emit('ft_get_chat_log', data, (chat) => {
-            console.log('ft_get_chat_log emit: ', chat);
             setChats(chat);
         });
 
         const messageHandler = (chat) => {
-            console.log('ft_message on: ', chat);
             setChats((prevChats) => [...prevChats, chat]);
         };
 
         chatSocket.on('ft_message', messageHandler);
 
         chatSocket.on('ft_kick', (res) => {
-            console.log('ft_kick on: ', res);
             navigate('/main');
         });
         chatSocket.on('ft_addfriend', (response: any) => {
-            console.log('ft_addfriend on: ', response);
             setSender(response.sender);
             setReceiver(response.receiver);
             setShowAddFriend(true);
         });
 
         gameSocket.on('ft_invite_game', (response: any) => {
-            console.log('ft_invite_game on: ', response);
             setSender(response.sender);
             setOpenGameInvitation(true);
         });
 
         gameSocket.on('ft_invite_game_result', (res: any) => {
-            console.log('ft_invite_game_result on: ', res);
             if (!res.success) {
                 setOpenError(true);
                 setErrorMessage(res.faillog);
@@ -159,7 +138,6 @@ const ChatRoom: React.FC = () => {
         });
 
         return () => {
-            // chatSocket.off('ft_message', messageHandler);
             setShowAddFriend(false);
         };
     }, []);
@@ -180,7 +158,6 @@ const ChatRoom: React.FC = () => {
                 roomName,
             };
             await chatSocket.emit('ft_message', data, (chat) => {
-                console.log('ft_message: ', chat);
                 if (chat.success) {
                     setChats((prevChats) => [...prevChats, chat]);
                     setMessage('');
@@ -203,12 +180,8 @@ const ChatRoom: React.FC = () => {
             setChatUsers(res.userList);
             res.userList.forEach((user, index) => {
                 if (user.username === localStorage.getItem('username')) {
-                    console.log('ft_getUserListInRoom on: ', res);
                     setRight(user.right);
-                    setIntraId(user.intra_id);
-
-                    console.log("내가 받아온 인트라 리스트",res);
-                    
+                    setIntraId(user.intra_id);                    
                 }
             });
         });
@@ -219,7 +192,6 @@ const ChatRoom: React.FC = () => {
             setChatUsers(res.userList);
             res.userList.forEach((user, index) => {
                 if (user.username === localStorage.getItem('username')) {
-                    console.log('ft_getUserListInRoom emit: ', res);
                     setRight(user.right);
                 }
             });
@@ -230,7 +202,6 @@ const ChatRoom: React.FC = () => {
     const handleOpenInvitation = () => {
         chatSocket.emit('ft_getfriendlist', (res: any) => {
             if (res.checktoken === false) {
-                console.log('ft_getfriendlist - scope-test from just emit 여깃?');
                 removeJwtCookie('jwt');
                 pingpongSocket.disconnect();
                 chatSocket.disconnect();
@@ -239,7 +210,6 @@ const ChatRoom: React.FC = () => {
                 setOpenTokenError(true);
                 return;
             }
-            console.log('ft_getfriendlist emit: ', res);
             setFriends(res);
         });
         setOpenRoomInvitation(true);

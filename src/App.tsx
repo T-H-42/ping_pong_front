@@ -31,14 +31,11 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-    console.log('앱 컴포넌트');
-
     const pingpongSocket = createPingpongSocket();
     const chatSocket = createChatSocket();
     const gameSocket = createGameSocket();
 
     if (getJwtCookie('jwt')) {
-        console.log('jwt쿠키있음')
         pingpongSocket.auth = { token: `${getJwtCookie('jwt')}` };
         pingpongSocket.connect();
         chatSocket.auth = { token: `${getJwtCookie('jwt')}` };
@@ -46,12 +43,6 @@ function App() {
         gameSocket.auth = { token: `${getJwtCookie('jwt')}` };
         gameSocket.connect();
     }
-
-    useEffect(() => {
-        console.log('게임 소켓 감지기', gameSocket);
-        console.log('채팅 소켓 감지기', chatSocket);
-        console.log('핑퐁 소켓 감지기', pingpongSocket);
-    }, [gameSocket, pingpongSocket, chatSocket]);
 
     return (
         <RecoilRoot>

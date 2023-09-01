@@ -15,8 +15,6 @@ interface props {
 }
 
 const ModalError: React.FC<props> = ({ isOpen, onClose, title, message }) => {
-    console.log('모달에러');
-
     return (
         <Modal
             open={isOpen}

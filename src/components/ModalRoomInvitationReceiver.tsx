@@ -42,7 +42,6 @@ const ModalRoomInvitationReceiver: React.FC<ModalExampleProps> = ({ isOpen, onCl
                 setOpenTokenError(true);
                 return ;
             }
-            console.log(response);
             if (response.success) {
                 localStorage.setItem('room-name', roomName);
                 navigate(`/room/${roomName}`);

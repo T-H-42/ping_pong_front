@@ -39,7 +39,6 @@ const ModalGameInvitationReceiver: React.FC<ModalExampleProps> = ({ isOpen, onCl
                 // setOpenTokenError(true);
                 return ;
             }
-            console.log('ft_invite_game_result emit: ', res);
             if (!res.success) {
                 setOpenError(true);
                 setMessage(res.faillog);   
@@ -64,7 +63,6 @@ const ModalGameInvitationReceiver: React.FC<ModalExampleProps> = ({ isOpen, onCl
                 // setOpenTokenError(true);
                 return ;
             }
-            console.log('ft_invite_game_result emit: ', res);
         });
         onClose();
     };

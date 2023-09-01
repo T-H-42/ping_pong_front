@@ -27,7 +27,6 @@ interface Response {
 }
 
 const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, chatUsers: friends, right, chats, setChats, intraId }) => {
-    console.log('모달룸인포');
     const { chatSocket } = useContext(SocketContext);
     const navigate = useNavigate();
     const roomName = localStorage.getItem('room-name');
@@ -55,7 +54,6 @@ const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, ch
 
     const handleChangePassword = () => {
         chatSocket.emit('ft_changeroompassword', { roomName, password }, (response: Response) => {
-            console.log('ft_changeroompassword emit: ', response);
             if (response.success) {
                 setOpenError(true);
                 setMessage(response.faillog);
@@ -69,7 +67,6 @@ const ModalRoomInfo: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, ch
 
     const handleDeletePassword = () => {
         chatSocket.emit('ft_deleteroompassword', { roomName }, (response: Response) => {
-            console.log('ft_deleteroompassword emit: ', response);
             if (response.success) {
                 setOpenError(true);
                 setMessage(response.faillog);

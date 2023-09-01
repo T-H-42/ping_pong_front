@@ -22,7 +22,6 @@ const ModalAddFriend: React.FC<ModalExampleProps> = ({ isOpen, onClose, title, s
 
     const onAccept = () => {
         chatSocket.emit('ft_acceptfriend', {receiver, sender}, (response) => {
-            console.log('ft_acceptfriend: ', response);
             onClose();
         });
     };

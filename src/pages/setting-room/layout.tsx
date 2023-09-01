@@ -38,11 +38,9 @@ const SettingRoomLayout = () => {
     // 새로고침 이벤트는  beforeunload, popstate는 새로 고침
 
     useEffect(() => {
-        console.log("hello1");
         gameSocket.off('ft_trigger');
         chatSocket.off('ft_trigger');
         chatSocket.off('ft_getfriendlist');
-        console.log("hello2");
     
         window.history.pushState(null, '', window.location.href);
         const confirmGoBack = (event: any) => {
@@ -84,29 +82,20 @@ const SettingRoomLayout = () => {
 
     useEffect(() => {
         const handleMyselfLeaveSettingRoom = (response: any) => {
-            //자신 나가는 로직
+
             if (!response) {
                 return alert(`${response} 에러가 발생했습니다.`);
             }
-            // gameSocket.emit('ft_leave_setting_room', (response: any) => {
-            //     if (!response.success){
-            //         alert(`설정 방 나가기 실패 :  ${response.payload}`);
-            //         return
-            //     }
-            // });
             navigate('/');
         };
 
         const handleEnemyLeaveSettingRoom = (response: any) => {
-            // console.log("나갔습니다!@#!@#!@$!$!$@!@$@!$!@$!@$!@$!@$!@$@!$!@$!@$!$@!$");
-            
             if (!response) {
                 return alert(`${response} 에러가 발생했습니다.`);
             }
             if (RisOwner) {
                 RsetIsOwner(false);
             }
-            // alert(`상대방이 나갔습니다.`);
             navigate('/');
         };
 
@@ -121,7 +110,6 @@ const SettingRoomLayout = () => {
 
     useEffect(() => {
         const handleGameSettingSuccess = (response: any) => {
-            // if (!response.success) return alert(response.payload);
         };
 
         gameSocket.on('ft_game_setting_success', handleGameSettingSuccess);

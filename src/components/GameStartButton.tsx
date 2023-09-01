@@ -17,12 +17,9 @@ const GameStartButton = () => {
 
     const onGameStart = useCallback(() => {
         if (initialGameState) {
-            console.log('매치 취소기');
-
             setInitGameState((prev) => !prev);
             gameSocket.emit('ft_exit_match_queue', (response: any) => {
                 if (response.checktoken === false) {
-                    console.log('ft_exit_match_queue');
                     pingpongSocket.disconnect();
                     chatSocket.disconnect();
                     gameSocket.disconnect();
@@ -37,11 +34,9 @@ const GameStartButton = () => {
                 }
             });
         } else {
-            console.log('매치 잡기');
             setInitGameState((prev) => !prev);
             gameSocket.emit('ft_enter_match_queue', (response: any) => {
                 if (response.checktoken === false) {
-                    console.log('ft_enter_match_queue');
                     pingpongSocket.disconnect();
                     chatSocket.disconnect();
                     gameSocket.disconnect();
@@ -64,17 +59,12 @@ const GameStartButton = () => {
                 alert(`ft__match_success : ${response.payload}`);
                 return;
             }
-            console.log('매치 성공 후 받은 res ', response);
 
             RsetSettingRoomName(response.roomName);
             RsettingName(response.usernames);
             if (response.isOwner === true) {
-                console.log("나는 오너다 !");
-                
                 RsetIsOwner(true);
             }
-
-            console.log("내가 받은 방번호다!@@@@!!", response.roomName)
             navigate(`/setting-room/${response.roomName}`);
         };
 

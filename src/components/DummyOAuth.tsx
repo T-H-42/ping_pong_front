@@ -5,8 +5,6 @@ import { getJwtCookie } from '../api/cookies';
 import { SocketContext } from '../api/SocketContext';
 
 const DummyOAuth = () => {
-    console.log('오오스 컴포넌트');
-
     const [searchParams] = useSearchParams();
 
     const [loading, setLoading] = useState(true);
@@ -33,13 +31,9 @@ const DummyOAuth = () => {
             )
             .then((response) => {
                 document.cookie = `jwt=${response.data.accessToken};  path=/`;
-                console.log('response.data: ', response.data);
                 localStorage.setItem('username', response.data.username);
 
                 if (getJwtCookie('jwt')) {
-                    console.log('jwt', getJwtCookie('jwt'));
-                    console.log('/user/signin 요청 성공');
-                    console.log(`또끈: ${getJwtCookie('jwt')}`);
                     pingpongSocket.auth = { token: `${getJwtCookie('jwt')}` };
                     pingpongSocket.connect();
                     chatSocket.auth = { token: `${getJwtCookie('jwt')}` };
@@ -52,7 +46,6 @@ const DummyOAuth = () => {
             })
             .catch((err) => {
                 /* err number 확인 후 분기처리 */
-                console.log(`/user/signin 요청 실패: ${err}`);
                 alert('로그인 실패');
                 setError(true);
                 setLoading(false);

@@ -6,7 +6,6 @@ import { SocketContext } from '../../api/SocketContext';
 import ModalError from '../../components/ModalError';
 
 const TwoFactorAuth = () => {
-    console.log('TwoFactorAuth 컴포넌트');
     const navigate = useNavigate();
     const [openError, setOpenError] = useState(false);
     const [info, setInfo] = useState({
@@ -30,9 +29,6 @@ const TwoFactorAuth = () => {
                 withCredentials: true,
             })
             .then((res) => {
-                console.log('/user/certificate 요청 성공');
-                console.log(`또끈2: ${getJwtCookie('jwt')}`);
-                console.log('서버의 값', res.data);
                 pingpongSocket.auth = { token: `${getJwtCookie('jwt')}` };
                 pingpongSocket.connect();
                 chatSocket.auth = { token: `${getJwtCookie('jwt')}` };
@@ -43,7 +39,6 @@ const TwoFactorAuth = () => {
                 navigate('/main');
             })
             .catch((err) => {
-                console.log(`/user/certificate 요청 실패: ${err}`);
                 setOpenError(true);
             });
     };
