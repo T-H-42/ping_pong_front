@@ -24,6 +24,8 @@ export const createGameSocket = (): Socket => {
         transports: ['websocket'],
         auth: { token: getJwtCookie('jwt') },
         autoConnect: false,
+        reconnection: true,
+        reconnectionAttempts: 5,
     });
     return gameSocket;
 };

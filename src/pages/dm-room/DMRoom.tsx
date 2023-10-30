@@ -1,10 +1,23 @@
 import React, { useEffect, useState, useRef, useCallback, useContext } from 'react';
-import {} from 'react-router-dom';
-import {} from '../../api/atoms';
-import { useSearchParams, useNavigate, Navigate } from 'react-router-dom';
+import { } from 'react-router-dom';
+import { } from '../../api/atoms';
+import { useSearchParams, useNavigate, Navigate, useLocation } from 'react-router-dom';
 import { dmNameState } from '../../api/atoms';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { SocketContext } from '../../api/SocketContext';
+
+import {
+    Button,
+    Modal,
+    Box,
+    Typography,
+    TextField,
+    Switch,
+    FormControlLabel,
+    Alert,
+    AppBar,
+    Stack,
+} from '@mui/material';
 
 const DMRoom = () => {
     const { chatSocket } = useContext(SocketContext);
@@ -27,33 +40,47 @@ const DMRoom = () => {
     }, [chats.length]);
 
     useEffect(() => {
+        setMessage('');
+        const data = {
+            roomName: index
+        }; // { roomName: index }
+        chatSocket.emit('ft_get_dm_log', data, (chat) => {
+            setChats(chat);
+        });
+
         const messageHandler = (chat: any) => {
-            console.log('디엠룸 메세지 핸들러: ', chat);
             setChats((prevChats) => [...prevChats, chat]);
         };
 
         chatSocket.on('ft_dm', messageHandler);
 
+        chatSocket.on('ft_tomain', (res: any) => {
+            if (res) {
+                navigate('/main');
+            }
+        });
+
         return () => {
-            console.log('message off');
-            chatSocket.off('ft_dm', messageHandler);
+            chatSocket.emit('leave-dm', data, () => {
+            });
         };
     }, []);
 
-    const onChange = useCallback(
-        (e) => {
-            setMessage(e.target.value);
-        },
-        [message],
-    );
+    const onChange = useCallback((e) => {
+        setMessage(e.target.value);
+    }, [message]);
 
     const onSendMessage = useCallback(
         async (e) => {
             e.preventDefault();
 
             if (message === '') return alert('메시지를 입력해 주세요.');
-
-            await chatSocket.emit('ft_dm', { roomName: index, message, receiver }, (chat) => {
+            const data = {
+                roomName: index,
+                message,
+                receiver,
+            };
+            await chatSocket.emit('ft_dm', data, (chat) => {
                 setChats((prevChats) => [...prevChats, chat]);
                 setMessage('');
             });
@@ -62,41 +89,15 @@ const DMRoom = () => {
     );
 
     const onLeaveRoom = useCallback(() => {
-        console.log('@@@@@@@@@@@');
-        chatSocket.emit('leave-dm', index, () => {
-            navigate('/main');
-        });
+        navigate('/main');
     }, [navigate]);
 
-    useEffect(() => {
-        const handlePopstate = () => {
-            // This function will be called when the back button is clicked
-            console.log('Back button clicked!');
-            // Call your callback function here
-            // For example: myCallbackFunction();
-        };
-
-        // Add the event listener for the 'popstate' event
-        window.onpopstate = handlePopstate;
-
-        return () => {
-            // Remove the event listener when the component is unmounted
-            window.onpopstate = null;
-        };
-    }, []);
-
     return (
-        <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '100vh',
-            }}
-        >
-            <h2>{receiver}님과의 DM</h2>
-            <div ref={chatContainerEl}>
+        <Box sx={{ flexGrow: 1 }}>
+            <AppBar position="static">
+                <h2>{receiver}님과의 DM</h2>
+            </AppBar>
+            <div ref={chatContainerEl} style={{ overflowY: 'auto', maxHeight: 'calc(100vh - 200px)' }}>
                 {chats.map((chat, index) => (
                     <div key={index}>
                         <span style={{ fontWeight: 'bold', color: 'green' }}>{chat.username} : </span>
@@ -105,18 +106,17 @@ const DMRoom = () => {
                     </div>
                 ))}
             </div>
-            <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <form onSubmit={onSendMessage}>
                     <input type="text" onChange={onChange} value={message} />
                     <button>Send</button>
                 </form>
-                <div>
-                    <button onClick={onLeaveRoom} style={{ position: 'absolute', right: '12px', bottom: '35vh' }}>
-                        나가기
-                    </button>
-                </div>
+
+                <button onClick={onLeaveRoom} style={{ marginLeft: '10px' }}>
+                    나가기
+                </button>
             </div>
-        </div>
+        </Box>
     );
 };
 
