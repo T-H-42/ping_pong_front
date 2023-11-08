@@ -18,10 +18,7 @@ const fetchChangeAuthentication = (two_factor_authentication_status) =>
         Authorization: `Bearer ${getJwtCookie('jwt')}`,
       },
     }
-  ).then((res) => {
-  })
-    .catch((err) => {
-    });
+  );
 
 const fetchChangeImage = (formData) =>
   axios.post(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile/upload`,
@@ -33,12 +30,6 @@ const fetchChangeImage = (formData) =>
       },
     }
   )
-    .then((res) => {
-
-    })
-    .catch((err) => {
-    });
-
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -78,13 +69,14 @@ const MyPage = () => {
         // 에러가 발생한 경우에 대한 처리
         if (err?.response?.status === 401) {
           // 인증 오류(401)인 경우 리다이렉션을 수행합니다.
-          navigate('/login');
+          navigate('/');
         } else {
           // 기타 다른 예외적인 상황에 대한 처리
           console.error('프로필 데이터 가져오기 오류:', err);
           // 추가적인 에러 핸들링 로직을 구현합니다.
         }
       },
+      select: (res) => res.data
     }
   );
 
@@ -104,16 +96,11 @@ const MyPage = () => {
     },
     onError: (err: any) => {
       setNewUserInfo({ ...newUserInfo, nickname: userInfo.username });
-      if (err?.response?.data?.statusCode === 400) {
+      if (err?.response?.data?.statusCode === 400)
         alert(err.response.data.message);
-        // navigate('/')
-      } else if (err?.response?.data?.statusCode === 500) {
-        alert("잘못된 접근입니다.")
-        navigate('/')
-      }
-      else if (err?.response?.data?.statusCode === 401) {
-        navigate('/')
-      }
+      else if (err?.response?.data?.statusCode === 500)
+        alert("잘못된 접근입니다.");
+      navigate('/')
     }
   }
   );
@@ -149,20 +136,19 @@ const MyPage = () => {
 
   const handleChangeClick = async () => {
     if (username !== newUserInfo.nickname)
-      await mutateUserName(newUserInfo.nickname).catch((err) => console.log(err));
+      await mutateUserName(newUserInfo.nickname);
 
     if (newUserInfo.image) {
       const formData = new FormData();
+
       formData.append('image', newUserInfo.image);
-      await mutateImage(formData).catch((err) => console.log(err));;
+      await mutateImage(formData);
     }
+
     if (userInfo.two_factor_authentication_status !== newUserInfo.two_factor_authentication_status)
-      await mutateTwoFactorAuthenticationStatus(newUserInfo.two_factor_authentication_status).catch((err) => console.log(err));;
+      await mutateTwoFactorAuthenticationStatus(newUserInfo.two_factor_authentication_status);
 
-
-    chatSocket.emit('ft_changenickname', (res: any) => {
-      console.log('ft_changenickname emit: ', res);
-    });
+    chatSocket.emit('ft_changenickname');
     navigate('/main');
   }
 
@@ -221,7 +207,5 @@ const MyPage = () => {
     </>
   )
 }
-
-
 
 export default MyPage;

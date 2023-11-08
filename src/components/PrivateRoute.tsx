@@ -1,7 +1,6 @@
 import React from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 import { getJwtCookie } from '../api/cookies';
-import axios from 'axios';
 import { removeJwtCookie } from '../api/cookies';
 
 function PrivateRoute() {

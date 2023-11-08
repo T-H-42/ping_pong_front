@@ -30,6 +30,7 @@ const Profile = ({ username, right, isOpen, onClose, roomName, chats, setChats ,
     const { data: userInfo } = useQuery(['userInfo', username], () => fetchProfileData(username), {
         suspense: true,
         useErrorBoundary: true,
+        select: (res) => res.data
     });
 
     const [openError, setOpenError] = useState(false);

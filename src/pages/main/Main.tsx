@@ -105,25 +105,26 @@ const Main = () => {
     };
 
     const handleClickMyPage = () => {
-        axios.get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
-            params: {
-                username: localStorage.getItem('username'),
-            },
-            headers: {
-                Authorization: `Bearer ${getJwtCookie('jwt')}`,
-            },
-        })
-            .then(() => {
+        // axios.get(`http://${process.env.REACT_APP_IP_ADDRESS}:4000/user/profile`, {
+        //     params: {
+        //         username: localStorage.getItem('username'),
+        //     },
+        //     headers: {
+        //         Authorization: `Bearer ${getJwtCookie('jwt')}`,
+        //     },
+        // })
+        //     .then(() => {
+        //         navigate('/mypage');
                 navigate('/mypage');
-            })
-            .catch((error) => {
-                pingpongSocket.disconnect();
-                chatSocket.disconnect();
-                gameSocket.disconnect();
-                removeJwtCookie('jwt');
-                localStorage.clear();
-                setOpenTokenError(true);
-            });
+        //     })
+        //     .catch((error) => {
+        //         pingpongSocket.disconnect();
+        //         chatSocket.disconnect();
+        //         gameSocket.disconnect();
+        //         removeJwtCookie('jwt');
+        //         localStorage.clear();
+        //         setOpenTokenError(true);
+        //     });
     };
 
 
