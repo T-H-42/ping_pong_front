@@ -27,8 +27,6 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-    console.log('앱콜');
-    
     const pingpongSocket = createPingpongSocket();
     const chatSocket = createChatSocket();
     const gameSocket = createGameSocket();
